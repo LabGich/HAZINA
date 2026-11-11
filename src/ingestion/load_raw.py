@@ -6,13 +6,7 @@ import pandas as pd
 import psycopg
 from dotenv import load_dotenv
 
-
-# ---------------------------------------------------------
-# PROJECT CONFIGURATION
-# ---------------------------------------------------------
-
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
 CSV_FILE = PROJECT_ROOT / "data" / "sample" / "hazina_transactions.csv"
 
 EXPECTED_COLUMNS = [
@@ -26,14 +20,10 @@ EXPECTED_COLUMNS = [
     "status",
 ]
 
-
-# Load environment variables from the project root.
 load_dotenv(PROJECT_ROOT / ".env")
 
 
 def get_database_connection():
-    """Create a PostgreSQL connection using .env settings."""
-
     required_variables = [
         "DB_HOST",
         "DB_PORT",
@@ -63,33 +53,21 @@ def get_database_connection():
 
 
 def load_raw_transactions():
-    """Load the source CSV into raw.transactions."""
-
     if not CSV_FILE.exists():
         raise FileNotFoundError(
             f"CSV file not found: {CSV_FILE}"
         )
 
-    # Read every field as text and preserve empty values.
     dataframe = pd.read_csv(
         CSV_FILE,
         dtype=str,
         keep_default_na=False,
     )
 
-    # Confirm the expected input structure.
     if list(dataframe.columns) != EXPECTED_COLUMNS:
         raise ValueError(
             "CSV columns do not match the approved specification."
         )
-
-    records = [
-        tuple(row) + (CSV_FILE.name,)
-        for row in dataframe.itertuples(
-            index=False,
-            name=None,
-        )
-    ]
 
     insert_sql = """
         INSERT INTO raw.transactions (
@@ -101,17 +79,18 @@ def load_raw_transactions():
             currency,
             payment_method,
             status,
-            source_file
+            source_file,
+            run_id
         )
         VALUES (
-            %s, %s, %s, %s, %s, %s, %s, %s, %s
+            %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s
         )
     """
 
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
-            # Register this pipeline execution.
             cursor.execute(
                 """
                 INSERT INTO ops.pipeline_runs (
@@ -122,20 +101,25 @@ def load_raw_transactions():
                 VALUES (%s, 'RUNNING', %s)
                 RETURNING run_id
                 """,
-                (CSV_FILE.name, len(records)),
+                (CSV_FILE.name, len(dataframe)),
             )
 
             run_id = cursor.fetchone()[0]
 
-            # Insert all original CSV records.
+            records = [
+                tuple(row) + (CSV_FILE.name, run_id)
+                for row in dataframe.itertuples(
+                    index=False,
+                    name=None,
+                )
+            ]
+
             cursor.executemany(insert_sql, records)
 
-            # Mark the execution as successful.
             cursor.execute(
                 """
                 UPDATE ops.pipeline_runs
-                SET
-                    run_status = 'SUCCESS',
+                SET run_status = 'SUCCESS',
                     records_loaded = %s,
                     completed_at = CURRENT_TIMESTAMP
                 WHERE run_id = %s
