@@ -1,0 +1,52 @@
+﻿# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/*
+!logs/.gitkeep
+*.log
+
+# Test and coverage artifacts
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+
+# Generated data
+data/incoming/*
+data/processed/*
+data/archive/*
+
+# Keep sample data directory structure
+!data/incoming/.gitkeep
+!data/processed/.gitkeep
+!data/archive/.gitkeep
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
