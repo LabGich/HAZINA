@@ -1,9 +1,11 @@
+import pytest
 
 from src.database.connection import get_database_connection
 from src.validation.validate_transactions import validate_transactions
 from src.deduplication.deduplicate_transactions import (
     deduplicate_transactions
 )
+from src.monitoring.pipeline_status import mark_pipeline_run_failed
 
 #a reusable raw transaction insertion helper
 def insert_raw_transaction(
@@ -436,3 +438,84 @@ def test_conflicting_duplicates_are_quarantined(database_test_context):
 
     assert conflicting_count == 2
     assert core_count == 0
+
+#Test5
+#Pipeline failure handling
+#verify that when a processing stage fails, the run is marked FAILED
+#  and receives a completion timestamp
+
+# --Test deduplication failure handling
+def test_deduplication_failure_marks_pipeline_run_failed(
+    database_test_context,
+):
+
+    run_id = database_test_context["run_id"]
+
+    # No staged transactions exist for this run.
+    # Deduplication should therefore fail.
+    with pytest.raises(
+        ValueError,
+        match="No staged transactions found",
+    ):
+        deduplicate_transactions(run_id)
+
+    # Verify that the failure was recorded.
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT run_status, completed_at
+                FROM ops.pipeline_runs
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+            result = cursor.fetchone()
+
+    assert result is not None
+    assert result[0] == "FAILED"
+    assert result[1] is not None
+
+# --Test completed runs cannot be overwritten
+# verifies that our failure handler only changes runs that are still RUNNING
+def test_failure_handler_does_not_overwrite_successful_run(
+    database_test_context,
+):
+
+    run_id = database_test_context["run_id"]
+
+    # Mark the run as successfully completed.
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                UPDATE ops.pipeline_runs
+                SET run_status = 'SUCCESS',
+                    completed_at = CURRENT_TIMESTAMP
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+    # Attempt to mark the successful run as failed.
+    result = mark_pipeline_run_failed(run_id)
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT run_status
+                FROM ops.pipeline_runs
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+            final_status = cursor.fetchone()[0]
+
+    assert result is False
+    assert final_status == "SUCCESS"
