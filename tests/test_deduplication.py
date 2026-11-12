@@ -3,6 +3,9 @@ from src.deduplication.deduplicate_transactions import (
     get_transaction_signature,
 )
 
+# transaction_id is intentionally excluded from the signature
+# We group records by transaction ID first
+# then compare the seven remaining fields to determine whether they are exact duplicates or conflicting versions
 
 def sample_transaction():
     return {
