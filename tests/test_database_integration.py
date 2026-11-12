@@ -1,6 +1,11 @@
 
 from src.database.connection import get_database_connection
 
+# This test:
+# Connected to PostgreSQL
+# Created a temporary pipeline run
+# Retrieved and verified its status and source filename
+# Cleaned up the temporary records afterward
 
 def test_database_connection_and_pipeline_run(database_test_context):
 
