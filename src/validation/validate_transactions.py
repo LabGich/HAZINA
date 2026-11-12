@@ -4,7 +4,7 @@ from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
 from src.database.connection import get_database_connection
-
+from src.monitoring.pipeline_status import mark_pipeline_run_failed
 
 ALLOWED_TRANSACTION_TYPES = {
     "PAYMENT",
@@ -147,7 +147,7 @@ def validate_record(record):
     return standardized_record, []
 
 
-def validate_transactions(run_id):
+def _validate_transactions(run_id):
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
@@ -335,6 +335,14 @@ def validate_transactions(run_id):
     })}")
     print(f"Validation errors recorded: {len(error_records)}")
 
+# Add the failure handling wrapper with a separate connection
+def validate_transactions(run_id):
+    try:
+        _validate_transactions(run_id)
+    except Exception as e:
+        print(f"Validation failed for run_id {run_id}: {e}")
+        mark_pipeline_run_failed(run_id)
+        raise
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
