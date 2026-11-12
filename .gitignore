@@ -42,6 +42,9 @@ data/incoming/*
 data/processed/*
 data/archive/*
 
+# Generated reports
+reports/*
+
 # Keep sample data directory structure
 !data/incoming/.gitkeep
 !data/processed/.gitkeep

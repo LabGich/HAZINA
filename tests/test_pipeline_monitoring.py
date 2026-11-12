@@ -132,12 +132,10 @@ def test_pipeline_run_report_is_saved_to_file(
     assert reports_directory.exists()
     assert report_path.exists()
     assert report_path.name == (
-        f"pipeline_run_{run_id}_report.txt"
+        f"pipeline_run_{run_id}_report.pdf"
     )
 
-    report_content = report_path.read_text(encoding="utf-8")
+    assert report_path.stat().st_size > 0
 
-    assert f"Run ID:             {run_id}" in report_content
-    assert "CORE PROMOTION" in report_content
-    assert "No eligible unique records were available." in report_content
-    assert "END OF PIPELINE REPORT" in report_content
+    with report_path.open("rb") as pdf_file:
+        assert pdf_file.read(5) == b"%PDF-"
