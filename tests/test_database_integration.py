@@ -564,3 +564,89 @@ def test_failure_handler_does_not_overwrite_successful_run(
 
     assert result is False
     assert final_status == "SUCCESS"
+
+#Test6
+#Test transaction in core table is not promoted again
+def test_existing_core_transaction_is_not_promoted_again(
+    database_test_context,
+):
+
+    run_id = database_test_context["run_id"]
+    transaction_id = (
+        f"{database_test_context['prefix']}_EXISTING"
+    )
+
+    database_test_context["transaction_ids"].append(
+        transaction_id
+    )
+
+    # Insert the transaction into core first.
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                INSERT INTO core.transactions (
+                    transaction_id,
+                    customer_id,
+                    transaction_date,
+                    transaction_type,
+                    amount,
+                    currency,
+                    payment_method,
+                    status
+                )
+                VALUES (
+                    %s, %s, %s, %s,
+                    %s, %s, %s, %s
+                )
+                """,
+                (
+                    transaction_id,
+                    "CUST_TEST001",
+                    "2026-11-12T14:30:00+03:00",
+                    "PAYMENT",
+                    "1500.00",
+                    "KES",
+                    "MPESA",
+                    "COMPLETED",
+                ),
+            )
+
+    # Submit the same transaction through the pipeline.
+    insert_raw_transaction(run_id, transaction_id)
+
+    validate_transactions(run_id)
+    deduplicate_transactions(run_id)
+
+    # Verify promotion metrics and core record count.
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT
+                    records_unique_eligible,
+                    records_promoted,
+                    records_already_in_core
+                FROM ops.pipeline_runs
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+            promotion_metrics = cursor.fetchone()
+
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM core.transactions
+                WHERE transaction_id = %s
+                """,
+                (transaction_id,),
+            )
+
+            core_count = cursor.fetchone()[0]
+
+    assert promotion_metrics == (1, 0, 1)
+    assert core_count == 1
