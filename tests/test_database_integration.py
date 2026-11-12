@@ -326,8 +326,23 @@ def test_unique_transaction_is_promoted_to_core(database_test_context):
 
             classification = cursor.fetchone()[0]
 
+            cursor.execute(
+                """
+                SELECT
+                    records_unique_eligible,
+                    records_promoted,
+                    records_already_in_core
+                FROM ops.pipeline_runs
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+            promotion_metrics = cursor.fetchone()
+
     assert core_count == 1
     assert classification == "UNIQUE"
+    assert promotion_metrics == (1, 1, 0)
 
 # --Test exact duplicate handling
 # verifies that two identical records produce one core transaction and one tracked redundant record
@@ -376,9 +391,24 @@ def test_exact_duplicates_promote_only_one_record(database_test_context):
 
             core_count = cursor.fetchone()[0]
 
+            cursor.execute(
+                """
+                SELECT
+                    records_unique_eligible,
+                    records_promoted,
+                    records_already_in_core
+                FROM ops.pipeline_runs
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+            promotion_metrics = cursor.fetchone()
+
     assert classifications["UNIQUE"] == 1
     assert classifications["EXACT_DUPLICATE"] == 1
     assert core_count == 1
+    assert promotion_metrics == (1, 1, 0)
 
 # --Test conflicting duplicate handling
 # verifies that two conflicting records are quarantined and not promoted to core
