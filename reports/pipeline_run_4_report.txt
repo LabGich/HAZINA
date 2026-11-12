@@ -1,0 +1,54 @@
+
+=================================================================
+HAZINA FINANCIAL TRANSACTIONS PIPELINE REPORT
+=================================================================
+
+RUN DETAILS
+-----------------------------------------------------------------
+Run ID:             4
+Source file:        hazina_transactions.csv
+Status:             SUCCESS
+Started at:         2026-11-12 18:33:58.670438+03:00
+Completed at:       2026-11-12 18:33:59.150178+03:00
+
+RECORD PROCESSING
+-----------------------------------------------------------------
+Records received:   1000
+Records staged:     910
+Records rejected:   90
+
+DEDUPLICATION
+-----------------------------------------------------------------
+Unique records:     840
+Exact duplicates:   50
+Conflicting records:20
+
+CORE PROMOTION
+-----------------------------------------------------------------
+Eligible records:   840
+Newly promoted:     0
+Already in core:    840
+
+Promotion explanation: All eligible unique transactions already exist in core.
+
+REJECTION REASONS
+-----------------------------------------------------------------
+amount is not a valid decimal number: 10 affected record(s)
+amount is required: 10 affected record(s)
+amount must be greater than zero: 10 affected record(s)
+transaction_date is not a valid ISO 8601 timestamp: 10 affected record(s)
+customer_id is required: 9 affected record(s)
+payment_method is required: 9 affected record(s)
+currency is required: 8 affected record(s)
+status is required: 5 affected record(s)
+Invalid payment_method: INVALID_VALUE: 4 affected record(s)
+Invalid status: INVALID_VALUE: 4 affected record(s)
+transaction_type is required: 4 affected record(s)
+transaction_date is required: 3 affected record(s)
+transaction_id is required: 2 affected record(s)
+Invalid currency: INVALID_VALUE: 1 affected record(s)
+Invalid transaction_type: INVALID_VALUE: 1 affected record(s)
+
+=================================================================
+END OF PIPELINE REPORT
+=================================================================
