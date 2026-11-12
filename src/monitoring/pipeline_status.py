@@ -160,18 +160,54 @@ def print_pipeline_run_report(run_id):
     print("END OF PIPELINE REPORT")
     print("=" * 65)
 
-def save_pipeline_run_report(run_id):
+# def save_pipeline_run_report(run_id):
+#     """
+#     Generate and save a pipeline run report as a text file.
+#     """
+
+#     project_root = Path(__file__).resolve().parents[2]
+#     reports_directory = project_root / "reports"
+
+#     # Create reports directory if it does not exist.
+#     reports_directory.mkdir(parents=True, exist_ok=True)
+
+#     # Capture the existing printed report.
+#     report_output = StringIO()
+
+#     with redirect_stdout(report_output):
+#         print_pipeline_run_report(run_id)
+
+#     report_content = report_output.getvalue()
+
+#     # Define the report filename.
+#     report_path = (
+#         reports_directory / f"pipeline_run_{run_id}_report.txt"
+#     )
+
+#     # Save the report.
+#     report_path.write_text(
+#         report_content,
+#         encoding="utf-8",
+#     )
+
+#     print(f"Pipeline report saved to: {report_path}")
+
+#     return report_path
+
+def save_pipeline_run_report(run_id, reports_directory=None):
     """
     Generate and save a pipeline run report as a text file.
     """
 
     project_root = Path(__file__).resolve().parents[2]
-    reports_directory = project_root / "reports"
 
-    # Create reports directory if it does not exist.
+    if reports_directory is None:
+        reports_directory = project_root / "reports"
+    else:
+        reports_directory = Path(reports_directory)
+
     reports_directory.mkdir(parents=True, exist_ok=True)
 
-    # Capture the existing printed report.
     report_output = StringIO()
 
     with redirect_stdout(report_output):
@@ -179,12 +215,10 @@ def save_pipeline_run_report(run_id):
 
     report_content = report_output.getvalue()
 
-    # Define the report filename.
     report_path = (
         reports_directory / f"pipeline_run_{run_id}_report.txt"
     )
 
-    # Save the report.
     report_path.write_text(
         report_content,
         encoding="utf-8",

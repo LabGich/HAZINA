@@ -7,6 +7,7 @@ from src.database.connection import get_database_connection
 from src.validation.validate_transactions import validate_transactions
 from src.monitoring.pipeline_status import get_rejection_reason_summary
 from src.monitoring.pipeline_status import print_pipeline_run_report
+from src.monitoring.pipeline_status import save_pipeline_run_report
 
 def test_pipeline_run_summary_returns_correct_details(
     database_test_context,
@@ -114,3 +115,29 @@ def test_pipeline_run_report_prints_correct_details(
     assert "No eligible unique records were available." in report
     assert "No validation errors recorded." in report
     assert "END OF PIPELINE REPORT" in report
+
+#report saving test
+def test_pipeline_run_report_is_saved_to_file(
+    database_test_context,
+    tmp_path,
+):
+    run_id = database_test_context["run_id"]
+    reports_directory = tmp_path / "reports"
+
+    report_path = save_pipeline_run_report(
+        run_id,
+        reports_directory,
+    )
+
+    assert reports_directory.exists()
+    assert report_path.exists()
+    assert report_path.name == (
+        f"pipeline_run_{run_id}_report.txt"
+    )
+
+    report_content = report_path.read_text(encoding="utf-8")
+
+    assert f"Run ID:             {run_id}" in report_content
+    assert "CORE PROMOTION" in report_content
+    assert "No eligible unique records were available." in report_content
+    assert "END OF PIPELINE REPORT" in report_content
