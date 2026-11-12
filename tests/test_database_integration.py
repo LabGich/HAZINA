@@ -41,6 +41,8 @@ def test_database_connection_and_pipeline_run(database_test_context):
 # Inserts the valid transaction into staging.transactions
 # Preserves its raw_id and run_id
 # Assigns the default deduplication status PENDING
+#cleans up after the test
+
 def test_valid_transaction_is_saved_to_staging(database_test_context):
 
     run_id = database_test_context["run_id"]
@@ -117,3 +119,106 @@ def test_valid_transaction_is_saved_to_staging(database_test_context):
     assert staged_record[2] == run_id
     assert staged_record[3] == 1500.00
     assert staged_record[4] == "PENDING"
+
+#Test3
+#Invalid transaction rejection
+#Test that an invalid raw transaction is:
+# Not inserted into staging
+# Recorded in ops.pipeline_errors
+# Counted as one rejected record in ops.pipeline_runs
+# Associated with the correct pipeline run and raw record
+
+def test_invalid_transaction_is_rejected_and_recorded(database_test_context):
+
+    run_id = database_test_context["run_id"]
+    transaction_id = (
+        f"{database_test_context['prefix']}_INVALID"
+    )
+
+    # Insert an invalid raw transaction.
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                INSERT INTO raw.transactions (
+                    transaction_id,
+                    customer_id,
+                    transaction_date,
+                    transaction_type,
+                    amount,
+                    currency,
+                    payment_method,
+                    status,
+                    source_file,
+                    run_id
+                )
+                VALUES (
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s
+                )
+                RETURNING raw_id
+                """,
+                (
+                    transaction_id,
+                    "CUST_TEST002",
+                    "2026-11-12T14:30:00+03:00",
+                    "PAYMENT",
+                    "-500.00",
+                    "KES",
+                    "MPESA",
+                    "COMPLETED",
+                    "integration_test.csv",
+                    run_id,
+                ),
+            )
+
+            raw_id = cursor.fetchone()[0]
+
+    # Execute actual validation.
+    validate_transactions(run_id)
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            # Verify it was not staged.
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM staging.transactions
+                WHERE raw_id = %s
+                """,
+                (raw_id,),
+            )
+
+            staged_count = cursor.fetchone()[0]
+
+            # Verify the rejection was recorded.
+            cursor.execute(
+                """
+                SELECT error_reason
+                FROM ops.pipeline_errors
+                WHERE raw_id = %s
+                """,
+                (raw_id,),
+            )
+
+            errors = [
+                row[0] for row in cursor.fetchall()
+            ]
+
+            # Verify the rejected record count.
+            cursor.execute(
+                """
+                SELECT records_rejected
+                FROM ops.pipeline_runs
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+            rejected_count = cursor.fetchone()[0]
+
+    assert staged_count == 0
+    assert "amount must be greater than zero" in errors
+    assert rejected_count == 1
