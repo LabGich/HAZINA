@@ -1,5 +1,5 @@
 # Hazina 
-# Financial Transactions Pipeline
+# AI Powered Financial Transactions Pipeline
 
 A production-style financial data engineering pipeline built with **Python and PostgreSQL** to ingest, validate, clean, deduplicate, transform, and analyze financial transaction data.
 

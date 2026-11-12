@@ -1,6 +1,54 @@
 
 from src.database.connection import get_database_connection
 from src.validation.validate_transactions import validate_transactions
+from src.deduplication.deduplicate_transactions import (
+    deduplicate_transactions
+)
+
+#a reusable raw transaction insertion helper
+def insert_raw_transaction(
+    run_id,
+    transaction_id,
+    amount="1500.00",
+):
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                INSERT INTO raw.transactions (
+                    transaction_id,
+                    customer_id,
+                    transaction_date,
+                    transaction_type,
+                    amount,
+                    currency,
+                    payment_method,
+                    status,
+                    source_file,
+                    run_id
+                )
+                VALUES (
+                    %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s
+                )
+                RETURNING raw_id
+                """,
+                (
+                    transaction_id,
+                    "CUST_TEST001",
+                    "2026-11-12T14:30:00+03:00",
+                    "PAYMENT",
+                    amount,
+                    "KES",
+                    "MPESA",
+                    "COMPLETED",
+                    "integration_test.csv",
+                    run_id,
+                ),
+            )
+
+            return cursor.fetchone()[0]
 
 #Test1
 # This test:
@@ -222,3 +270,169 @@ def test_invalid_transaction_is_rejected_and_recorded(database_test_context):
     assert staged_count == 0
     assert "amount must be greater than zero" in errors
     assert rejected_count == 1
+
+#Test4
+#Deduplication and core promotion
+# Unique transaction: promoted into core.transactions
+# Exact duplicate: one copy retained, the redundant copy classified correctly
+# Conflicting duplicate: both versions quarantined, neither promoted
+    
+# --Test unique transaction promotion
+# verifies that a valid, unique transaction reaches the core table
+def test_unique_transaction_is_promoted_to_core(database_test_context):
+
+    run_id = database_test_context["run_id"]
+    transaction_id = (
+        f"{database_test_context['prefix']}_UNIQUE"
+    )
+
+    database_test_context["transaction_ids"].append(
+        transaction_id
+    )
+
+    insert_raw_transaction(run_id, transaction_id)
+
+    # Validate and stage the transaction.
+    validate_transactions(run_id)
+
+    # Deduplicate and promote to core.
+    deduplicate_transactions(run_id)
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM core.transactions
+                WHERE transaction_id = %s
+                """,
+                (transaction_id,),
+            )
+
+            core_count = cursor.fetchone()[0]
+
+            cursor.execute(
+                """
+                SELECT deduplication_status
+                FROM staging.transactions
+                WHERE transaction_id = %s
+                    AND run_id = %s
+                """,
+                (transaction_id, run_id),
+            )
+
+            classification = cursor.fetchone()[0]
+
+    assert core_count == 1
+    assert classification == "UNIQUE"
+
+# --Test exact duplicate handling
+# verifies that two identical records produce one core transaction and one tracked redundant record
+def test_exact_duplicates_promote_only_one_record(database_test_context):
+
+    run_id = database_test_context["run_id"]
+    transaction_id = (
+        f"{database_test_context['prefix']}_EXACT"
+    )
+
+    database_test_context["transaction_ids"].append(
+        transaction_id
+    )
+
+    # Insert two identical transactions.
+    insert_raw_transaction(run_id, transaction_id)
+    insert_raw_transaction(run_id, transaction_id)
+
+    validate_transactions(run_id)
+    deduplicate_transactions(run_id)
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT deduplication_status, COUNT(*)
+                FROM staging.transactions
+                WHERE transaction_id = %s
+                    AND run_id = %s
+                GROUP BY deduplication_status
+                """,
+                (transaction_id, run_id),
+            )
+
+            classifications = dict(cursor.fetchall())
+
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM core.transactions
+                WHERE transaction_id = %s
+                """,
+                (transaction_id,),
+            )
+
+            core_count = cursor.fetchone()[0]
+
+    assert classifications["UNIQUE"] == 1
+    assert classifications["EXACT_DUPLICATE"] == 1
+    assert core_count == 1
+
+# --Test conflicting duplicate handling
+# verifies that two conflicting records are quarantined and not promoted to core
+def test_conflicting_duplicates_are_quarantined(database_test_context):
+
+    run_id = database_test_context["run_id"]
+    transaction_id = (
+        f"{database_test_context['prefix']}_CONFLICT"
+    )
+
+    database_test_context["transaction_ids"].append(
+        transaction_id
+    )
+
+    # Same transaction ID, different amounts.
+    insert_raw_transaction(
+        run_id,
+        transaction_id,
+        amount="1500.00",
+    )
+
+    insert_raw_transaction(
+        run_id,
+        transaction_id,
+        amount="2500.00",
+    )
+
+    validate_transactions(run_id)
+    deduplicate_transactions(run_id)
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM staging.transactions
+                WHERE transaction_id = %s
+                    AND run_id = %s
+                    AND deduplication_status = 'CONFLICTING_DUPLICATE'
+                """,
+                (transaction_id, run_id),
+            )
+
+            conflicting_count = cursor.fetchone()[0]
+
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM core.transactions
+                WHERE transaction_id = %s
+                """,
+                (transaction_id,),
+            )
+
+            core_count = cursor.fetchone()[0]
+
+    assert conflicting_count == 2
+    assert core_count == 0
