@@ -113,6 +113,9 @@ def load_raw_transactions():
     print(f"Records loaded into raw: {len(records)}")
     print("Pipeline status: RUNNING")
 
+    #for next stages and the pipeline orchestrator to know which execution to process
+    return run_id
+
 
 if __name__ == "__main__":
     load_raw_transactions()
