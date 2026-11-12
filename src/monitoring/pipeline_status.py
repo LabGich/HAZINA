@@ -51,3 +51,33 @@ def get_pipeline_run_summary(run_id):
             ]
 
             return dict(zip(columns, result))
+
+def get_rejection_reason_summary(run_id):
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT
+                    error_reason,
+                    COUNT(DISTINCT raw_id) AS affected_records
+                FROM ops.pipeline_errors
+                WHERE run_id = %s
+                GROUP BY error_reason
+                ORDER BY affected_records DESC, error_reason;
+                """,
+                (run_id,),
+            )
+
+            results = cursor.fetchall()
+
+            columns = [
+                description.name
+                for description in cursor.description
+            ]
+
+            return [
+                dict(zip(columns, row))
+                for row in results
+            ]
