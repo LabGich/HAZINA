@@ -4,3 +4,6 @@ SQLAlchemy==2.1.8
 psycopg[binary]==3.3.8
 pytest==9.2.0
 python-dotenv==1.2.4
+reportla==5.1.0
+pillow==13.0.0
+char-set-normalizer==3.5.2

@@ -1,57 +1,71 @@
-# Hazina 
+# Hazina
 # AI Powered Financial Transactions Pipeline
 
-A production-style financial data engineering pipeline built with **Python and PostgreSQL** to ingest, validate, clean, deduplicate, transform, and analyze financial transaction data.
+A production-style financial data engineering pipeline built with **Python and PostgreSQL** to ingest, validate, standardize, deduplicate, and analyze financial transaction data.
 
 ## 1. Project Overview
 
-Hazina is a data engineering project that demonstrates how financial transaction data can be processed through a structured, reliable, and auditable data pipeline.
+Hazina is a financial data engineering project demonstrating how transaction data can be processed through a structured, reliable, and auditable data pipeline.
 
-The project initially uses synthetic CSV transaction data, with API-based ingestion planned as a future extension.
+The current V1 implementation uses synthetic CSV transaction data and PostgreSQL as its data warehouse.
 
-The pipeline is designed around data quality, traceability, reliability, security, and repeatable execution.
+The pipeline focuses on:
+
+- Data quality and validation.
+- Transaction standardization.
+- Duplicate detection and handling.
+- Reliable database loading.
+- Pipeline execution tracking.
+- Error monitoring and reporting.
+- Analytical SQL views.
+- Automated testing.
+
+The architecture is designed to support future extensions such as API-based ingestion and additional financial data sources.
 
 ## 2. Project Objectives
 
 - Build a structured financial data ingestion process.
 - Validate transaction records against technical and business rules.
-- Clean and standardize incoming data.
-- Identify duplicate transactions without discarding legitimate records.
-- Quarantine invalid records with clear rejection reasons.
+- Standardize valid transaction records.
+- Identify exact and conflicting duplicates without discarding legitimate transactions.
+- Reject invalid records with traceable rejection reasons.
 - Store trusted transaction data in PostgreSQL.
-- Develop analytical SQL transformations.
+- Develop analytical SQL views.
 - Track pipeline execution, errors, and data quality metrics.
-- Support safe reruns and recovery from failures.
+- Prevent unnecessary duplicate promotions into the core database.
+- Generate automated pipeline execution reports.
 
 ## 3. Technology Stack
 
-| Technology     | Purpose                           |
-| -------------- | --------------------------------- |
-| Python         | Pipeline development              |
-| PostgreSQL 18  | Relational data warehouse         |
-| SQL            | Data transformation and analytics |
-| pandas         | Data manipulation                 |
-| SQLAlchemy     | Database interaction              |
-| Psycopg        | PostgreSQL connectivity           |
-| pytest         | Automated testing                 |
-| Git and GitHub | Version control                   |
-| VS Code        | Development environment           |
+| Technology | Purpose |
+|---|---|
+| Python 3.14 | Pipeline development |
+| PostgreSQL 18 | Relational data warehouse |
+| SQL | Database transformations and analytics |
+| pandas | Data manipulation |
+| Psycopg 3 | PostgreSQL connectivity |
+| SQLAlchemy | Database tooling |
+| python-dotenv | Environment configuration |
+| pytest | Automated testing |
+| ReportLab | PDF report generation |
+| pypdf | PDF inspection and verification |
+| Git and GitHub | Version control |
+| VS Code | Development environment |
 
-Additional technologies may be introduced as the project evolves.
+## 4. Pipeline Architecture
 
-## 4. Data Pipeline Architecture
+The implemented processing flow is:
 
-The planned processing flow is:
-
-1. **Ingestion** – Discover and extract incoming CSV files.
-2. **Raw storage** – Preserve source records and ingestion metadata.
-3. **Validation** – Check structural, technical, and business requirements.
-4. **Quarantine** – Isolate invalid records and record rejection reasons.
-5. **Cleaning** – Normalize and standardize valid records.
-6. **Deduplication** – Identify repeated records across files and pipeline runs.
-7. **Loading** – Store trusted records in PostgreSQL.
-8. **Transformation** – Generate analytical datasets using SQL.
-9. **Monitoring** – Record execution status, metrics, errors, and processing history.
+1. **Raw ingestion** – Read incoming CSV transaction data and register a pipeline run.
+2. **Raw storage** – Preserve source transaction records and ingestion metadata.
+3. **Validation** – Check required fields, timestamps, amounts, identifiers, and allowed values.
+4. **Rejection handling** – Record invalid records and their rejection reasons.
+5. **Standardization** – Normalize valid transaction values and load them into staging.
+6. **Deduplication** – Identify unique transactions, exact duplicates, and conflicting duplicates.
+7. **Core promotion** – Promote eligible transactions into the core schema while protecting existing records.
+8. **Analytics** – Expose transaction summaries through SQL views.
+9. **Monitoring** – Track pipeline execution, processing metrics, errors, and promotion results.
+10. **Reporting** – Generate and save a PDF report for each completed or failed pipeline run where a run ID is available.
 
 ## 5. Database Architecture
 
@@ -59,117 +73,362 @@ The PostgreSQL database is named `hazina_warehouse`.
 
 It uses five logical schemas:
 
-| Schema      | Responsibility                                                 |
-| ----------- | -------------------------------------------------------------- |
-| `raw`       | Original source transaction records                            |
-| `staging`   | Parsed and standardized transaction records                    |
-| `core`      | Trusted business entities and transactions                     |
-| `analytics` | Analytical summaries and reporting datasets                    |
-| `ops`       | Pipeline runs, processed files, quarantine, and quality issues |
+| Schema | Responsibility |
+|---|---|
+| `raw` | Original source transaction records and ingestion metadata |
+| `staging` | Validated and standardized transaction records, including duplicate classifications |
+| `core` | Trusted transaction records |
+| `analytics` | Analytical summaries and reporting views |
+| `ops` | Pipeline execution history, validation errors, and operational metrics |
+
+### Database objects
+
+The implementation includes:
+
+- Raw transaction storage.
+- Staging transaction storage.
+- Core transaction storage.
+- Pipeline run tracking.
+- Pipeline error tracking.
+- Transaction summary views.
+- Daily transaction summaries.
+- Transaction overview and status summaries.
+- Pipeline monitoring view.
 
 ## 6. Transaction Data Model
 
-The planned transaction model includes:
+The initial CSV dataset contains eight fields:
 
-- Transaction ID
-- Customer ID
-- Transaction date and time
-- Transaction type
-- Amount
-- Currency
-- Payment method
-- Transaction status
-- Merchant ID, where applicable
-- Reference ID, where applicable
-- Source system
+| Field | Description |
+|---|---|
+| `transaction_id` | Unique transaction identifier |
+| `customer_id` | Customer identifier |
+| `transaction_date` | Transaction timestamp |
+| `transaction_type` | Financial transaction classification |
+| `amount` | Transaction amount |
+| `currency` | Transaction currency |
+| `payment_method` | Transaction payment channel |
+| `status` | Transaction processing status |
 
-Technical metadata will support ingestion tracking, batch identification, source provenance, and auditability.
+### Supported transaction types
 
-Initial transaction types include payments, refunds, deposits, withdrawals, transfers, and reversals.
+- `PAYMENT`
+- `DEPOSIT`
+- `WITHDRAWAL`
+- `TRANSFER`
+- `REFUND`
+- `FEE`
 
-## 7. Project Structure
+### Supported statuses
+
+- `INITIATED`
+- `PENDING`
+- `COMPLETED`
+- `FAILED`
+- `REVERSED`
+
+### Supported currencies
+
+- `KES`
+- `USD`
+
+### Supported payment methods
+
+- `MPESA`
+- `BANK_TRANSFER`
+- `CARD`
+- `CASH`
+- `DIGITAL_WALLET`
+- `USSD`
+- `AGENT`
+
+## 7. Sample Dataset
+
+The project uses a synthetic CSV dataset located at:
+
+`data/sample/hazina_transactions.csv`
+
+The dataset contains 1,000 transaction records with deliberately introduced data-quality issues.
+
+| Record category | Count |
+|---|---:|
+| Valid unique records | 850 |
+| Exact duplicate records | 50 |
+| Records with missing required values | 50 |
+| Records with invalid amounts | 20 |
+| Records with invalid timestamps | 10 |
+| Records with invalid enum values | 10 |
+| Records with conflicting duplicate identifiers | 10 |
+| **Total** | **1,000** |
+
+The dataset is used to demonstrate validation, rejection handling, deduplication, and reliable data loading.
+
+## 8. Project Structure
 
 ```text
 hazina_fin_trans_pipeline/
+│
 ├── config/
 ├── data/
-│   ├── incoming/
-│   ├── processed/
-│   ├── archive/
 │   └── sample/
-├── src/
-│   ├── ingestion/
-│   ├── validation/
-│   ├── cleaning/
-│   ├── deduplication/
-│   ├── transformations/
-│   ├── database/
-│   └── monitoring/
-├── sql/
+│       └── hazina_transactions.csv
+│
+├── reports/
+│   └── pipeline_run_<run_id>_report.pdf
+│
 ├── logs/
+│
+├── sql/
+│   └── Database schema and migration scripts
+│
+├── src/
+│   ├── database/
+│   │   └── connection.py
+│   │
+│   ├── ingestion/
+│   │   └── load_raw.py
+│   │
+│   ├── validation/
+│   │   └── validate_transactions.py
+│   │
+│   ├── deduplication/
+│   │   └── deduplicate_transactions.py
+│   │
+│   ├── monitoring/
+│   │   └── pipeline_status.py
+│   │
+│   ├── cleaning/
+│   ├── transformations/
+│   │
+│   └── run_pipeline.py
+│
 ├── tests/
+│   ├── conftest.py
+│   ├── test_validation.py
+│   ├── test_deduplication.py
+│   ├── test_database_integration.py
+│   └── test_pipeline_monitoring.py
+│
 ├── .env
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt
-├── README.md
-└── main.py
+└── README.md
 ```
 
-## 8. Reliability and Data Quality
+## 9. Data Quality and Deduplication
 
-Hazina is designed to demonstrate:
+The pipeline implements validation rules covering:
 
-- Idempotent pipeline execution.
-- Duplicate detection and database-level uniqueness.
-- Transactional database loading.
-- Invalid-record quarantine.
-- Pipeline execution auditing.
-- Controlled failure handling and recovery.
-- Automated testing of individual components and complete pipeline runs.
+- Required transaction fields.
+- Identifier length constraints.
+- ISO 8601 timestamps with timezone information.
+- Positive and finite transaction amounts.
+- Decimal precision and numeric capacity.
+- Allowed transaction types, currencies, payment methods, and statuses.
 
-## 9. Security
+Invalid records are rejected and recorded in `ops.pipeline_errors` with their associated rejection reasons.
 
-- Database credentials will be stored in environment variables.
-- Secrets will be excluded from version control.
-- The application will use a dedicated PostgreSQL role.
-- Generated transaction data and operational logs will be excluded from Git.
-- Synthetic data will be used for development and demonstrations.
+### Duplicate handling
 
-## 10. Project Status
+The deduplication process distinguishes three classifications:
 
-**Current phase:** Environment setup and project architecture preparation.
+| Classification | Handling |
+|---|---|
+| `UNIQUE` | Eligible for core promotion |
+| `EXACT_DUPLICATE` | Retain one representative record and identify redundant copies |
+| `CONFLICTING_DUPLICATE` | Quarantine conflicting records from core promotion |
 
-Completed:
+The pipeline also checks whether eligible transactions already exist in the core schema.
 
-- Python virtual environment configured.
-- PostgreSQL installed and verified.
-- `hazina_warehouse` database created.
-- Five database schemas created.
-- VS Code and Git configured.
-- Git repository initialized on the `main` branch.
-- Project directory structure established.
-- Python package markers created.
-- `.gitignore` configured and verified.
+This prevents unnecessary re-promotion of previously loaded transactions.
 
-Upcoming:
+## 10. Monitoring and Reporting
 
-- Complete project documentation.
-- Confirm Python package compatibility.
-- Define dependency versions.
-- Design the database schema.
-- Develop synthetic transaction datasets.
-- Implement and test the pipeline incrementally.
+Pipeline execution is tracked in `ops.pipeline_runs`.
 
-## 11. Development Philosophy
+The monitoring functionality captures:
 
-Hazina will be developed incrementally, with each component designed, implemented, and tested before moving to the next stage.
+- Run status.
+- Records received.
+- Records staged.
+- Records rejected.
+- Duplicate classifications.
+- Unique records eligible for core promotion.
+- Newly promoted records.
+- Records already existing in core.
+- Pipeline execution timestamps.
 
-The focus is not simply to move data from CSV files into a database, but to demonstrate sound data engineering principles through a reliable, traceable, and maintainable financial data pipeline.
+### PDF reports
+
+Every pipeline execution automatically attempts to generate a PDF report.
+
+Reports are saved in the project's root-level `reports/` directory.
+
+Example:
+
+```text
+reports/
+├── pipeline_run_1_report.pdf
+├── pipeline_run_2_report.pdf
+├── pipeline_run_3_report.pdf
+└── pipeline_run_<run_id>_report.pdf
+```
+
+Each report contains:
+
+- Pipeline run details.
+- Record processing statistics.
+- Deduplication results.
+- Core promotion metrics.
+- Explanation of promotion outcomes.
+- Validation rejection reasons.
+
+PDF generation reuses the same reporting information displayed by the console reporting functionality.
+
+PDF permission restrictions are configured to allow viewing and printing while restricting modification, copying, and annotation. These restrictions are not equivalent to absolute document security.
+
+## 11. Installation and Configuration
+
+### Prerequisites
+
+- Python 3.14 or compatible Python environment.
+- PostgreSQL 18 or compatible PostgreSQL installation.
+- Git.
+- PowerShell or another terminal.
+
+### Clone the repository
+
+```powershell
+git clone <repository-url>
+cd hazina_fin_trans_pipeline
+```
+
+### Create and activate a virtual environment
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+### Install dependencies
+
+```powershell
+pip install -r requirements.txt
+```
+
+### Configure environment variables
+
+Create a `.env` file in the project root using `.env.example` as a template.
+
+Configure the following database variables:
+
+```text
+DB_HOST=
+DB_PORT=
+DB_NAME=
+DB_USER=
+DB_PASSWORD=
+```
+
+Do not commit `.env` or expose database credentials.
+
+### Database setup
+
+Create the `hazina_warehouse` database and configure the application database role.
+
+Execute the SQL schema and migration scripts in the `sql/` directory in their intended order.
+
+The application connects to PostgreSQL through the centralized connection module:
+
+`src/database/connection.py`
+
+## 12. Running the Pipeline
+
+Activate the virtual environment and execute the pipeline from the project root:
+
+```powershell
+python -m src.run_pipeline
+```
+
+The orchestrator executes:
+
+1. Raw ingestion.
+2. Transaction validation.
+3. Deduplication and core promotion.
+4. Pipeline completion and PDF report generation.
+
+The console displays processing statistics and the resulting pipeline run ID.
+
+A corresponding PDF report is automatically saved in `reports/`.
+
+## 13. Running Automated Tests
+
+Run the complete test suite:
+
+```powershell
+pytest -v
+```
+
+The tests cover:
+
+- Transaction validation.
+- Data standardization.
+- Duplicate detection.
+- Database integration.
+- Core promotion.
+- Existing transaction protection.
+- Pipeline failure handling.
+- Monitoring summaries.
+- Rejection reason reporting.
+- Console report generation.
+- PDF report generation and file saving.
+
+The V1 regression suite has passed:
+
+**36 tests passed.**
+
+## 14. Security and Reliability
+
+The project incorporates the following practices:
+
+- Database credentials stored in environment variables.
+- Secrets excluded from version control.
+- Dedicated PostgreSQL application role.
+- Centralized database connection management.
+- Validation before core promotion.
+- Duplicate protection across pipeline runs.
+- Pipeline execution and error tracking.
+- Automated component and integration tests.
+- Synthetic transaction data for development and demonstration.
+
+## 15. Project Status and Future Extensions
+
+**Current status: V1 implementation and end-to-end verification completed.**
+
+The implemented V1 provides an operational CSV-to-PostgreSQL financial transaction pipeline with validation, deduplication, core promotion, analytics, monitoring, automated testing, and PDF reporting.
+
+Potential future extensions include:
+
+- API-based transaction ingestion.
+- Support for additional financial data sources.
+- More advanced transformation and analytical models.
+- Enhanced operational logging and observability.
+- Stronger document security and report distribution.
+- Automated pipeline scheduling.
+
+These are future enhancements and are not represented as completed V1 functionality.
+
+## 16. Development Philosophy
+
+Hazina is developed incrementally, with each component implemented and tested before moving to the next stage.
+
+The objective is not simply to transfer CSV records into a database, but to demonstrate sound financial data engineering principles through a reliable, traceable, maintainable, and auditable pipeline.
 
 ---
 
-**Project:** Hazina Financial Transactions Pipeline
-**Database:** `hazina_warehouse`
-**Primary technologies:** Python and PostgreSQL
-**Project type:** Data Engineering Project
+**Project:** Hazina Financial Transactions Pipeline  
+**Database:** `hazina_warehouse`  
+**Primary technologies:** Python and PostgreSQL  
+**Project type:** Financial Data Engineering  
+**Current release:** V1
