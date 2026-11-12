@@ -273,6 +273,22 @@ def deduplicate_transactions(run_id):
                 (records_duplicated, run_id),
             )
 
+            # Update pipeline status to SUCCESS
+            cursor.execute(
+                """
+                UPDATE ops.pipeline_runs
+                SET run_status = 'SUCCESS'
+                WHERE run_id = %s
+                    AND run_status = 'RUNNING'
+                """,
+                (run_id,),
+            )
+
+            if cursor.rowcount == 0:
+                raise ValueError(
+                    f"Pipeline run {run_id} is not in RUNNING state."
+                )
+
     print("DEDUPLICATION COMPLETED")
     print("-----------------------")
     print(f"Pipeline run ID: {run_id}")
