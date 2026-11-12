@@ -335,7 +335,7 @@ def _validate_transactions(run_id):
     })}")
     print(f"Validation errors recorded: {len(error_records)}")
 
-# Add the failure handling wrapper with a separate connection
+# Add the failure handling wrapper with a separate database connection
 def validate_transactions(run_id):
     try:
         _validate_transactions(run_id)
