@@ -1,3 +1,4 @@
+from reportlab.lib.pdfencrypt import StandardEncryption
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -241,6 +242,15 @@ def save_pipeline_run_report(run_id, reports_directory=None):
         bottomMargin=20 * mm,
         title=f"Hazina Pipeline Run {run_id} Report",
         author="Hazina Financial Transactions Pipeline",
+        encrypt=StandardEncryption(
+            userPassword="",
+            ownerPassword="hazina_report_owner  ",
+            canPrint=1,
+            canModify=0,
+            canCopy=0,
+            canAnnotate=0,
+            strength=128,
+        ),
     )
 
     styles = getSampleStyleSheet()
