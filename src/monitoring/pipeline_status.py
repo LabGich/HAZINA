@@ -31,17 +31,8 @@ def get_pipeline_run_summary(run_id):
 
             cursor.execute(
                 """
-                SELECT
-                    run_id,
-                    source_file,
-                    started_at,
-                    completed_at,
-                    run_status,
-                    records_received,
-                    records_loaded,
-                    records_rejected,
-                    records_duplicated
-                FROM ops.pipeline_runs
+                SELECT *
+                FROM ops.pipeline_monitoring
                 WHERE run_id = %s
                 """,
                 (run_id,),
