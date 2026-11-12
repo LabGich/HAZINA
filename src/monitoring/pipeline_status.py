@@ -1,3 +1,13 @@
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    HRFlowable,
+)
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
@@ -194,9 +204,10 @@ def print_pipeline_run_report(run_id):
 
 #     return report_path
 
+
 def save_pipeline_run_report(run_id, reports_directory=None):
     """
-    Generate and save a pipeline run report as a text file.
+    Generate and save a pipeline run report as a PDF file.
     """
 
     project_root = Path(__file__).resolve().parents[2]
@@ -208,6 +219,7 @@ def save_pipeline_run_report(run_id, reports_directory=None):
 
     reports_directory.mkdir(parents=True, exist_ok=True)
 
+    # Capture the existing report.
     report_output = StringIO()
 
     with redirect_stdout(report_output):
@@ -215,15 +227,71 @@ def save_pipeline_run_report(run_id, reports_directory=None):
 
     report_content = report_output.getvalue()
 
+    # Create PDF destination.
     report_path = (
-        reports_directory / f"pipeline_run_{run_id}_report.txt"
+        reports_directory / f"pipeline_run_{run_id}_report.pdf"
     )
 
-    report_path.write_text(
-        report_content,
-        encoding="utf-8",
+    document = SimpleDocTemplate(
+        str(report_path),
+        pagesize=A4,
+        rightMargin=20 * mm,
+        leftMargin=20 * mm,
+        topMargin=20 * mm,
+        bottomMargin=20 * mm,
+        title=f"Hazina Pipeline Run {run_id} Report",
+        author="Hazina Financial Transactions Pipeline",
     )
 
-    print(f"Pipeline report saved to: {report_path}")
+    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        "ReportTitle",
+        parent=styles["Title"],
+        fontSize=16,
+        leading=20,
+        textColor=colors.HexColor("#17365D"),
+        spaceAfter=12,
+    )
+
+    body_style = ParagraphStyle(
+        "ReportBody",
+        parent=styles["Code"],
+        fontName="Courier",
+        fontSize=8,
+        leading=11,
+        spaceAfter=2,
+    )
+
+    story = []
+
+    for line in report_content.splitlines():
+
+        stripped_line = line.strip()
+
+        if not stripped_line:
+            story.append(Spacer(1, 5))
+            continue
+
+        if "HAZINA FINANCIAL TRANSACTIONS PIPELINE REPORT" in stripped_line:
+            story.append(Paragraph(stripped_line, title_style))
+
+        elif set(stripped_line) == {"-"} or set(stripped_line) == {"="}:
+            story.append(
+                HRFlowable(
+                    width="100%",
+                    thickness=0.6,
+                    color=colors.HexColor("#A6A6A6"),
+                    spaceBefore=3,
+                    spaceAfter=5,
+                )
+            )
+
+        else:
+            story.append(Paragraph(stripped_line, body_style))
+
+    document.build(story)
+
+    print(f"Pipeline PDF report saved to: {report_path}")
 
     return report_path
