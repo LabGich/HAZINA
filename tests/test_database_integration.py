@@ -466,8 +466,23 @@ def test_conflicting_duplicates_are_quarantined(database_test_context):
 
             core_count = cursor.fetchone()[0]
 
+            cursor.execute(
+                """
+                SELECT
+                    records_unique_eligible,
+                    records_promoted,
+                    records_already_in_core
+                FROM ops.pipeline_runs
+                WHERE run_id = %s
+                """,
+                (run_id,),
+            )
+
+            promotion_metrics = cursor.fetchone()
+
     assert conflicting_count == 2
     assert core_count == 0
+    assert promotion_metrics == (0, 0, 0)
 
 #Test5
 #Pipeline failure handling
