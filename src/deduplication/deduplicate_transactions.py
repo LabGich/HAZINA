@@ -1,8 +1,8 @@
-
 import argparse
 from collections import defaultdict
 
 from src.database.connection import get_database_connection
+from src.monitoring.pipeline_status import mark_pipeline_run_failed
 
 def get_transaction_signature(record):
     return (
@@ -16,7 +16,7 @@ def get_transaction_signature(record):
     )
 
 
-def deduplicate_transactions(run_id):
+def _deduplicate_transactions(run_id):
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
@@ -303,7 +303,18 @@ def deduplicate_transactions(run_id):
     print(f"Conflicting transaction IDs: {conflicting_id_count}")
     print(f"Conflicting records quarantined: {conflicting_record_count}")
     print(f"Records promoted to core: {len(core_records)}")
+    print(f"Records promoted to core: {len(core_records)}")
 
+#integrate the failure handler
+#add a wrapper(lets us catch failures w/o indenting or rewriting the deduplication function)
+#failure handler uses a separate connection, so it can record the failure after the original transaction rolls back
+def deduplicate_transactions(run_id):
+    try:
+        _deduplicate_transactions(run_id)
+    except Exception as e:
+        print(f"Error during deduplication: {e}")
+        mark_pipeline_run_failed(run_id)
+        raise
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
