@@ -6,6 +6,7 @@ from src.monitoring.pipeline_status import (
 from src.database.connection import get_database_connection
 from src.validation.validate_transactions import validate_transactions
 from src.monitoring.pipeline_status import get_rejection_reason_summary
+from src.monitoring.pipeline_status import print_pipeline_run_report
 
 def test_pipeline_run_summary_returns_correct_details(
     database_test_context,
@@ -92,3 +93,24 @@ def test_rejection_reason_summary_returns_correct_details(
         "amount must be greater than zero"
     )
     assert rejection_summary[0]["affected_records"] == 1
+
+def test_pipeline_run_report_prints_correct_details(
+    database_test_context,
+    capsys,
+):
+    run_id = database_test_context["run_id"]
+
+    print_pipeline_run_report(run_id)
+
+    captured = capsys.readouterr()
+    report = captured.out
+
+    assert "HAZINA FINANCIAL TRANSACTIONS PIPELINE REPORT" in report
+    assert f"Run ID:             {run_id}" in report
+    assert "RECORD PROCESSING" in report
+    assert "DEDUPLICATION" in report
+    assert "CORE PROMOTION" in report
+    assert "REJECTION REASONS" in report
+    assert "No eligible unique records were available." in report
+    assert "No validation errors recorded." in report
+    assert "END OF PIPELINE REPORT" in report
