@@ -197,6 +197,7 @@ def _deduplicate_transactions(run_id):
             }
 
             core_records = []
+            already_in_core_count = 0
 
             for record in unique_records:
                 transaction_id = record["transaction_id"]
@@ -211,6 +212,7 @@ def _deduplicate_transactions(run_id):
                         )
 
                     # An identical transaction is already in core.
+                    already_in_core_count += 1
                     continue
 
                 core_records.append(
@@ -294,16 +296,32 @@ def _deduplicate_transactions(run_id):
     print("-----------------------")
     print(f"Pipeline run ID: {run_id}")
     print(f"Staged records examined: {len(rows)}")
+
     print(
-        "Unique transaction IDs: "
-        f"{len(groups) - exact_duplicate_id_count - conflicting_id_count}"
+        "Unique transaction IDs eligible for core: "
+        f"{len(unique_records)}"
     )
+
     print(f"Exact duplicate IDs: {exact_duplicate_id_count}")
     print(f"Redundant exact records: {exact_duplicate_count}")
+
     print(f"Conflicting transaction IDs: {conflicting_id_count}")
     print(f"Conflicting records quarantined: {conflicting_record_count}")
-    print(f"Records promoted to core: {len(core_records)}")
-    print(f"Records promoted to core: {len(core_records)}")
+
+    print(f"Already existing in core: {already_in_core_count}")
+    print(f"New records promoted to core: {len(core_records)}")
+
+    if len(core_records) == 0:
+        if already_in_core_count > 0:
+            print(
+                "Promotion explanation: All eligible unique "
+                "transactions already exist in core."
+            )
+        else:
+            print(
+                "Promotion explanation: No eligible new transactions "
+                "were available for promotion."
+            )
 
 #integrate the failure handler
 #add a wrapper(lets us catch failures w/o indenting or rewriting the deduplication function)
