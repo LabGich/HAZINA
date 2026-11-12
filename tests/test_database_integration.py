@@ -35,7 +35,12 @@ def test_database_connection_and_pipeline_run(database_test_context):
 
 #Test2
 #validation databasee operation
-
+#This test confirms the validation process:
+# Reads a raw transaction from PostgreSQL.
+# Validates and standardizes its fields
+# Inserts the valid transaction into staging.transactions
+# Preserves its raw_id and run_id
+# Assigns the default deduplication status PENDING
 def test_valid_transaction_is_saved_to_staging(database_test_context):
 
     run_id = database_test_context["run_id"]
