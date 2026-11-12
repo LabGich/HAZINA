@@ -278,6 +278,7 @@ def deduplicate_transactions(run_id):
                 """
                 UPDATE ops.pipeline_runs
                 SET run_status = 'SUCCESS'
+                    completed_at = CURRENT_TIMESTAMP
                 WHERE run_id = %s
                     AND run_status = 'RUNNING'
                 """,
