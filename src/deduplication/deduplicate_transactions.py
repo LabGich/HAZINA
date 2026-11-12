@@ -4,7 +4,6 @@ from collections import defaultdict
 
 from src.database.connection import get_database_connection
 
-
 def get_transaction_signature(record):
     return (
         record["customer_id"],

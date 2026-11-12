@@ -85,23 +85,13 @@ def load_raw_transactions():
 
             cursor.executemany(insert_sql, records)
 
-            cursor.execute(
-                """
-                UPDATE ops.pipeline_runs
-                SET run_status = 'SUCCESS',
-                    records_loaded = %s,
-                    completed_at = CURRENT_TIMESTAMP
-                WHERE run_id = %s
-                """,
-                (len(records), run_id),
-            )
-
     print("RAW INGESTION COMPLETED")
     print("-----------------------")
     print(f"Pipeline run ID: {run_id}")
     print(f"Source file: {CSV_FILE.name}")
-    print(f"Records received: {len(records)}")
-    print(f"Records loaded: {len(records)}")
+    print(f"Records received: {len(dataframe)}")
+    print(f"Records loaded into raw: {len(records)}")
+    print("Pipeline status: RUNNING")
 
 
 if __name__ == "__main__":
