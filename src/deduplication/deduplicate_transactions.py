@@ -266,6 +266,23 @@ def _deduplicate_transactions(run_id):
                 exact_duplicate_count + conflicting_record_count
             )
 
+            # Update core promotion metrics.
+            cursor.execute(
+                """
+                UPDATE ops.pipeline_runs
+                SET records_unique_eligible = %s,
+                    records_promoted = %s,
+                    records_already_in_core = %s
+                WHERE run_id = %s
+                """,
+                (
+                    len(unique_records),
+                    len(core_records),
+                    already_in_core_count,
+                    run_id,
+                ),
+            )
+
             cursor.execute(
                 """
                 UPDATE ops.pipeline_runs
