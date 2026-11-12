@@ -81,3 +81,77 @@ def get_rejection_reason_summary(run_id):
                 dict(zip(columns, row))
                 for row in results
             ]
+
+#pipeline report
+
+def print_pipeline_run_report(run_id):
+
+    summary = get_pipeline_run_summary(run_id)
+    rejection_summary = get_rejection_reason_summary(run_id)
+
+    print("\n" + "=" * 65)
+    print("HAZINA FINANCIAL TRANSACTIONS PIPELINE REPORT")
+    print("=" * 65)
+
+    print("\nRUN DETAILS")
+    print("-" * 65)
+    print(f"Run ID:             {summary['run_id']}")
+    print(f"Source file:        {summary['source_file']}")
+    print(f"Status:             {summary['run_status']}")
+    print(f"Started at:         {summary['started_at']}")
+    print(f"Completed at:       {summary['completed_at']}")
+
+    print("\nRECORD PROCESSING")
+    print("-" * 65)
+    print(f"Records received:   {summary['records_received']}")
+    print(f"Records staged:     {summary['records_staged']}")
+    print(f"Records rejected:   {summary['records_rejected']}")
+
+    print("\nDEDUPLICATION")
+    print("-" * 65)
+    print(f"Unique records:     {summary['unique_records']}")
+    print(f"Exact duplicates:   {summary['exact_duplicates']}")
+    print(f"Conflicting records:{summary['conflicting_duplicates']}")
+
+    print("\nCORE PROMOTION")
+    print("-" * 65)
+    print(
+        f"Eligible records:   "
+        f"{summary['records_unique_eligible']}"
+    )
+    print(f"Newly promoted:     {summary['records_promoted']}")
+    print(
+        f"Already in core:    "
+        f"{summary['records_already_in_core']}"
+    )
+
+    if summary["records_promoted"] > 0:
+        print("\nPromotion result: New transactions successfully promoted.")
+
+    elif summary["records_unique_eligible"] == 0:
+        print("\nPromotion explanation: No eligible unique records were available.")
+
+    elif (
+        summary["records_already_in_core"]
+        == summary["records_unique_eligible"]
+    ):
+        print("\nPromotion explanation: All eligible unique transactions already exist in core.")
+
+    else:
+        print("\nPromotion explanation: No new records were promoted. Further investigation may be required.")
+
+    print("\nREJECTION REASONS")
+    print("-" * 65)
+
+    if rejection_summary:
+        for item in rejection_summary:
+            print(
+                f"{item['error_reason']}: "
+                f"{item['affected_records']} affected record(s)"
+            )
+    else:
+        print("No validation errors recorded.")
+
+    print("\n" + "=" * 65)
+    print("END OF PIPELINE REPORT")
+    print("=" * 65)
