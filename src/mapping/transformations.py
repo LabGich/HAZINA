@@ -332,12 +332,12 @@ def normalize_datetime_with_timezone(
             )
 
         try:
-            timezone = ZoneInfo(source_timezone)
+            source_tz = ZoneInfo(source_timezone)
         except (ZoneInfoNotFoundError, ValueError):
             raise TransformationError(
                 f"Unknown source timezone: {source_timezone}"
             )
 
-        parsed = parsed.replace(tzinfo=timezone)
+        parsed = parsed.replace(tzinfo=source_tz)
 
     return parsed.astimezone(timezone.utc)
