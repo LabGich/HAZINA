@@ -1,0 +1,48 @@
+mapping:
+  mapping_id: coop_csv_v1
+  mapping_version: "1.0"
+  source_name: BANK
+  source_type: FILE
+  description: Co-operative Bank statement CSV mapping
+  source_timezone: Africa/Nairobi
+  date_format: "%Y-%m-%d"
+  amount_handling: separate_debit_credit
+
+required_fields:
+  - Date
+  - Transaction Details
+
+field_mappings:
+  transaction_date: Date
+  description: Transaction Details
+  account_balance: Balance
+
+amount_fields:
+  debit: Withdrawals
+  credit: Deposits
+
+default_values:
+  currency: KES
+  status: COMPLETED
+
+derived_fields:
+  transaction_type:
+    source_field: Transaction Details
+    rules:
+      - contains: SALARY
+        value: DEPOSIT
+      - contains: MOBILE BANKING TRANSFER
+        value: TRANSFER
+      - contains: UTILITY PAYMENT
+        value: PAYMENT
+      - contains: CASH DEPOSIT
+        value: DEPOSIT
+      - contains: ACCOUNT MAINTENANCE FEE
+        value: FEE
+
+transformations:
+  transaction_date: normalize_datetime
+  currency: normalize_currency
+  transaction_type: normalize_transaction_type
+  status: normalize_status
+  account_balance: normalize_optional_amount
