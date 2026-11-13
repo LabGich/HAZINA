@@ -1,0 +1,49 @@
+
+mapping:
+  mapping_id: equity_csv_v1
+  mapping_version: "1.0"
+  source_name: BANK
+  source_type: FILE
+  description: Equity Bank statement CSV mapping
+  source_timezone: Africa/Nairobi
+  date_format: "%d-%m-%Y"
+  amount_handling: separate_debit_credit
+
+required_fields:
+  - Date
+  - Description
+
+field_mappings:
+  transaction_date: Date
+  description: Description
+  account_balance: Balance
+
+amount_fields:
+  debit: Debit
+  credit: Credit
+
+default_values:
+  currency: KES
+  status: COMPLETED
+
+derived_fields:
+  transaction_type:
+    source_field: description
+    rules:
+      - contains: SALARY
+        value: DEPOSIT
+      - contains: ATM WITHDRAWAL
+        value: WITHDRAWAL
+      - contains: PAYBILL
+        value: PAYMENT
+      - contains: CUSTOMER TRANSFER
+        value: TRANSFER
+      - contains: ACCOUNT FEE
+        value: FEE
+
+transformations:
+  transaction_date: normalize_datetime
+  currency: normalize_currency
+  transaction_type: normalize_transaction_type
+  status: normalize_status
+  account_balance: normalize_optional_amount
