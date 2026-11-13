@@ -168,6 +168,7 @@ class MappingConfigValidator:
             field_mappings,
             amount_fields,
             split_mode,
+            derived_fields,
         )
 
         cls._validate_value_mappings(
@@ -426,8 +427,19 @@ class MappingConfigValidator:
         field_mappings: dict[str, str],
         amount_fields: dict[str, str] | None = None,
         split_mode: bool = False,
+        derived_fields: dict[str, Any] | None = None,
     ) -> None:
+        """Ensure required source fields are represented in the mapping."""
+
         mapped_source_fields = set(field_mappings.values())
+
+        # Derived-field inputs are valid source fields too.
+        for definition in (derived_fields or {}).values():
+            if isinstance(definition, dict):
+                source_field = definition.get("source_field")
+
+                if isinstance(source_field, str):
+                    mapped_source_fields.add(source_field)
 
         if split_mode:
             amount_source_fields = (

@@ -380,18 +380,21 @@ class MappingEngine:
 
         mapped_source_fields = set(field_mappings.values())
 
-        if not set(required_fields).issubset(mapped_source_fields):
+        # Source fields used by derived rules do not need canonical mappings.
+        derived_source_fields = {
+            definition["source_field"]
+            for definition in derived_fields.values()
+        }
+
+        available_source_fields = (
+            mapped_source_fields | derived_source_fields
+        )
+
+        if not set(required_fields).issubset(available_source_fields):
             return (
                 "Every required source field must be represented in "
-                "field_mappings."
+                "field_mappings or derived_fields."
             )
-
-        for canonical_field, definition in derived_fields.items():
-            if definition["source_field"] not in mapped_source_fields:
-                return (
-                    f"Source field for derived field {canonical_field} "
-                    "must also be represented in field_mappings."
-                )
 
         return None
 

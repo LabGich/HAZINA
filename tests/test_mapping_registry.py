@@ -22,6 +22,7 @@ def test_registry_loads_all_registered_sources(registry):
         "STRIPE",
         "PLAID",
         "DARAJA",
+        "EXPLORE_MY_DATA",
     }
 
 
