@@ -1,6 +1,5 @@
 
 from dataclasses import dataclass, field
-from decimal import Decimal
 from typing import Any
 
 from src.mapping.mapping_registry import (
@@ -17,7 +16,8 @@ from src.mapping.transformations import (
     normalize_transaction_type,
     normalize_status,
     normalize_payment_method,
-    normalize_datetime,
+    normalize_signed_amount,
+    normalize_datetime_with_timezone,
 )
 
 
@@ -42,7 +42,7 @@ class MappingResult:
 
 
 class MappingEngine:
-    """Maps source-specific transaction records to Hazina's canonical model."""
+    """Maps source-specific records into Hazina's canonical model."""
 
     TRANSFORMATIONS = {
         "normalize_amount": normalize_amount,
@@ -52,8 +52,35 @@ class MappingEngine:
         "normalize_transaction_type": normalize_transaction_type,
         "normalize_status": normalize_status,
         "normalize_payment_method": normalize_payment_method,
-        "normalize_datetime": normalize_datetime,
         "normalize_optional": normalize_optional,
+    }
+
+    DATETIME_TRANSFORMATIONS = {
+        "normalize_datetime",
+        "normalize_datetime_with_timezone",
+    }
+
+    SPECIAL_TRANSFORMATIONS = {
+        "normalize_signed_amount",
+    }
+
+    REQUIRED_CANONICAL_TRANSFORMATIONS = {
+        "transaction_date": {
+            "normalize_datetime",
+            "normalize_datetime_with_timezone",
+        },
+        "amount": {
+            "normalize_amount",
+            "normalize_signed_amount",
+        },
+        "currency": {"normalize_currency"},
+        "transaction_type": {"normalize_transaction_type"},
+        "status": {"normalize_status"},
+    }
+
+    VALID_AMOUNT_HANDLING = {
+        "positive_with_separate_direction",
+        "signed_amount",
     }
 
     def __init__(
@@ -85,7 +112,7 @@ class MappingEngine:
         value: Any,
         value_mappings: dict[str, Any],
     ) -> Any:
-        """Apply configured source-value translations."""
+        """Translate configured source values into canonical values."""
 
         if value is None:
             return None
@@ -97,10 +124,10 @@ class MappingEngine:
                 f"Invalid value mapping configuration for {field_name}"
             )
 
-        normalized_value = str(value).strip().upper()
-
         if not field_mapping:
             return value
+
+        normalized_value = str(value).strip().upper()
 
         if normalized_value not in field_mapping:
             raise TransformationError(
@@ -109,33 +136,94 @@ class MappingEngine:
 
         return field_mapping[normalized_value]
 
-    @staticmethod
-    def _apply_transformation(
-        field_name: str,
-        value: Any,
-        transformation_name: str | None,
-        transformations: dict[str, Any],
-    ) -> Any:
-        """Execute an approved transformation."""
+    def _validate_mapping_configuration(
+        self,
+        required_fields: Any,
+        field_mappings: Any,
+        value_mappings: Any,
+        transformations: Any,
+        amount_handling: Any,
+        source_timezone: Any,
+    ) -> str | None:
+        """Validate the mapping configuration before processing records."""
 
-        if transformation_name is None:
-            return value
+        if not isinstance(required_fields, list):
+            return "required_fields must be a list."
 
-        transformation = transformations.get(transformation_name)
+        if not isinstance(field_mappings, dict):
+            return "field_mappings must be a mapping."
 
-        if transformation is None:
-            raise TransformationError(
-                f"Unsupported transformation: {transformation_name}"
+        if not isinstance(value_mappings, dict):
+            return "value_mappings must be a mapping."
+
+        if not isinstance(transformations, dict):
+            return "transformations must be a mapping."
+
+        if amount_handling not in self.VALID_AMOUNT_HANDLING:
+            return f"Unsupported amount_handling strategy: {amount_handling}"
+
+        if source_timezone is not None and (
+            not isinstance(source_timezone, str)
+            or not source_timezone.strip()
+        ):
+            return "source_timezone must be a non-empty string or null."
+
+        for canonical_field, transformation_name in transformations.items():
+            if not isinstance(transformation_name, str):
+                return (
+                    f"Transformation for {canonical_field} "
+                    "must be a string."
+                )
+
+            approved = (
+                self.TRANSFORMATIONS
+                | {
+                    name: None
+                    for name in (
+                        self.DATETIME_TRANSFORMATIONS
+                        | self.SPECIAL_TRANSFORMATIONS
+                    )
+                }
             )
 
-        try:
-            return transformation(value)
-        except TransformationError:
-            raise
-        except Exception as exc:
-            raise TransformationError(
-                f"Transformation failed for {field_name}: {exc}"
-            ) from exc
+            if transformation_name not in approved:
+                return (
+                    f"Unsupported transformation: {transformation_name}"
+                )
+
+        for field_name, allowed_transformations in (
+            self.REQUIRED_CANONICAL_TRANSFORMATIONS.items()
+        ):
+            configured = transformations.get(field_name)
+
+            if configured not in allowed_transformations:
+                return (
+                    f"Required canonical field '{field_name}' "
+                    "has a missing or invalid transformation."
+                )
+
+        expected_amount_transformation = (
+            "normalize_signed_amount"
+            if amount_handling == "signed_amount"
+            else "normalize_amount"
+        )
+
+        if transformations.get("amount") != expected_amount_transformation:
+            return (
+                "The amount transformation does not match "
+                "the configured amount_handling strategy."
+            )
+
+        if (
+            "direction" in field_mappings
+            and transformations.get("direction") != "normalize_direction"
+        ):
+            return (
+                "A mapped direction field must use "
+                "normalize_direction."
+            )
+
+        return None
 
     def map_transaction(
         self,
@@ -187,34 +275,34 @@ class MappingEngine:
         required_fields = config.get("required_fields", [])
         field_mappings = config.get("field_mappings", {})
         value_mappings = config.get("value_mappings", {})
-        configured_transformations = config.get(
-            "transformations",
-            {},
+        transformations = config.get("transformations", {})
+
+        amount_handling = mapping.get("amount_handling")
+        source_timezone = mapping.get("source_timezone")
+
+        config_error = self._validate_mapping_configuration(
+            required_fields=required_fields,
+            field_mappings=field_mappings,
+            value_mappings=value_mappings,
+            transformations=transformations,
+            amount_handling=amount_handling,
+            source_timezone=source_timezone,
         )
 
-        if not isinstance(required_fields, list):
+        if config_error:
             return failure(
                 "INVALID_MAPPING_CONFIGURATION",
-                "required_fields must be a list.",
+                config_error,
             )
 
-        if not isinstance(field_mappings, dict):
-            return failure(
-                "INVALID_MAPPING_CONFIGURATION",
-                "field_mappings must be a mapping.",
-            )
-
-        if not isinstance(value_mappings, dict):
-            return failure(
-                "INVALID_MAPPING_CONFIGURATION",
-                "value_mappings must be a mapping.",
-            )
-
-        if not isinstance(configured_transformations, dict):
-            return failure(
-                "INVALID_MAPPING_CONFIGURATION",
-                "transformations must be a mapping.",
-            )
+        for canonical_field, source_field in field_mappings.items():
+            if not isinstance(canonical_field, str) or not isinstance(
+                source_field, str
+            ):
+                return failure(
+                    "INVALID_MAPPING_CONFIGURATION",
+                    "Field mappings must contain string field names.",
+                )
 
         missing_fields = [
             field_name
@@ -230,18 +318,18 @@ class MappingEngine:
                 missing_fields[0],
             )
 
-        mapped = {}
+        mapped: dict[str, Any] = {}
+        current_field: str | None = None
 
         try:
             for canonical_field, source_field in field_mappings.items():
+                current_field = canonical_field
 
                 if source_field not in raw_record:
                     mapped[canonical_field] = None
                     continue
 
-                value = raw_record[source_field]
-
-                value = normalize_optional(value)
+                value = normalize_optional(raw_record[source_field])
 
                 if value is None:
                     mapped[canonical_field] = None
@@ -253,69 +341,66 @@ class MappingEngine:
                     value_mappings,
                 )
 
-                transformation_name = configured_transformations.get(
-                    canonical_field
-                )
+                transformation_name = transformations.get(canonical_field)
 
-                value = self._apply_transformation(
-                    canonical_field,
-                    value,
-                    transformation_name,
-                    self.TRANSFORMATIONS,
-                )
+                if transformation_name in self.DATETIME_TRANSFORMATIONS:
+                    value = normalize_datetime_with_timezone(
+                        value,
+                        source_timezone=source_timezone,
+                    )
+
+                elif transformation_name in self.SPECIAL_TRANSFORMATIONS:
+                    # Signed amounts require both amount and direction.
+                    # Process them together after all fields are mapped.
+                    mapped[canonical_field] = value
+
+                elif transformation_name is not None:
+                    transformation = self.TRANSFORMATIONS.get(
+                        transformation_name
+                    )
+
+                    if transformation is None:
+                        raise TransformationError(
+                            f"Unsupported transformation: {transformation_name}"
+                        )
+
+                    value = transformation(value)
 
                 mapped[canonical_field] = value
 
-            # Apply canonical transformations even when they are
-            # not explicitly configured in YAML.
-            canonical_transformations = {
-                "transaction_date": normalize_datetime,
-                "amount": normalize_amount,
-                "currency": normalize_currency,
-                "transaction_type": normalize_transaction_type,
-                "direction": normalize_direction,
-                "payment_method": normalize_payment_method,
-                "status": normalize_status,
-                "fee_amount": normalize_optional_amount,
-                "account_balance": normalize_optional_amount,
-            }
+            if amount_handling == "signed_amount":
+                current_field = "amount"
 
-            for field_name, transformation in (
-                canonical_transformations.items()
-            ):
-                value = mapped.get(field_name)
+                amount, inferred_direction = normalize_signed_amount(
+                    mapped.get("amount"),
+                    direction=mapped.get("direction"),
+                )
 
-                if value is None and field_name not in {
-                    "direction",
-                    "fee_amount",
-                    "account_balance",
-                }:
-                    raise TransformationError(
-                        f"Required canonical field is missing: {field_name}"
-                    )
+                mapped["amount"] = amount
+                mapped["direction"] = inferred_direction
 
-                if value is not None:
-                    mapped[field_name] = transformation(value)
+            elif mapped.get("direction") is None:
+                mapped["direction"] = "UNKNOWN"
 
             mapped["source_name"] = source_name.strip().upper()
+
             mapped["source_transaction_id"] = normalize_optional(
                 mapped.get("source_transaction_id")
             )
+
             mapped["source_account_id"] = normalize_optional(
                 mapped.get("source_account_id")
             )
+
             mapped["customer_id"] = normalize_optional(
                 mapped.get("customer_id")
             )
 
             mapped["transaction_id"] = context.get("transaction_id")
-
             mapped["mapping_id"] = resolved_mapping_id
             mapped["mapping_version"] = resolved_mapping_version
-
             mapped["raw_id"] = context.get("raw_id")
             mapped["run_id"] = context.get("run_id")
-
             mapped["source_metadata"] = context.get(
                 "source_metadata",
                 {},
@@ -332,12 +417,14 @@ class MappingEngine:
             return failure(
                 "MAPPING_EXECUTION_ERROR",
                 str(exc),
+                current_field,
             )
 
         except Exception as exc:
             return failure(
                 "MAPPING_EXECUTION_ERROR",
                 f"Unexpected mapping error: {exc}",
+                current_field,
             )
 
 
