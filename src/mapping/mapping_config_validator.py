@@ -1,5 +1,6 @@
 
 import re
+from datetime import datetime
 from typing import Any
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -127,11 +128,14 @@ class MappingConfigValidator:
             )
 
         cls._validate_timezone(mapping.get("source_timezone"))
+        cls._validate_date_format(mapping.get("date_format"))
 
         required_fields = config.get("required_fields")
         field_mappings = config.get("field_mappings")
         value_mappings = config.get("value_mappings", {})
         transformations = config.get("transformations")
+        default_values = config.get("default_values", {})
+        derived_fields = config.get("derived_fields", {})
 
         amount_handling = mapping.get(
             "amount_handling",
@@ -140,20 +144,25 @@ class MappingConfigValidator:
 
         amount_fields = config.get("amount_fields")
 
-        split_mode = (
-            amount_handling == "separate_debit_credit"
-        )
+        split_mode = amount_handling == "separate_debit_credit"
 
-        # Validate required source fields.
         cls._validate_required_fields(required_fields)
 
-        # Validate canonical-to-source field mappings first.
+        cls._validate_default_values(default_values)
+
+        cls._validate_derived_fields(
+            derived_fields,
+            field_mappings,
+            default_values,
+        )
+
         cls._validate_field_mappings(
             field_mappings,
             split_mode,
+            default_values,
+            derived_fields,
         )
 
-        # Validate required source field coverage.
         cls._validate_required_field_mappings(
             required_fields,
             field_mappings,
@@ -161,20 +170,19 @@ class MappingConfigValidator:
             split_mode,
         )
 
-        # Validate configured value translations.
         cls._validate_value_mappings(
             value_mappings,
             field_mappings,
         )
 
-        # Validate transformation names and field coverage.
         cls._validate_transformations(
             transformations,
             field_mappings,
             split_mode,
+            default_values,
+            derived_fields,
         )
 
-        # Run amount-specific validation after general mapping checks.
         cls._validate_amount_handling(
             amount_handling,
             transformations,
@@ -203,6 +211,28 @@ class MappingConfigValidator:
             )
 
     @staticmethod
+    def _validate_date_format(date_format: Any) -> None:
+        if date_format is None:
+            return
+
+        if (
+            not isinstance(date_format, str)
+            or not date_format.strip()
+        ):
+            raise MappingConfigurationError(
+                "date_format must be a non-empty format string or null."
+            )
+
+        try:
+            sample = datetime(2000, 3, 5, 14, 30, 0)
+            formatted = sample.strftime(date_format)
+            datetime.strptime(formatted, date_format)
+        except (ValueError, TypeError):
+            raise MappingConfigurationError(
+                f"Invalid date_format: {date_format}"
+            )
+
+    @staticmethod
     def _validate_required_fields(required_fields: Any) -> None:
         if not isinstance(required_fields, list) or not required_fields:
             raise MappingConfigurationError(
@@ -223,15 +253,133 @@ class MappingConfigValidator:
             )
 
     @classmethod
+    def _validate_default_values(
+        cls,
+        default_values: Any,
+    ) -> None:
+        if not isinstance(default_values, dict):
+            raise MappingConfigurationError(
+                "default_values must be a mapping."
+            )
+
+        for canonical_field, value in default_values.items():
+            if canonical_field not in cls.CANONICAL_FIELDS:
+                raise MappingConfigurationError(
+                    f"Unsupported default canonical field: "
+                    f"{canonical_field}"
+                )
+
+            if value is None:
+                raise MappingConfigurationError(
+                    f"Default value for {canonical_field} cannot be null."
+                )
+
+            if isinstance(value, (dict, list)):
+                raise MappingConfigurationError(
+                    f"Default value for {canonical_field} must be scalar."
+                )
+
+    @classmethod
+    def _validate_derived_fields(
+        cls,
+        derived_fields: Any,
+        field_mappings: Any,
+        default_values: Any,
+    ) -> None:
+        if not isinstance(derived_fields, dict):
+            raise MappingConfigurationError(
+                "derived_fields must be a mapping."
+            )
+
+        for canonical_field, configuration in derived_fields.items():
+            if canonical_field not in cls.CANONICAL_FIELDS:
+                raise MappingConfigurationError(
+                    f"Unsupported derived canonical field: "
+                    f"{canonical_field}"
+                )
+
+            if canonical_field in field_mappings:
+                raise MappingConfigurationError(
+                    f"Derived field {canonical_field} cannot also have "
+                    "a direct field mapping."
+                )
+
+            if canonical_field in default_values:
+                raise MappingConfigurationError(
+                    f"Derived field {canonical_field} cannot also have "
+                    "a default value."
+                )
+
+            if not isinstance(configuration, dict):
+                raise MappingConfigurationError(
+                    f"Derived field configuration for "
+                    f"{canonical_field} must be a mapping."
+                )
+
+            source_field = configuration.get("source_field")
+
+            if (
+                not isinstance(source_field, str)
+                or not source_field.strip()
+            ):
+                raise MappingConfigurationError(
+                    f"Derived field {canonical_field} requires "
+                    "a non-empty source_field."
+                )
+
+            rules = configuration.get("rules")
+
+            if not isinstance(rules, list) or not rules:
+                raise MappingConfigurationError(
+                    f"Derived field {canonical_field} requires "
+                    "a non-empty rules list."
+                )
+
+            for rule in rules:
+                if not isinstance(rule, dict):
+                    raise MappingConfigurationError(
+                        f"Every rule for {canonical_field} "
+                        "must be a mapping."
+                    )
+
+                match_value = rule.get("contains")
+                result_value = rule.get("value")
+
+                if (
+                    not isinstance(match_value, str)
+                    or not match_value.strip()
+                ):
+                    raise MappingConfigurationError(
+                        f"Every rule for {canonical_field} requires "
+                        "a non-empty contains value."
+                    )
+
+                if result_value is None:
+                    raise MappingConfigurationError(
+                        f"Every rule for {canonical_field} requires "
+                        "a non-null value."
+                    )
+
+                if isinstance(result_value, (dict, list)):
+                    raise MappingConfigurationError(
+                        f"Rule values for {canonical_field} must be scalar."
+                    )
+
+    @classmethod
     def _validate_field_mappings(
         cls,
         field_mappings: Any,
         split_mode: bool = False,
+        default_values: dict[str, Any] | None = None,
+        derived_fields: dict[str, Any] | None = None,
     ) -> None:
         if not isinstance(field_mappings, dict) or not field_mappings:
             raise MappingConfigurationError(
                 "field_mappings must be a non-empty mapping."
             )
+
+        default_values = default_values or {}
+        derived_fields = derived_fields or {}
 
         for canonical_field, source_field in field_mappings.items():
             if canonical_field not in cls.CANONICAL_FIELDS:
@@ -253,7 +401,13 @@ class MappingConfigValidator:
             else cls.REQUIRED_CANONICAL_FIELDS
         )
 
-        missing = required - set(field_mappings)
+        available_fields = (
+            set(field_mappings)
+            | set(default_values)
+            | set(derived_fields)
+        )
+
+        missing = required - available_fields
 
         if missing:
             raise MappingConfigurationError(
@@ -276,8 +430,6 @@ class MappingConfigValidator:
         mapped_source_fields = set(field_mappings.values())
 
         if split_mode:
-            # Avoid accessing .values() on malformed amount_fields.
-            # _validate_amount_handling will report the configuration error.
             amount_source_fields = (
                 set(amount_fields.values())
                 if isinstance(amount_fields, dict)
@@ -334,27 +486,33 @@ class MappingConfigValidator:
                         f"Invalid canonical value in {canonical_field} mapping."
                     )
 
-    
     @classmethod
     def _validate_transformations(
         cls,
         transformations: Any,
         field_mappings: dict[str, str],
         split_mode: bool = False,
+        default_values: dict[str, Any] | None = None,
+        derived_fields: dict[str, Any] | None = None,
     ) -> None:
         if not isinstance(transformations, dict):
             raise MappingConfigurationError(
                 "transformations must be a mapping."
             )
 
-        # Validate split-amount restrictions first so the error is specific.
         if split_mode and "amount" in transformations:
             raise MappingConfigurationError(
                 "separate_debit_credit must not define an amount transformation."
             )
 
+        available_fields = (
+            set(field_mappings)
+            | set(default_values or {})
+            | set(derived_fields or {})
+        )
+
         for canonical_field, transformation_name in transformations.items():
-            if canonical_field not in field_mappings:
+            if canonical_field not in available_fields:
                 raise MappingConfigurationError(
                     f"Transformation references an unmapped field: "
                     f"{canonical_field}"
@@ -406,7 +564,6 @@ class MappingConfigValidator:
             raise MappingConfigurationError(
                 "A mapped direction field requires a transformation."
             )
-
 
     @classmethod
     def _validate_amount_handling(

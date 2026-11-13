@@ -286,16 +286,18 @@ def normalize_signed_amount(
     return abs(amount).quantize(Decimal("0.01")), inferred_direction
 
 
+
 def normalize_datetime_with_timezone(
     value: Any,
     source_timezone: str | None = None,
+    date_format: str | None = None,
 ) -> datetime:
     """
     Normalize timestamps to UTC.
 
     A timezone-aware timestamp is converted directly.
-    A naive timestamp requires an explicitly configured
-    source timezone.
+    A naive timestamp requires an explicitly configured source timezone.
+    An optional date_format supports source-specific date representations.
     """
 
     value = normalize_optional(value)
@@ -309,11 +311,15 @@ def normalize_datetime_with_timezone(
     elif isinstance(value, str):
         text = value.strip()
 
-        if text.endswith("Z"):
-            text = text[:-1] + "+00:00"
-
         try:
-            parsed = datetime.fromisoformat(text)
+            if date_format:
+                parsed = datetime.strptime(text, date_format)
+            else:
+                if text.endswith("Z"):
+                    text = text[:-1] + "+00:00"
+
+                parsed = datetime.fromisoformat(text)
+
         except ValueError:
             raise TransformationError(
                 f"Invalid date/time format: {value}"

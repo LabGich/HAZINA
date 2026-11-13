@@ -118,6 +118,87 @@ class MappingEngine:
 
         return field_mapping[normalized_value]
 
+    @staticmethod
+    def _validate_defaults(default_values: Any) -> str | None:
+        """Validate configured canonical default values."""
+
+        if not isinstance(default_values, dict):
+            return "default_values must be a mapping."
+
+        for field_name, value in default_values.items():
+            if not isinstance(field_name, str) or not field_name.strip():
+                return "Default field names must be non-empty strings."
+
+            if value is None or isinstance(value, (dict, list, tuple, set)):
+                return (
+                    f"Default value for {field_name} must be a "
+                    "non-null scalar."
+                )
+
+        return None
+
+    @staticmethod
+    def _validate_derived_fields(derived_fields: Any) -> str | None:
+        """Validate configured derived-field rules."""
+
+        if not isinstance(derived_fields, dict):
+            return "derived_fields must be a mapping."
+
+        for canonical_field, definition in derived_fields.items():
+            if not isinstance(canonical_field, str) or not canonical_field.strip():
+                return "Derived field names must be non-empty strings."
+
+            if not isinstance(definition, dict):
+                return (
+                    f"Derived field configuration for {canonical_field} "
+                    "must be a mapping."
+                )
+
+            source_field = definition.get("source_field")
+            rules = definition.get("rules")
+
+            if not isinstance(source_field, str) or not source_field.strip():
+                return (
+                    f"Derived field {canonical_field} requires a "
+                    "non-empty source_field."
+                )
+
+            if not isinstance(rules, list) or not rules:
+                return (
+                    f"Derived field {canonical_field} requires a "
+                    "non-empty rules list."
+                )
+
+            for index, rule in enumerate(rules):
+                if not isinstance(rule, dict):
+                    return (
+                        f"Rule {index + 1} for {canonical_field} "
+                        "must be a mapping."
+                    )
+
+                if set(rule) != {"contains", "value"}:
+                    return (
+                        f"Rule {index + 1} for {canonical_field} "
+                        "must contain exactly 'contains' and 'value'."
+                    )
+
+                contains = rule.get("contains")
+                value = rule.get("value")
+
+                if not isinstance(contains, str) or not contains.strip():
+                    return (
+                        f"Rule {index + 1} for {canonical_field} "
+                        "requires a non-empty contains value."
+                    )
+
+                if value is None or isinstance(value, (dict, list, tuple, set)):
+                    return (
+                        f"Rule {index + 1} for {canonical_field} "
+                        "requires a non-null scalar value."
+                    )
+
+        return None
+
     def _validate_configuration(
         self,
         required_fields: Any,
@@ -126,6 +207,8 @@ class MappingEngine:
         configured_transformations: Any,
         amount_handling: Any,
         amount_fields: Any = None,
+        default_values: Any = None,
+        derived_fields: Any = None,
     ) -> str | None:
         """Validate the structure and supported options of a mapping."""
 
@@ -140,6 +223,20 @@ class MappingEngine:
 
         if not isinstance(configured_transformations, dict):
             return "transformations must be a mapping."
+
+        if default_values is None:
+            default_values = {}
+
+        if derived_fields is None:
+            derived_fields = {}
+
+        defaults_error = self._validate_defaults(default_values)
+        if defaults_error:
+            return defaults_error
+
+        derived_error = self._validate_derived_fields(derived_fields)
+        if derived_error:
+            return derived_error
 
         for canonical_field, source_field in field_mappings.items():
             if not isinstance(canonical_field, str) or not isinstance(
@@ -181,11 +278,29 @@ class MappingEngine:
             return f"Unsupported amount_handling: {amount_handling}"
 
         required_transformations = set(self.REQUIRED_TRANSFORMATIONS)
+
         if amount_handling == "separate_debit_credit":
             required_transformations.discard("amount")
 
+        available_canonical_fields = (
+            set(field_mappings)
+            | set(default_values)
+            | set(derived_fields)
+        )
+
+        missing_canonical_fields = (
+            required_transformations - available_canonical_fields
+        )
+
+        if missing_canonical_fields:
+            return (
+                "Missing required canonical fields: "
+                + ", ".join(sorted(missing_canonical_fields))
+            )
+
         missing_transformations = (
-            required_transformations - set(configured_transformations)
+            required_transformations
+            - set(configured_transformations)
         )
 
         if missing_transformations:
@@ -197,11 +312,13 @@ class MappingEngine:
         if amount_handling == "signed_amount":
             if "amount" not in field_mappings:
                 return "signed_amount handling requires an amount field mapping."
+
             if configured_transformations.get("amount") != "normalize_signed_amount":
                 return (
                     "signed_amount handling requires "
                     "normalize_signed_amount for the amount field."
                 )
+
             if amount_fields is not None:
                 return "amount_fields is only valid with separate_debit_credit."
 
@@ -211,11 +328,13 @@ class MappingEngine:
                     "positive_with_separate_direction requires an amount "
                     "field mapping."
                 )
+
             if configured_transformations.get("amount") != "normalize_amount":
                 return (
                     "positive_with_separate_direction requires "
                     "normalize_amount for the amount field."
                 )
+
             if amount_fields is not None:
                 return "amount_fields is only valid with separate_debit_credit."
 
@@ -225,15 +344,19 @@ class MappingEngine:
                     "separate_debit_credit must derive amount from "
                     "amount_fields, not field_mappings.amount."
                 )
+
             if not isinstance(amount_fields, dict):
                 return (
                     "separate_debit_credit requires amount_fields with "
                     "debit and credit source columns."
                 )
+
             if set(amount_fields) != {"debit", "credit"}:
                 return "amount_fields must contain exactly debit and credit."
+
             debit_field = amount_fields.get("debit")
             credit_field = amount_fields.get("credit")
+
             if (
                 not isinstance(debit_field, str)
                 or not debit_field.strip()
@@ -241,8 +364,10 @@ class MappingEngine:
                 or not credit_field.strip()
             ):
                 return "Debit and credit source field names must be non-empty strings."
+
             if debit_field == credit_field:
                 return "Debit and credit source fields must be different."
+
             if "amount" in configured_transformations:
                 return (
                     "separate_debit_credit must not define an amount "
@@ -254,11 +379,19 @@ class MappingEngine:
                 return "Field mapping names must be non-empty strings."
 
         mapped_source_fields = set(field_mappings.values())
+
         if not set(required_fields).issubset(mapped_source_fields):
             return (
                 "Every required source field must be represented in "
                 "field_mappings."
             )
+
+        for canonical_field, definition in derived_fields.items():
+            if definition["source_field"] not in mapped_source_fields:
+                return (
+                    f"Source field for derived field {canonical_field} "
+                    "must also be represented in field_mappings."
+                )
 
         return None
 
@@ -268,6 +401,7 @@ class MappingEngine:
         value: Any,
         transformation_name: str,
         source_timezone: str | None,
+        date_format: str | None = None,
     ) -> Any:
         """Execute an approved transformation."""
 
@@ -280,6 +414,7 @@ class MappingEngine:
             return normalize_datetime_with_timezone(
                 value,
                 source_timezone=source_timezone,
+                date_format=date_format,
             )
 
         transformation = self.TRANSFORMATIONS.get(
@@ -292,6 +427,69 @@ class MappingEngine:
             )
 
         return transformation(value)
+
+    def _apply_derived_fields(
+        self,
+        mapped: dict[str, Any],
+        raw_record: dict[str, Any],
+        derived_fields: dict[str, Any],
+        configured_transformations: dict[str, str],
+        source_timezone: str | None,
+        date_format: str | None,
+        value_mappings: dict[str, Any],
+    ) -> None:
+        """Derive canonical values using ordered, first-match rules."""
+
+        for canonical_field, definition in derived_fields.items():
+            # A directly mapped, non-empty value takes precedence.
+            if normalize_optional(mapped.get(canonical_field)) is not None:
+                continue
+
+            source_field = definition["source_field"]
+            source_value = normalize_optional(raw_record.get(source_field))
+
+            if source_value is None:
+                raise TransformationError(
+                    f"Cannot derive {canonical_field}: "
+                    f"source field {source_field} is empty."
+                )
+
+            normalized_source = str(source_value).strip().upper()
+            derived_value = None
+
+            for rule in definition["rules"]:
+                search_text = rule["contains"].strip().upper()
+
+                if search_text in normalized_source:
+                    derived_value = rule["value"]
+                    break
+
+            if derived_value is None:
+                raise TransformationError(
+                    f"No derivation rule matched {canonical_field} "
+                    f"using source field {source_field}: {source_value}"
+                )
+
+            derived_value = self._apply_value_mapping(
+                canonical_field,
+                derived_value,
+                value_mappings,
+            )
+
+            transformation_name = configured_transformations.get(
+                canonical_field
+            )
+
+            if transformation_name is not None:
+                derived_value = self._apply_transformation(
+                    canonical_field,
+                    derived_value,
+                    transformation_name,
+                    source_timezone,
+                    date_format,
+                )
+
+            mapped[canonical_field] = derived_value
 
     def map_transaction(
         self,
@@ -312,7 +510,7 @@ class MappingEngine:
             )
 
         try:
-            source = self.registry.get_source(source_name)
+            self.registry.get_source(source_name)
 
             config = self.registry.resolve_mapping(
                 source_name=source_name,
@@ -346,6 +544,8 @@ class MappingEngine:
         configured_transformations = config.get(
             "transformations", {}
         )
+        default_values = config.get("default_values", {})
+        derived_fields = config.get("derived_fields", {})
 
         amount_handling = mapping.get(
             "amount_handling",
@@ -360,6 +560,8 @@ class MappingEngine:
             configured_transformations,
             amount_handling,
             amount_fields,
+            default_values,
+            derived_fields,
         )
 
         if configuration_error:
@@ -369,6 +571,7 @@ class MappingEngine:
             )
 
         source_timezone = mapping.get("source_timezone")
+        date_format = mapping.get("date_format")
 
         if source_timezone is not None and not isinstance(
             source_timezone, str
@@ -376,6 +579,14 @@ class MappingEngine:
             return failure(
                 "INVALID_MAPPING_CONFIGURATION",
                 "source_timezone must be a timezone string or null.",
+            )
+
+        if date_format is not None and (
+            not isinstance(date_format, str) or not date_format.strip()
+        ):
+            return failure(
+                "INVALID_MAPPING_CONFIGURATION",
+                "date_format must be a non-empty string or null.",
             )
 
         missing_fields = [
@@ -405,9 +616,7 @@ class MappingEngine:
 
         try:
             for canonical_field, source_field in field_mappings.items():
-                value = raw_record.get(source_field)
-
-                value = normalize_optional(value)
+                value = normalize_optional(raw_record.get(source_field))
 
                 if value is None:
                     mapped[canonical_field] = None
@@ -436,15 +645,56 @@ class MappingEngine:
                         value,
                         transformation_name,
                         source_timezone,
+                        date_format,
                     )
 
                 mapped[canonical_field] = value
 
+            # Apply configured defaults only when a field is absent or blank.
+            for canonical_field, default_value in default_values.items():
+                if normalize_optional(mapped.get(canonical_field)) is None:
+                    value = self._apply_value_mapping(
+                        canonical_field,
+                        default_value,
+                        value_mappings,
+                    )
+
+                    transformation_name = (
+                        configured_transformations.get(canonical_field)
+                    )
+
+                    if transformation_name is not None:
+                        value = self._apply_transformation(
+                            canonical_field,
+                            value,
+                            transformation_name,
+                            source_timezone,
+                            date_format,
+                        )
+
+                    mapped[canonical_field] = value
+
+            # Derive configured fields using the first matching rule.
+            self._apply_derived_fields(
+                mapped=mapped,
+                raw_record=raw_record,
+                derived_fields=derived_fields,
+                configured_transformations=configured_transformations,
+                source_timezone=source_timezone,
+                date_format=date_format,
+                value_mappings=value_mappings,
+            )
+
             if amount_handling == "separate_debit_credit":
                 debit_field = amount_fields["debit"]
                 credit_field = amount_fields["credit"]
-                debit_value = normalize_optional(raw_record.get(debit_field))
-                credit_value = normalize_optional(raw_record.get(credit_field))
+
+                debit_value = normalize_optional(
+                    raw_record.get(debit_field)
+                )
+                credit_value = normalize_optional(
+                    raw_record.get(credit_field)
+                )
 
                 if debit_value is None and credit_value is None:
                     raise TransformationError(
@@ -536,13 +786,6 @@ class MappingEngine:
                         raise TransformationError(
                             f"Missing transformation for {field_name}."
                         )
-
-                    mapped[field_name] = self._apply_transformation(
-                        field_name,
-                        value,
-                        transformation_name,
-                        source_timezone,
-                    )
 
             mapped["transaction_id"] = context.get("transaction_id")
             mapped["mapping_id"] = resolved_mapping_id
