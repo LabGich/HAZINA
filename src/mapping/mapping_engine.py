@@ -787,6 +787,14 @@ class MappingEngine:
                             f"Missing transformation for {field_name}."
                         )
 
+                    mapped[field_name] = self._apply_transformation(
+                        field_name,
+                        value,
+                        transformation_name,
+                        source_timezone,
+                        date_format,
+                    )
+
             mapped["transaction_id"] = context.get("transaction_id")
             mapped["mapping_id"] = resolved_mapping_id
             mapped["mapping_version"] = resolved_mapping_version
