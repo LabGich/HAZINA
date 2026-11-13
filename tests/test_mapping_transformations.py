@@ -15,6 +15,8 @@ from src.mapping.transformations import (
     normalize_payment_method,
     normalize_status,
     normalize_transaction_type,
+    normalize_signed_amount,
+    normalize_datetime_with_timezone,
 )
 
 
@@ -117,3 +119,78 @@ def test_normalize_datetime_rejects_naive_timestamp():
 def test_normalize_datetime_rejects_invalid_value():
     with pytest.raises(TransformationError):
         normalize_datetime("not-a-date")
+
+def test_normalize_signed_amount_negative_is_debit():
+    amount, direction = normalize_signed_amount("-1500.50")
+
+    assert amount == Decimal("1500.50")
+    assert direction == "DEBIT"
+
+
+def test_normalize_signed_amount_positive_is_credit():
+    amount, direction = normalize_signed_amount("2500.00")
+
+    assert amount == Decimal("2500.00")
+    assert direction == "CREDIT"
+
+
+def test_normalize_signed_amount_rejects_zero():
+    with pytest.raises(TransformationError):
+        normalize_signed_amount("0")
+
+
+def test_normalize_signed_amount_rejects_direction_conflict():
+    with pytest.raises(TransformationError):
+        normalize_signed_amount("-500", direction="CREDIT")
+
+
+def test_normalize_signed_amount_accepts_matching_direction():
+    amount, direction = normalize_signed_amount(
+        "-500",
+        direction="DR",
+    )
+
+    assert amount == Decimal("500.00")
+    assert direction == "DEBIT"
+
+
+def test_normalize_datetime_with_timezone_converts_aware_timestamp():
+    result = normalize_datetime_with_timezone(
+        "2026-11-12T14:30:00+03:00"
+    )
+
+    assert result == datetime(
+        2026, 11, 12, 11, 30, tzinfo=timezone.utc
+    )
+
+
+def test_normalize_datetime_with_timezone_uses_configured_timezone():
+    result = normalize_datetime_with_timezone(
+        "2026-11-12T14:30:00",
+        source_timezone="Africa/Nairobi",
+    )
+
+    assert result == datetime(
+        2026, 11, 12, 11, 30, tzinfo=timezone.utc
+    )
+
+
+def test_normalize_datetime_with_timezone_rejects_naive_without_timezone():
+    with pytest.raises(TransformationError):
+        normalize_datetime_with_timezone("2026-11-12T14:30:00")
+
+
+def test_normalize_datetime_with_timezone_rejects_invalid_timezone():
+    with pytest.raises(TransformationError):
+        normalize_datetime_with_timezone(
+            "2026-11-12T14:30:00",
+            source_timezone="Invalid/Timezone",
+        )
+
+
+def test_normalize_datetime_with_timezone_rejects_invalid_date():
+    with pytest.raises(TransformationError):
+        normalize_datetime_with_timezone(
+            "not-a-date",
+            source_timezone="Africa/Nairobi",
+        )
