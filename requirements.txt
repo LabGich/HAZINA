@@ -7,3 +7,4 @@ python-dotenv==1.2.4
 reportla==5.1.0
 pillow==13.0.0
 char-set-normalizer==3.5.2
+PyYAML==6.0.3

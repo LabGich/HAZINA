@@ -1,0 +1,59 @@
+sources:
+  BANK:
+    source_type: FILE
+    source_identifier: bank_statement
+    description: Bank statement transaction files
+    enabled: true
+    supported_formats:
+      - CSV
+      - XLSX
+      - JSON
+    default_mapping:
+      mapping_id: bank_csv_v1
+      mapping_version: "1.0"
+
+  MPESA:
+    source_type: FILE
+    source_identifier: mpesa_statement
+    description: M-Pesa transaction statement files
+    enabled: true
+    supported_formats:
+      - CSV
+      - XLSX
+      - JSON
+    default_mapping:
+      mapping_id: mpesa_csv_v1
+      mapping_version: "1.0"
+
+  STRIPE:
+    source_type: API
+    source_identifier: stripe
+    description: Stripe payment transactions and events
+    enabled: true
+    supported_formats:
+      - JSON
+    default_mapping:
+      mapping_id: stripe_api_v1
+      mapping_version: "1.0"
+
+  PLAID:
+    source_type: API
+    source_identifier: plaid
+    description: Plaid financial account transactions
+    enabled: true
+    supported_formats:
+      - JSON
+    default_mapping:
+      mapping_id: plaid_api_v1
+      mapping_version: "1.0"
+
+  DARAJA:
+    source_type: API
+    source_identifier: safaricom_daraja
+    description: Safaricom Daraja transaction data
+    enabled: true
+    supported_formats:
+      - JSON
+    default_mapping:
+      mapping_id: daraja_api_v1
+      mapping_version: "1.0"
