@@ -1,0 +1,50 @@
+
+mapping:
+  mapping_id: kcb_csv_v1
+  mapping_version: "1.0"
+  source_name: BANK
+  source_type: FILE
+  description: KCB Bank statement CSV mapping
+  source_timezone: Africa/Nairobi
+  date_format: "%d/%m/%Y"
+  amount_handling: separate_debit_credit
+
+required_fields:
+  - DATE
+  - DETAILS
+
+field_mappings:
+  source_transaction_id: REFERENCE NO
+  transaction_date: DATE
+  description: DETAILS
+  account_balance: CREDIT BALANCE
+
+amount_fields:
+  debit: Debit
+  credit: Credit
+
+default_values:
+  currency: KES
+  status: COMPLETED
+
+derived_fields:
+  transaction_type:
+    source_field: DETAILS
+    rules:
+      - contains: SALARY CREDIT
+        value: DEPOSIT
+      - contains: ATM CASH WITHDRAWAL
+        value: WITHDRAWAL
+      - contains: TRANSFER TO SAVINGS
+        value: TRANSFER
+      - contains: CUSTOMER PAYMENT
+        value: PAYMENT
+      - contains: LEDGER FEE
+        value: FEE
+
+transformations:
+  transaction_date: normalize_datetime
+  currency: normalize_currency
+  transaction_type: normalize_transaction_type
+  status: normalize_status
+  account_balance: normalize_optional_amount
