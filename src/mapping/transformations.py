@@ -2,7 +2,7 @@
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from typing import Any
-
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 class TransformationError(ValueError):
     """Raised when a source value cannot be safely normalized."""
@@ -234,5 +234,110 @@ def normalize_datetime(value: Any) -> datetime:
         raise TransformationError(
             "Transaction date must include timezone information."
         )
+
+    return parsed.astimezone(timezone.utc)
+
+
+def normalize_signed_amount(
+    value: Any,
+    direction: Any = None,
+) -> tuple[Decimal, str]:
+    """
+    Normalize a signed amount into a positive amount and direction.
+
+    Negative values represent DEBIT.
+    Positive values represent CREDIT.
+    Zero is rejected.
+
+    If a separate direction is supplied, it must agree with
+    the sign of the amount.
+    """
+
+    value = normalize_optional(value)
+
+    if value is None:
+        raise TransformationError("Amount is required.")
+
+    try:
+        amount = Decimal(str(value).replace(",", "").strip())
+    except (InvalidOperation, ValueError):
+        raise TransformationError(
+            f"Invalid financial amount: {value}"
+        )
+
+    if not amount.is_finite() or amount == 0:
+        raise TransformationError(
+            f"Signed amount must be finite and non-zero: {value}"
+        )
+
+    inferred_direction = (
+        "DEBIT" if amount < 0 else "CREDIT"
+    )
+
+    if direction is not None:
+        supplied_direction = normalize_direction(direction)
+
+        if supplied_direction != "UNKNOWN":
+            if supplied_direction != inferred_direction:
+                raise TransformationError(
+                    "Amount sign conflicts with supplied direction."
+                )
+
+    return abs(amount).quantize(Decimal("0.01")), inferred_direction
+
+
+def normalize_datetime_with_timezone(
+    value: Any,
+    source_timezone: str | None = None,
+) -> datetime:
+    """
+    Normalize timestamps to UTC.
+
+    A timezone-aware timestamp is converted directly.
+    A naive timestamp requires an explicitly configured
+    source timezone.
+    """
+
+    value = normalize_optional(value)
+
+    if value is None:
+        raise TransformationError("Transaction date is required.")
+
+    if isinstance(value, datetime):
+        parsed = value
+
+    elif isinstance(value, str):
+        text = value.strip()
+
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+
+        try:
+            parsed = datetime.fromisoformat(text)
+        except ValueError:
+            raise TransformationError(
+                f"Invalid date/time format: {value}"
+            )
+
+    else:
+        raise TransformationError(
+            f"Unsupported date/time value: {value}"
+        )
+
+    if parsed.tzinfo is None:
+        if not source_timezone:
+            raise TransformationError(
+                "Naive timestamp rejected: source timezone "
+                "has not been configured."
+            )
+
+        try:
+            timezone = ZoneInfo(source_timezone)
+        except (ZoneInfoNotFoundError, ValueError):
+            raise TransformationError(
+                f"Unknown source timezone: {source_timezone}"
+            )
+
+        parsed = parsed.replace(tzinfo=timezone)
 
     return parsed.astimezone(timezone.utc)
