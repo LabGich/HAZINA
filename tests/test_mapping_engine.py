@@ -1,5 +1,8 @@
 from datetime import datetime, timezone
 from decimal import Decimal
+from pathlib import Path
+import yaml
+from src.mapping.mapping_registry import MappingRegistry
 
 from src.mapping.mapping_engine import MappingEngine
 
@@ -22,6 +25,41 @@ def valid_bank_record():
         "balance": "5000.00",
     }
 
+def engine_with_custom_bank_mapping(tmp_path, updates):
+    """Create a mapping engine using a temporary BANK configuration."""
+
+    project_root = Path(__file__).resolve().parents[1]
+
+    sources_path = (
+        project_root / "config" / "sources" / "sources.yaml"
+    )
+
+    mapping_path = (
+        project_root
+        / "config"
+        / "mappings"
+        / "bank_csv_v1.yaml"
+    )
+
+    with mapping_path.open("r", encoding="utf-8") as file:
+        config = yaml.safe_load(file)
+
+    config["mapping"].update(updates.get("mapping", {}))
+    config["transformations"].update(
+        updates.get("transformations", {})
+    )
+
+    custom_mapping_path = tmp_path / "bank_csv_v1.yaml"
+
+    with custom_mapping_path.open("w", encoding="utf-8") as file:
+        yaml.safe_dump(config, file, sort_keys=False)
+
+    registry = MappingRegistry(
+        sources_path=sources_path,
+        mappings_dir=tmp_path,
+    )
+
+    return MappingEngine(registry=registry)
 
 def test_mapping_engine_maps_valid_bank_record():
 
@@ -202,3 +240,128 @@ def test_mapping_engine_records_mapping_version_on_record_error():
     assert result.success is False
     assert result.mapping_id == "bank_csv_v1"
     assert result.mapping_version == "1.0"
+
+def test_mapping_engine_maps_signed_negative_amount_as_debit(tmp_path):
+    engine = engine_with_custom_bank_mapping(
+        tmp_path,
+        {
+            "mapping": {
+                "amount_handling": "signed_amount",
+            },
+            "transformations": {
+                "amount": "normalize_signed_amount",
+            },
+        },
+    )
+
+    record = valid_bank_record()
+    record["amount"] = "-1500.50"
+    record["direction"] = "DR"
+
+    result = engine.map_transaction(
+        source_name="BANK",
+        raw_record=record,
+    )
+
+    assert result.success is True
+    assert result.canonical_transaction["amount"] == Decimal("1500.50")
+    assert result.canonical_transaction["direction"] == "DEBIT"
+
+
+def test_mapping_engine_maps_signed_positive_amount_as_credit(tmp_path):
+    engine = engine_with_custom_bank_mapping(
+        tmp_path,
+        {
+            "mapping": {
+                "amount_handling": "signed_amount",
+            },
+            "transformations": {
+                "amount": "normalize_signed_amount",
+            },
+        },
+    )
+
+    record = valid_bank_record()
+    record["amount"] = "2500.00"
+    record["direction"] = "CR"
+
+    result = engine.map_transaction(
+        source_name="BANK",
+        raw_record=record,
+    )
+
+    assert result.success is True
+    assert result.canonical_transaction["amount"] == Decimal("2500.00")
+    assert result.canonical_transaction["direction"] == "CREDIT"
+
+
+def test_mapping_engine_rejects_signed_amount_direction_conflict(tmp_path):
+    engine = engine_with_custom_bank_mapping(
+        tmp_path,
+        {
+            "mapping": {
+                "amount_handling": "signed_amount",
+            },
+            "transformations": {
+                "amount": "normalize_signed_amount",
+            },
+        },
+    )
+
+    record = valid_bank_record()
+    record["amount"] = "-500"
+    record["direction"] = "CR"
+
+    result = engine.map_transaction(
+        source_name="BANK",
+        raw_record=record,
+    )
+
+    assert result.success is False
+    assert result.errors[0].error_code == "MAPPING_EXECUTION_ERROR"
+
+
+def test_mapping_engine_uses_configured_source_timezone(tmp_path):
+    engine = engine_with_custom_bank_mapping(
+        tmp_path,
+        {
+            "mapping": {
+                "source_timezone": "Africa/Nairobi",
+            },
+        },
+    )
+
+    record = valid_bank_record()
+    record["transaction_date"] = "2026-11-12T14:30:00"
+
+    result = engine.map_transaction(
+        source_name="BANK",
+        raw_record=record,
+    )
+
+    assert result.success is True
+    assert result.canonical_transaction["transaction_date"] == (
+        datetime(2026, 11, 12, 11, 30, tzinfo=timezone.utc)
+    )
+
+
+def test_mapping_engine_rejects_naive_timestamp_without_timezone(tmp_path):
+    engine = engine_with_custom_bank_mapping(
+        tmp_path,
+        {
+            "mapping": {
+                "source_timezone": None,
+            },
+        },
+    )
+
+    record = valid_bank_record()
+    record["transaction_date"] = "2026-11-12T14:30:00"
+
+    result = engine.map_transaction(
+        source_name="BANK",
+        raw_record=record,
+    )
+
+    assert result.success is False
+    assert result.errors[0].error_code == "MAPPING_EXECUTION_ERROR"
