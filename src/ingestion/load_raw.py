@@ -1,4 +1,5 @@
 
+import json
 from pathlib import Path
 
 import pandas as pd
@@ -70,16 +71,23 @@ def load_raw_transactions():
                 payment_method,
                 status,
                 source_file,
-                run_id
+                run_id,
+                raw_payload,
+                source_type
             )
             VALUES (
                 %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s,
+                %s::jsonb, 'FILE'
             )
         """
 
         records = [
-            tuple(row) + (CSV_FILE.name, run_id)
+            tuple(row) + (
+                CSV_FILE.name,
+                run_id,
+                json.dumps(dict(zip(EXPECTED_COLUMNS, row))),
+            )
             for row in dataframe.itertuples(
                 index=False,
                 name=None,
@@ -113,7 +121,7 @@ def load_raw_transactions():
     print(f"Records loaded into raw: {len(records)}")
     print("Pipeline status: RUNNING")
 
-    #for next stages and the pipeline orchestrator to know which execution to process
+    # For next stages and the pipeline orchestrator.
     return run_id
 
 
