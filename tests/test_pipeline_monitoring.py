@@ -1,3 +1,5 @@
+
+import json
 import pytest
 
 from src.monitoring.pipeline_status import (
@@ -8,6 +10,7 @@ from src.validation.validate_transactions import validate_transactions
 from src.monitoring.pipeline_status import get_rejection_reason_summary
 from src.monitoring.pipeline_status import print_pipeline_run_report
 from src.monitoring.pipeline_status import save_pipeline_run_report
+
 
 def test_pipeline_run_summary_returns_correct_details(
     database_test_context,
@@ -45,13 +48,27 @@ def test_pipeline_run_summary_rejects_unknown_run():
     ):
         get_pipeline_run_summary(-1)
 
+
 def test_rejection_reason_summary_returns_correct_details(
     database_test_context,
 ):
+
     run_id = database_test_context["run_id"]
+
+    raw_record = {
+        "transaction_id": "TEST_INVALID_AMOUNT",
+        "customer_id": "CUST_TEST001",
+        "transaction_date": "2026-11-12T14:30:00+03:00",
+        "transaction_type": "PAYMENT",
+        "amount": "-100.00",
+        "currency": "KES",
+        "payment_method": "MPESA",
+        "status": "COMPLETED",
+    }
 
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
+
             cursor.execute(
                 """
                 INSERT INTO raw.transactions (
@@ -64,24 +81,28 @@ def test_rejection_reason_summary_returns_correct_details(
                     payment_method,
                     status,
                     source_file,
-                    run_id
+                    run_id,
+                    raw_payload,
+                    source_type
                 )
                 VALUES (
                     %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s,
+                    %s::jsonb, 'FILE'
                 )
                 """,
                 (
-                    "TEST_INVALID_AMOUNT",
-                    "CUST_TEST001",
-                    "2026-11-12T14:30:00+03:00",
-                    "PAYMENT",
-                    "-100.00",
-                    "KES",
-                    "MPESA",
-                    "COMPLETED",
+                    raw_record["transaction_id"],
+                    raw_record["customer_id"],
+                    raw_record["transaction_date"],
+                    raw_record["transaction_type"],
+                    raw_record["amount"],
+                    raw_record["currency"],
+                    raw_record["payment_method"],
+                    raw_record["status"],
                     "integration_test.csv",
                     run_id,
+                    json.dumps(raw_record),
                 ),
             )
 
@@ -95,10 +116,12 @@ def test_rejection_reason_summary_returns_correct_details(
     )
     assert rejection_summary[0]["affected_records"] == 1
 
+
 def test_pipeline_run_report_prints_correct_details(
     database_test_context,
     capsys,
 ):
+
     run_id = database_test_context["run_id"]
 
     print_pipeline_run_report(run_id)
@@ -116,11 +139,13 @@ def test_pipeline_run_report_prints_correct_details(
     assert "No validation errors recorded." in report
     assert "END OF PIPELINE REPORT" in report
 
-#report saving test
+
+# Report saving test.
 def test_pipeline_run_report_is_saved_to_file(
     database_test_context,
     tmp_path,
 ):
+
     run_id = database_test_context["run_id"]
     reports_directory = tmp_path / "reports"
 

@@ -1,18 +1,33 @@
+
+import json
 import pytest
 
 from src.database.connection import get_database_connection
 from src.validation.validate_transactions import validate_transactions
 from src.deduplication.deduplicate_transactions import (
-    deduplicate_transactions
+    deduplicate_transactions,
 )
 from src.monitoring.pipeline_status import mark_pipeline_run_failed
 
-#a reusable raw transaction insertion helper
+
+# A reusable raw transaction insertion helper.
 def insert_raw_transaction(
     run_id,
     transaction_id,
     amount="1500.00",
+    customer_id="CUST_TEST001",
 ):
+    raw_record = {
+        "transaction_id": transaction_id,
+        "customer_id": customer_id,
+        "transaction_date": "2026-11-12T14:30:00+03:00",
+        "transaction_type": "PAYMENT",
+        "amount": amount,
+        "currency": "KES",
+        "payment_method": "MPESA",
+        "status": "COMPLETED",
+    }
+
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
@@ -28,37 +43,36 @@ def insert_raw_transaction(
                     payment_method,
                     status,
                     source_file,
-                    run_id
+                    run_id,
+                    raw_payload,
+                    source_type
                 )
                 VALUES (
                     %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s,
+                    %s::jsonb, 'FILE'
                 )
                 RETURNING raw_id
                 """,
                 (
                     transaction_id,
-                    "CUST_TEST001",
-                    "2026-11-12T14:30:00+03:00",
-                    "PAYMENT",
+                    customer_id,
+                    raw_record["transaction_date"],
+                    raw_record["transaction_type"],
                     amount,
-                    "KES",
-                    "MPESA",
-                    "COMPLETED",
+                    raw_record["currency"],
+                    raw_record["payment_method"],
+                    raw_record["status"],
                     "integration_test.csv",
                     run_id,
+                    json.dumps(raw_record),
                 ),
             )
 
             return cursor.fetchone()[0]
 
-#Test1
-# This test:
-# Connected to PostgreSQL
-# Created a temporary pipeline run
-# Retrieved and verified its status and source filename
-# Cleaned up the temporary records afterward
 
+# Test 1: Database connection and pipeline run.
 def test_database_connection_and_pipeline_run(database_test_context):
 
     run_id = database_test_context["run_id"]
@@ -83,16 +97,8 @@ def test_database_connection_and_pipeline_run(database_test_context):
         f"{database_test_context['prefix']}.csv"
     )
 
-#Test2
-#validation databasee operation
-#This test confirms the validation process:
-# Reads a raw transaction from PostgreSQL.
-# Validates and standardizes its fields
-# Inserts the valid transaction into staging.transactions
-# Preserves its raw_id and run_id
-# Assigns the default deduplication status PENDING
-#cleans up after the test
 
+# Test 2: Valid transaction is saved to staging.
 def test_valid_transaction_is_saved_to_staging(database_test_context):
 
     run_id = database_test_context["run_id"]
@@ -101,44 +107,10 @@ def test_valid_transaction_is_saved_to_staging(database_test_context):
     )
 
     # Insert a valid raw transaction.
-    with get_database_connection() as connection:
-        with connection.cursor() as cursor:
-
-            cursor.execute(
-                """
-                INSERT INTO raw.transactions (
-                    transaction_id,
-                    customer_id,
-                    transaction_date,
-                    transaction_type,
-                    amount,
-                    currency,
-                    payment_method,
-                    status,
-                    source_file,
-                    run_id
-                )
-                VALUES (
-                    %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s
-                )
-                RETURNING raw_id
-                """,
-                (
-                    transaction_id,
-                    "CUST_TEST001",
-                    "2026-11-12T14:30:00+03:00",
-                    "PAYMENT",
-                    "1500.00",
-                    "KES",
-                    "MPESA",
-                    "COMPLETED",
-                    "integration_test.csv",
-                    run_id,
-                ),
-            )
-
-            raw_id = cursor.fetchone()[0]
+    raw_id = insert_raw_transaction(
+        run_id,
+        transaction_id,
+    )
 
     # Execute the actual validation database operation.
     validate_transactions(run_id)
@@ -170,15 +142,11 @@ def test_valid_transaction_is_saved_to_staging(database_test_context):
     assert staged_record[3] == 1500.00
     assert staged_record[4] == "PENDING"
 
-#Test3
-#Invalid transaction rejection
-#Test that an invalid raw transaction is:
-# Not inserted into staging
-# Recorded in ops.pipeline_errors
-# Counted as one rejected record in ops.pipeline_runs
-# Associated with the correct pipeline run and raw record
 
-def test_invalid_transaction_is_rejected_and_recorded(database_test_context):
+# Test 3: Invalid transaction rejection.
+def test_invalid_transaction_is_rejected_and_recorded(
+    database_test_context,
+):
 
     run_id = database_test_context["run_id"]
     transaction_id = (
@@ -186,44 +154,12 @@ def test_invalid_transaction_is_rejected_and_recorded(database_test_context):
     )
 
     # Insert an invalid raw transaction.
-    with get_database_connection() as connection:
-        with connection.cursor() as cursor:
-
-            cursor.execute(
-                """
-                INSERT INTO raw.transactions (
-                    transaction_id,
-                    customer_id,
-                    transaction_date,
-                    transaction_type,
-                    amount,
-                    currency,
-                    payment_method,
-                    status,
-                    source_file,
-                    run_id
-                )
-                VALUES (
-                    %s, %s, %s, %s, %s,
-                    %s, %s, %s, %s, %s
-                )
-                RETURNING raw_id
-                """,
-                (
-                    transaction_id,
-                    "CUST_TEST002",
-                    "2026-11-12T14:30:00+03:00",
-                    "PAYMENT",
-                    "-500.00",
-                    "KES",
-                    "MPESA",
-                    "COMPLETED",
-                    "integration_test.csv",
-                    run_id,
-                ),
-            )
-
-            raw_id = cursor.fetchone()[0]
+    raw_id = insert_raw_transaction(
+        run_id,
+        transaction_id,
+        amount="-500.00",
+        customer_id="CUST_TEST002",
+    )
 
     # Execute actual validation.
     validate_transactions(run_id)
@@ -273,15 +209,13 @@ def test_invalid_transaction_is_rejected_and_recorded(database_test_context):
     assert "amount must be greater than zero" in errors
     assert rejected_count == 1
 
-#Test4
-#Deduplication and core promotion
-# Unique transaction: promoted into core.transactions
-# Exact duplicate: one copy retained, the redundant copy classified correctly
-# Conflicting duplicate: both versions quarantined, neither promoted
-    
-# --Test unique transaction promotion
-# verifies that a valid, unique transaction reaches the core table
-def test_unique_transaction_is_promoted_to_core(database_test_context):
+
+# Test 4: Deduplication and core promotion.
+
+# Test unique transaction promotion.
+def test_unique_transaction_is_promoted_to_core(
+    database_test_context,
+):
 
     run_id = database_test_context["run_id"]
     transaction_id = (
@@ -344,9 +278,11 @@ def test_unique_transaction_is_promoted_to_core(database_test_context):
     assert classification == "UNIQUE"
     assert promotion_metrics == (1, 1, 0)
 
-# --Test exact duplicate handling
-# verifies that two identical records produce one core transaction and one tracked redundant record
-def test_exact_duplicates_promote_only_one_record(database_test_context):
+
+# Test exact duplicate handling.
+def test_exact_duplicates_promote_only_one_record(
+    database_test_context,
+):
 
     run_id = database_test_context["run_id"]
     transaction_id = (
@@ -410,9 +346,11 @@ def test_exact_duplicates_promote_only_one_record(database_test_context):
     assert core_count == 1
     assert promotion_metrics == (1, 1, 0)
 
-# --Test conflicting duplicate handling
-# verifies that two conflicting records are quarantined and not promoted to core
-def test_conflicting_duplicates_are_quarantined(database_test_context):
+
+# Test conflicting duplicate handling.
+def test_conflicting_duplicates_are_quarantined(
+    database_test_context,
+):
 
     run_id = database_test_context["run_id"]
     transaction_id = (
@@ -484,12 +422,10 @@ def test_conflicting_duplicates_are_quarantined(database_test_context):
     assert core_count == 0
     assert promotion_metrics == (0, 0, 0)
 
-#Test5
-#Pipeline failure handling
-#verify that when a processing stage fails, the run is marked FAILED
-#  and receives a completion timestamp
 
-# --Test deduplication failure handling
+# Test 5: Pipeline failure handling.
+
+# Test deduplication failure handling.
 def test_deduplication_failure_marks_pipeline_run_failed(
     database_test_context,
 ):
@@ -523,8 +459,8 @@ def test_deduplication_failure_marks_pipeline_run_failed(
     assert result[0] == "FAILED"
     assert result[1] is not None
 
-# --Test completed runs cannot be overwritten
-# verifies that our failure handler only changes runs that are still RUNNING
+
+# Test completed runs cannot be overwritten.
 def test_failure_handler_does_not_overwrite_successful_run(
     database_test_context,
 ):
@@ -565,8 +501,8 @@ def test_failure_handler_does_not_overwrite_successful_run(
     assert result is False
     assert final_status == "SUCCESS"
 
-#Test6
-#Test transaction in core table is not promoted again
+
+# Test 6: Existing core transaction is not promoted again.
 def test_existing_core_transaction_is_not_promoted_again(
     database_test_context,
 ):
