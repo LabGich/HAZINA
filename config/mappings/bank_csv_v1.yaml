@@ -1,0 +1,56 @@
+#Bank mapping config
+#assumes the source headers shown in field_mappings; individual bank formats
+# will receive their own mapping versions rather than being silently forced into this configuration
+
+mapping:
+  mapping_id: bank_csv_v1
+  mapping_version: "1.0"
+  source_name: BANK
+  source_type: FILE
+  description: Standard bank statement CSV mapping
+
+required_fields:
+  - transaction_date
+  - amount
+  - currency
+  - transaction_type
+  - status
+
+field_mappings:
+  source_transaction_id: transaction_id
+  source_account_id: account_id
+  transaction_date: transaction_date
+  amount: amount
+  currency: currency
+  transaction_type: transaction_type
+  direction: direction
+  payment_method: payment_method
+  status: status
+  description: description
+  counterparty: counterparty
+  fee_amount: fee
+  account_balance: balance
+  customer_id: customer_id
+
+value_mappings:
+  direction:
+    DEBIT: DEBIT
+    CREDIT: CREDIT
+    DR: DEBIT
+    CR: CREDIT
+
+  transaction_type:
+    PAYMENT: PAYMENT
+    DEPOSIT: DEPOSIT
+    WITHDRAWAL: WITHDRAWAL
+    TRANSFER: TRANSFER
+    REFUND: REFUND
+    FEE: FEE
+    REVERSAL: REVERSAL
+
+  status:
+    INITIATED: INITIATED
+    PENDING: PENDING
+    COMPLETED: COMPLETED
+    FAILED: FAILED
+    REVERSED: REVERSED
