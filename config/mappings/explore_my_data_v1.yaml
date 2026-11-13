@@ -1,0 +1,71 @@
+mapping:
+  mapping_id: explore_my_data_v1
+  mapping_version: "1.0"
+  source_name: EXPLORE_MY_DATA
+  source_type: FILE
+  description: Explore My Data 1000-row synthetic bank transactions mapping
+  source_timezone: UTC
+  date_format: "%Y-%m-%d"
+  amount_handling: signed_amount
+
+required_fields:
+  - transaction_id
+  - posted_date
+  - account_id
+  - description
+  - amount
+  - balance
+  - currency
+
+field_mappings:
+  source_transaction_id: transaction_id
+  source_account_id: account_id
+  transaction_date: posted_date
+  amount: amount
+  currency: currency
+  description: description
+  account_balance: balance
+
+default_values:
+  status: COMPLETED
+
+derived_fields:
+  transaction_type:
+    source_field: category
+    rules:
+      - contains: Income
+        value: DEPOSIT
+      - contains: Transfer
+        value: TRANSFER
+      - contains: Coffee
+        value: PAYMENT
+      - contains: Dining
+        value: PAYMENT
+      - contains: Fuel
+        value: PAYMENT
+      - contains: Groceries
+        value: PAYMENT
+      - contains: Health
+        value: PAYMENT
+      - contains: Housing
+        value: PAYMENT
+      - contains: Shopping
+        value: PAYMENT
+      - contains: Software
+        value: PAYMENT
+      - contains: Subscriptions
+        value: PAYMENT
+      - contains: Transport
+        value: PAYMENT
+      - contains: Travel
+        value: PAYMENT
+      - contains: Utilities
+        value: PAYMENT
+
+transformations:
+  transaction_date: normalize_datetime
+  amount: normalize_signed_amount
+  currency: normalize_currency
+  transaction_type: normalize_transaction_type
+  status: normalize_status
+  account_balance: normalize_optional_amount

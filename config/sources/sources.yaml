@@ -57,3 +57,13 @@ sources:
     default_mapping:
       mapping_id: daraja_api_v1
       mapping_version: "1.0"
+
+  EXPLORE_MY_DATA:
+    source_type: FILE
+    source_identifier: explore_my_data_bank_transactions
+    description: Explore My Data synthetic bank transactions dataset
+    enabled: true
+    supported_formats: [CSV, XLSX, JSON, JSONL, PARQUET]
+    default_mapping:
+      mapping_id: explore_my_data_v1
+      mapping_version: "1.0"
