@@ -1,0 +1,37 @@
+[
+  {
+    "Date": "05-03-2025",
+    "Description": "SALARY PAYMENT",
+    "Debit": "",
+    "Credit": "85000.00",
+    "Balance": "185000.00"
+  },
+  {
+    "Date": "06-03-2025",
+    "Description": "ATM WITHDRAWAL",
+    "Debit": "10000.00",
+    "Credit": "",
+    "Balance": "175000.00"
+  },
+  {
+    "Date": "07-03-2025",
+    "Description": "PAYBILL 247247 ELECTRICITY",
+    "Debit": "4500.00",
+    "Credit": "",
+    "Balance": "170500.00"
+  },
+  {
+    "Date": "08-03-2025",
+    "Description": "CUSTOMER TRANSFER",
+    "Debit": "",
+    "Credit": "12500.00",
+    "Balance": "183000.00"
+  },
+  {
+    "Date": "09-03-2025",
+    "Description": "MONTHLY ACCOUNT FEE",
+    "Debit": "250.00",
+    "Credit": "",
+    "Balance": "182750.00"
+  }
+]

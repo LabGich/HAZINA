@@ -38,6 +38,13 @@ class MappingConfigValidator:
         "status",
     }
 
+    REQUIRED_CANONICAL_FIELDS_WITH_SPLIT_AMOUNT = {
+        "transaction_date",
+        "currency",
+        "transaction_type",
+        "status",
+    }
+
     APPROVED_TRANSFORMATIONS = {
         "normalize_amount",
         "normalize_optional_amount",
@@ -53,6 +60,7 @@ class MappingConfigValidator:
     AMOUNT_HANDLING_OPTIONS = {
         "positive_with_separate_direction",
         "signed_amount",
+        "separate_debit_credit",
     }
 
     @classmethod
@@ -124,29 +132,54 @@ class MappingConfigValidator:
         field_mappings = config.get("field_mappings")
         value_mappings = config.get("value_mappings", {})
         transformations = config.get("transformations")
+
         amount_handling = mapping.get(
             "amount_handling",
             "positive_with_separate_direction",
         )
 
+        amount_fields = config.get("amount_fields")
+
+        split_mode = (
+            amount_handling == "separate_debit_credit"
+        )
+
+        # Validate required source fields.
         cls._validate_required_fields(required_fields)
-        cls._validate_field_mappings(field_mappings)
+
+        # Validate canonical-to-source field mappings first.
+        cls._validate_field_mappings(
+            field_mappings,
+            split_mode,
+        )
+
+        # Validate required source field coverage.
         cls._validate_required_field_mappings(
             required_fields,
             field_mappings,
+            amount_fields,
+            split_mode,
         )
+
+        # Validate configured value translations.
         cls._validate_value_mappings(
             value_mappings,
             field_mappings,
         )
+
+        # Validate transformation names and field coverage.
         cls._validate_transformations(
             transformations,
             field_mappings,
+            split_mode,
         )
+
+        # Run amount-specific validation after general mapping checks.
         cls._validate_amount_handling(
             amount_handling,
             transformations,
             field_mappings,
+            amount_fields,
         )
 
     @staticmethod
@@ -154,7 +187,10 @@ class MappingConfigValidator:
         if source_timezone is None:
             return
 
-        if not isinstance(source_timezone, str) or not source_timezone.strip():
+        if (
+            not isinstance(source_timezone, str)
+            or not source_timezone.strip()
+        ):
             raise MappingConfigurationError(
                 "source_timezone must be a valid IANA timezone or null."
             )
@@ -190,6 +226,7 @@ class MappingConfigValidator:
     def _validate_field_mappings(
         cls,
         field_mappings: Any,
+        split_mode: bool = False,
     ) -> None:
         if not isinstance(field_mappings, dict) or not field_mappings:
             raise MappingConfigurationError(
@@ -210,9 +247,13 @@ class MappingConfigValidator:
                     f"Invalid source field for {canonical_field}."
                 )
 
-        missing = (
-            cls.REQUIRED_CANONICAL_FIELDS - set(field_mappings)
+        required = (
+            cls.REQUIRED_CANONICAL_FIELDS_WITH_SPLIT_AMOUNT
+            if split_mode
+            else cls.REQUIRED_CANONICAL_FIELDS
         )
+
+        missing = required - set(field_mappings)
 
         if missing:
             raise MappingConfigurationError(
@@ -220,12 +261,34 @@ class MappingConfigValidator:
                 + ", ".join(sorted(missing))
             )
 
+        if split_mode and "amount" in field_mappings:
+            raise MappingConfigurationError(
+                "separate_debit_credit must derive amount from amount_fields."
+            )
+
     @staticmethod
     def _validate_required_field_mappings(
         required_fields: list[str],
         field_mappings: dict[str, str],
+        amount_fields: dict[str, str] | None = None,
+        split_mode: bool = False,
     ) -> None:
         mapped_source_fields = set(field_mappings.values())
+
+        if split_mode:
+            # Avoid accessing .values() on malformed amount_fields.
+            # _validate_amount_handling will report the configuration error.
+            amount_source_fields = (
+                set(amount_fields.values())
+                if isinstance(amount_fields, dict)
+                else set()
+            )
+
+            if set(required_fields) & amount_source_fields:
+                raise MappingConfigurationError(
+                    "Debit and credit amount fields must not be listed in "
+                    "required_fields; exactly one must be populated per record."
+                )
 
         missing = set(required_fields) - mapped_source_fields
 
@@ -258,7 +321,10 @@ class MappingConfigValidator:
                 )
 
             for source_value, canonical_value in translations.items():
-                if not isinstance(source_value, str) or not source_value.strip():
+                if (
+                    not isinstance(source_value, str)
+                    or not source_value.strip()
+                ):
                     raise MappingConfigurationError(
                         f"Invalid source value in {canonical_field} mapping."
                     )
@@ -268,15 +334,23 @@ class MappingConfigValidator:
                         f"Invalid canonical value in {canonical_field} mapping."
                     )
 
+    
     @classmethod
     def _validate_transformations(
         cls,
         transformations: Any,
         field_mappings: dict[str, str],
+        split_mode: bool = False,
     ) -> None:
         if not isinstance(transformations, dict):
             raise MappingConfigurationError(
                 "transformations must be a mapping."
+            )
+
+        # Validate split-amount restrictions first so the error is specific.
+        if split_mode and "amount" in transformations:
+            raise MappingConfigurationError(
+                "separate_debit_credit must not define an amount transformation."
             )
 
         for canonical_field, transformation_name in transformations.items():
@@ -296,12 +370,17 @@ class MappingConfigValidator:
                     raise MappingConfigurationError(
                         "transaction_date must use normalize_datetime."
                     )
+
             elif transformation_name not in cls.APPROVED_TRANSFORMATIONS:
                 raise MappingConfigurationError(
                     f"Unsupported transformation: {transformation_name}"
                 )
 
-        required = cls.REQUIRED_CANONICAL_FIELDS
+        required = (
+            cls.REQUIRED_CANONICAL_FIELDS_WITH_SPLIT_AMOUNT
+            if split_mode
+            else cls.REQUIRED_CANONICAL_FIELDS
+        )
 
         missing = required - set(transformations)
 
@@ -328,19 +407,84 @@ class MappingConfigValidator:
                 "A mapped direction field requires a transformation."
             )
 
+
     @classmethod
     def _validate_amount_handling(
         cls,
         amount_handling: Any,
-        transformations: dict[str, str],
-        field_mappings: dict[str, str],
+        transformations: Any,
+        field_mappings: Any,
+        amount_fields: Any,
     ) -> None:
         if amount_handling not in cls.AMOUNT_HANDLING_OPTIONS:
             raise MappingConfigurationError(
                 f"Unsupported amount_handling: {amount_handling}"
             )
 
-        amount_transformation = transformations.get("amount")
+        if amount_handling == "separate_debit_credit":
+            if (
+                not isinstance(amount_fields, dict)
+                or set(amount_fields) != {"debit", "credit"}
+            ):
+                raise MappingConfigurationError(
+                    "separate_debit_credit requires amount_fields containing "
+                    "exactly debit and credit."
+                )
+
+            debit = amount_fields.get("debit")
+            credit = amount_fields.get("credit")
+
+            if (
+                not isinstance(debit, str)
+                or not debit.strip()
+                or not isinstance(credit, str)
+                or not credit.strip()
+            ):
+                raise MappingConfigurationError(
+                    "Debit and credit source field names must be non-empty strings."
+                )
+
+            if debit == credit:
+                raise MappingConfigurationError(
+                    "Debit and credit source fields must be different."
+                )
+
+            if (
+                isinstance(field_mappings, dict)
+                and "amount" in field_mappings
+            ):
+                raise MappingConfigurationError(
+                    "separate_debit_credit must not map canonical amount directly."
+                )
+
+            if (
+                isinstance(transformations, dict)
+                and "amount" in transformations
+            ):
+                raise MappingConfigurationError(
+                    "separate_debit_credit must not define an amount transformation."
+                )
+
+            return
+
+        if amount_fields is not None:
+            raise MappingConfigurationError(
+                "amount_fields is only valid with separate_debit_credit."
+            )
+
+        if (
+            not isinstance(field_mappings, dict)
+            or "amount" not in field_mappings
+        ):
+            raise MappingConfigurationError(
+                f"{amount_handling} requires a canonical amount field mapping."
+            )
+
+        amount_transformation = (
+            transformations.get("amount")
+            if isinstance(transformations, dict)
+            else None
+        )
 
         if amount_handling == "signed_amount":
             if amount_transformation != "normalize_signed_amount":
@@ -350,6 +494,5 @@ class MappingConfigValidator:
 
         elif amount_transformation != "normalize_amount":
             raise MappingConfigurationError(
-                "positive_with_separate_direction requires "
-                "normalize_amount."
+                "positive_with_separate_direction requires normalize_amount."
             )

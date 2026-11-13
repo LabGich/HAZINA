@@ -1,9 +1,11 @@
+
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
-import yaml
-from src.mapping.mapping_registry import MappingRegistry
 
+import yaml
+
+from src.mapping.mapping_registry import MappingRegistry
 from src.mapping.mapping_engine import MappingEngine
 
 
@@ -24,6 +26,7 @@ def valid_bank_record():
         "fee": "15.00",
         "balance": "5000.00",
     }
+
 
 def engine_with_custom_bank_mapping(tmp_path, updates):
     """Create a mapping engine using a temporary BANK configuration."""
@@ -48,6 +51,21 @@ def engine_with_custom_bank_mapping(tmp_path, updates):
     config["transformations"].update(
         updates.get("transformations", {})
     )
+    config["field_mappings"].update(
+        updates.get("field_mappings", {})
+    )
+
+    if "required_fields" in updates:
+        config["required_fields"] = updates["required_fields"]
+
+    if "amount_fields" in updates:
+        config["amount_fields"] = updates["amount_fields"]
+
+    for key in updates.get("remove_field_mappings", []):
+        config["field_mappings"].pop(key, None)
+
+    for key in updates.get("remove_transformations", []):
+        config["transformations"].pop(key, None)
 
     custom_mapping_path = tmp_path / "bank_csv_v1.yaml"
 
@@ -60,6 +78,7 @@ def engine_with_custom_bank_mapping(tmp_path, updates):
     )
 
     return MappingEngine(registry=registry)
+
 
 def test_mapping_engine_maps_valid_bank_record():
 
@@ -241,6 +260,7 @@ def test_mapping_engine_records_mapping_version_on_record_error():
     assert result.mapping_id == "bank_csv_v1"
     assert result.mapping_version == "1.0"
 
+
 def test_mapping_engine_maps_signed_negative_amount_as_debit(tmp_path):
     engine = engine_with_custom_bank_mapping(
         tmp_path,
@@ -362,6 +382,125 @@ def test_mapping_engine_rejects_naive_timestamp_without_timezone(tmp_path):
         source_name="BANK",
         raw_record=record,
     )
+
+    assert result.success is False
+    assert result.errors[0].error_code == "MAPPING_EXECUTION_ERROR"
+
+
+def _split_amount_engine(tmp_path):
+    return engine_with_custom_bank_mapping(
+        tmp_path,
+        {
+            "mapping": {
+                "amount_handling": "separate_debit_credit",
+            },
+            "remove_field_mappings": ["amount"],
+            "remove_transformations": ["amount"],
+            "required_fields": [
+                "transaction_date",
+                "currency",
+                "transaction_type",
+                "status",
+            ],
+            "amount_fields": {
+                "debit": "Debit",
+                "credit": "Credit",
+            },
+        },
+    )
+
+
+def test_mapping_engine_maps_separate_debit_column(tmp_path):
+    engine = _split_amount_engine(tmp_path)
+    record = valid_bank_record()
+    record.pop("amount")
+    record["Debit"] = "1250.00"
+    record["Credit"] = ""
+
+    result = engine.map_transaction("BANK", record)
+
+    assert result.success is True
+    assert result.canonical_transaction["amount"] == Decimal("1250.00")
+    assert result.canonical_transaction["direction"] == "DEBIT"
+
+
+def test_mapping_engine_maps_separate_credit_column(tmp_path):
+    engine = _split_amount_engine(tmp_path)
+    record = valid_bank_record()
+    record.pop("amount")
+    record["Debit"] = ""
+    record["Credit"] = "2750.00"
+
+    result = engine.map_transaction("BANK", record)
+
+    assert result.success is True
+    assert result.canonical_transaction["amount"] == Decimal("2750.00")
+    assert result.canonical_transaction["direction"] == "CREDIT"
+
+
+def test_mapping_engine_rejects_both_separate_amount_columns_empty(tmp_path):
+    engine = _split_amount_engine(tmp_path)
+    record = valid_bank_record()
+    record.pop("amount")
+    record["Debit"] = ""
+    record["Credit"] = None
+
+    result = engine.map_transaction("BANK", record)
+
+    assert result.success is False
+    assert result.errors[0].error_code == "MAPPING_EXECUTION_ERROR"
+    assert "both are empty" in result.errors[0].error_message
+
+
+def test_mapping_engine_rejects_both_separate_amount_columns_populated(tmp_path):
+    engine = _split_amount_engine(tmp_path)
+    record = valid_bank_record()
+    record.pop("amount")
+    record["Debit"] = "100.00"
+    record["Credit"] = "200.00"
+
+    result = engine.map_transaction("BANK", record)
+
+    assert result.success is False
+    assert result.errors[0].error_code == "MAPPING_EXECUTION_ERROR"
+    assert "both are populated" in result.errors[0].error_message
+
+
+def test_mapping_engine_rejects_missing_separate_amount_column(tmp_path):
+    engine = _split_amount_engine(tmp_path)
+    record = valid_bank_record()
+    record.pop("amount")
+    record["Debit"] = "100.00"
+    record.pop("Credit", None)
+
+    result = engine.map_transaction("BANK", record)
+
+    assert result.success is False
+    assert result.errors[0].error_code == "MISSING_REQUIRED_FIELD"
+    assert result.errors[0].field_name == "Credit"
+
+
+def test_mapping_engine_rejects_invalid_separate_amount(tmp_path):
+    engine = _split_amount_engine(tmp_path)
+    record = valid_bank_record()
+    record.pop("amount")
+    record["Debit"] = "not-a-number"
+    record["Credit"] = ""
+
+    result = engine.map_transaction("BANK", record)
+
+    assert result.success is False
+    assert result.errors[0].error_code == "MAPPING_EXECUTION_ERROR"
+
+
+def test_mapping_engine_rejects_zero_separate_amount(tmp_path):
+    engine = _split_amount_engine(tmp_path)
+    record = valid_bank_record()
+    record.pop("amount")
+    record["Debit"] = "0"
+    record["Credit"] = ""
+
+    result = engine.map_transaction("BANK", record)
 
     assert result.success is False
     assert result.errors[0].error_code == "MAPPING_EXECUTION_ERROR"

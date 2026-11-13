@@ -125,6 +125,7 @@ class MappingEngine:
         value_mappings: Any,
         configured_transformations: Any,
         amount_handling: Any,
+        amount_fields: Any = None,
     ) -> str | None:
         """Validate the structure and supported options of a mapping."""
 
@@ -172,9 +173,19 @@ class MappingEngine:
                     f"{transformation_name}"
                 )
 
+        if amount_handling not in {
+            "positive_with_separate_direction",
+            "signed_amount",
+            "separate_debit_credit",
+        }:
+            return f"Unsupported amount_handling: {amount_handling}"
+
+        required_transformations = set(self.REQUIRED_TRANSFORMATIONS)
+        if amount_handling == "separate_debit_credit":
+            required_transformations.discard("amount")
+
         missing_transformations = (
-            self.REQUIRED_TRANSFORMATIONS
-            - set(configured_transformations)
+            required_transformations - set(configured_transformations)
         )
 
         if missing_transformations:
@@ -183,21 +194,71 @@ class MappingEngine:
                 + ", ".join(sorted(missing_transformations))
             )
 
-        if amount_handling not in {
-            "positive_with_separate_direction",
-            "signed_amount",
-        }:
-            return f"Unsupported amount_handling: {amount_handling}"
-
         if amount_handling == "signed_amount":
-            if (
-                configured_transformations.get("amount")
-                != "normalize_signed_amount"
-            ):
+            if "amount" not in field_mappings:
+                return "signed_amount handling requires an amount field mapping."
+            if configured_transformations.get("amount") != "normalize_signed_amount":
                 return (
                     "signed_amount handling requires "
                     "normalize_signed_amount for the amount field."
                 )
+            if amount_fields is not None:
+                return "amount_fields is only valid with separate_debit_credit."
+
+        elif amount_handling == "positive_with_separate_direction":
+            if "amount" not in field_mappings:
+                return (
+                    "positive_with_separate_direction requires an amount "
+                    "field mapping."
+                )
+            if configured_transformations.get("amount") != "normalize_amount":
+                return (
+                    "positive_with_separate_direction requires "
+                    "normalize_amount for the amount field."
+                )
+            if amount_fields is not None:
+                return "amount_fields is only valid with separate_debit_credit."
+
+        else:
+            if "amount" in field_mappings:
+                return (
+                    "separate_debit_credit must derive amount from "
+                    "amount_fields, not field_mappings.amount."
+                )
+            if not isinstance(amount_fields, dict):
+                return (
+                    "separate_debit_credit requires amount_fields with "
+                    "debit and credit source columns."
+                )
+            if set(amount_fields) != {"debit", "credit"}:
+                return "amount_fields must contain exactly debit and credit."
+            debit_field = amount_fields.get("debit")
+            credit_field = amount_fields.get("credit")
+            if (
+                not isinstance(debit_field, str)
+                or not debit_field.strip()
+                or not isinstance(credit_field, str)
+                or not credit_field.strip()
+            ):
+                return "Debit and credit source field names must be non-empty strings."
+            if debit_field == credit_field:
+                return "Debit and credit source fields must be different."
+            if "amount" in configured_transformations:
+                return (
+                    "separate_debit_credit must not define an amount "
+                    "transformation."
+                )
+
+        for canonical_field, source_field in field_mappings.items():
+            if not canonical_field.strip() or not source_field.strip():
+                return "Field mapping names must be non-empty strings."
+
+        mapped_source_fields = set(field_mappings.values())
+        if not set(required_fields).issubset(mapped_source_fields):
+            return (
+                "Every required source field must be represented in "
+                "field_mappings."
+            )
 
         return None
 
@@ -290,6 +351,7 @@ class MappingEngine:
             "amount_handling",
             "positive_with_separate_direction",
         )
+        amount_fields = config.get("amount_fields")
 
         configuration_error = self._validate_configuration(
             required_fields,
@@ -297,6 +359,7 @@ class MappingEngine:
             value_mappings,
             configured_transformations,
             amount_handling,
+            amount_fields,
         )
 
         if configuration_error:
@@ -321,6 +384,14 @@ class MappingEngine:
             if field_name not in raw_record
             or normalize_optional(raw_record[field_name]) is None
         ]
+
+        if amount_handling == "separate_debit_credit":
+            for source_field in (
+                amount_fields["debit"],
+                amount_fields["credit"],
+            ):
+                if source_field not in raw_record:
+                    missing_fields.append(source_field)
 
         if missing_fields:
             return failure(
@@ -369,7 +440,32 @@ class MappingEngine:
 
                 mapped[canonical_field] = value
 
-            if amount_handling == "signed_amount":
+            if amount_handling == "separate_debit_credit":
+                debit_field = amount_fields["debit"]
+                credit_field = amount_fields["credit"]
+                debit_value = normalize_optional(raw_record.get(debit_field))
+                credit_value = normalize_optional(raw_record.get(credit_field))
+
+                if debit_value is None and credit_value is None:
+                    raise TransformationError(
+                        "Exactly one of the debit or credit fields must "
+                        "contain an amount; both are empty."
+                    )
+
+                if debit_value is not None and credit_value is not None:
+                    raise TransformationError(
+                        "Exactly one of the debit or credit fields must "
+                        "contain an amount; both are populated."
+                    )
+
+                if debit_value is not None:
+                    mapped["amount"] = normalize_amount(debit_value)
+                    mapped["direction"] = "DEBIT"
+                else:
+                    mapped["amount"] = normalize_amount(credit_value)
+                    mapped["direction"] = "CREDIT"
+
+            elif amount_handling == "signed_amount":
                 raw_amount = mapped.get("amount")
 
                 if raw_amount is None:

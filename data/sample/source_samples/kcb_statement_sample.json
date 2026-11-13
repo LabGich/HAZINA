@@ -1,0 +1,52 @@
+[
+  {
+    "NO.": "1",
+    "DATE": "01/07/2024",
+    "REFERENCE NO": "FT240701001",
+    "DETAILS": "SALARY CREDIT",
+    "Debit": "",
+    "Credit": "95000.00",
+    "DEBIT": "",
+    "CREDIT BALANCE": "209916.67"
+  },
+  {
+    "NO.": "2",
+    "DATE": "02/07/2024",
+    "REFERENCE NO": "PA240702002",
+    "DETAILS": "ATM CASH WITHDRAWAL",
+    "Debit": "15000.00",
+    "Credit": "",
+    "DEBIT": "15000.00",
+    "CREDIT BALANCE": "194916.67"
+  },
+  {
+    "NO.": "3",
+    "DATE": "03/07/2024",
+    "REFERENCE NO": "FT240703003",
+    "DETAILS": "TRANSFER TO SAVINGS",
+    "Debit": "20000.00",
+    "Credit": "",
+    "DEBIT": "20000.00",
+    "CREDIT BALANCE": "174916.67"
+  },
+  {
+    "NO.": "4",
+    "DATE": "04/07/2024",
+    "REFERENCE NO": "FT240704004",
+    "DETAILS": "CUSTOMER PAYMENT",
+    "Debit": "",
+    "Credit": "8500.00",
+    "DEBIT": "",
+    "CREDIT BALANCE": "183416.67"
+  },
+  {
+    "NO.": "5",
+    "DATE": "05/07/2024",
+    "REFERENCE NO": "CHG240705005",
+    "DETAILS": "LEDGER FEE",
+    "Debit": "100.00",
+    "Credit": "",
+    "DEBIT": "100.00",
+    "CREDIT BALANCE": "183316.67"
+  }
+]

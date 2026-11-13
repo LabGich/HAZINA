@@ -1,0 +1,37 @@
+[
+  {
+    "Date": "2025-03-05",
+    "Narration": "SALARY CREDIT",
+    "Debits": "",
+    "Credits": "110000.00",
+    "Balance": "260000.00"
+  },
+  {
+    "Date": "2025-03-06",
+    "Narration": "CARD PURCHASE",
+    "Debits": "8500.00",
+    "Credits": "",
+    "Balance": "251500.00"
+  },
+  {
+    "Date": "2025-03-07",
+    "Narration": "PESALINK TRANSFER",
+    "Debits": "25000.00",
+    "Credits": "",
+    "Balance": "226500.00"
+  },
+  {
+    "Date": "2025-03-08",
+    "Narration": "INWARD TRANSFER",
+    "Debits": "",
+    "Credits": "17500.00",
+    "Balance": "244000.00"
+  },
+  {
+    "Date": "2025-03-09",
+    "Narration": "SERVICE CHARGE",
+    "Debits": "150.00",
+    "Credits": "",
+    "Balance": "243850.00"
+  }
+]

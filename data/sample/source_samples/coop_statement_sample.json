@@ -1,0 +1,37 @@
+[
+  {
+    "Date": "2025-03-05",
+    "Transaction Details": "SALARY",
+    "Withdrawals": "",
+    "Deposits": "72000.00",
+    "Balance": "122000.00"
+  },
+  {
+    "Date": "2025-03-06",
+    "Transaction Details": "MOBILE BANKING TRANSFER",
+    "Withdrawals": "12000.00",
+    "Deposits": "",
+    "Balance": "110000.00"
+  },
+  {
+    "Date": "2025-03-07",
+    "Transaction Details": "UTILITY PAYMENT",
+    "Withdrawals": "3500.00",
+    "Deposits": "",
+    "Balance": "106500.00"
+  },
+  {
+    "Date": "2025-03-08",
+    "Transaction Details": "CASH DEPOSIT",
+    "Withdrawals": "",
+    "Deposits": "8000.00",
+    "Balance": "114500.00"
+  },
+  {
+    "Date": "2025-03-09",
+    "Transaction Details": "ACCOUNT MAINTENANCE FEE",
+    "Withdrawals": "300.00",
+    "Deposits": "",
+    "Balance": "114200.00"
+  }
+]
