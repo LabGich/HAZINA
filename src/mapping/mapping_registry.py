@@ -1,8 +1,14 @@
 
 from pathlib import Path
 from typing import Any
+import re
 
 import yaml
+
+from src.mapping.mapping_config_validator import (
+    MappingConfigValidator,
+    MappingConfigurationError,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -19,7 +25,7 @@ class MappingRegistryError(Exception):
 
 
 class MappingRegistry:
-    """Loads source definitions and resolves versioned mapping configurations."""
+    """Loads sources and resolves validated versioned mappings."""
 
     def __init__(
         self,
@@ -64,7 +70,11 @@ class MappingRegistry:
             )
 
         for source_name, source_config in sources.items():
-            if not isinstance(source_config, dict):
+            if (
+                not isinstance(source_name, str)
+                or not source_name.strip()
+                or not isinstance(source_config, dict)
+            ):
                 raise MappingRegistryError(
                     f"Invalid configuration for source: {source_name}"
                 )
@@ -72,6 +82,11 @@ class MappingRegistry:
         return sources
 
     def get_source(self, source_name: str) -> dict[str, Any]:
+        if not isinstance(source_name, str) or not source_name.strip():
+            raise MappingRegistryError(
+                "Source name must be a non-empty string."
+            )
+
         source_name = source_name.strip().upper()
 
         source = self.sources.get(source_name)
@@ -86,6 +101,11 @@ class MappingRegistry:
                 f"Source is disabled: {source_name}"
             )
 
+        if source.get("source_type") not in {"FILE", "API"}:
+            raise MappingRegistryError(
+                f"Invalid source_type for {source_name}"
+            )
+
         return source
 
     def resolve_mapping(
@@ -94,6 +114,7 @@ class MappingRegistry:
         mapping_id: str | None = None,
         mapping_version: str | None = None,
     ) -> dict[str, Any]:
+        source_name = source_name.strip().upper()
         source = self.get_source(source_name)
 
         default_mapping = source.get("default_mapping")
@@ -116,6 +137,17 @@ class MappingRegistry:
         if not mapping_id or not mapping_version:
             raise MappingRegistryError(
                 f"Incomplete mapping selection for {source_name}"
+            )
+
+        if (
+            not isinstance(mapping_id, str)
+            or not re.fullmatch(
+                r"[A-Za-z0-9][A-Za-z0-9_-]*",
+                mapping_id,
+            )
+        ):
+            raise MappingRegistryError(
+                f"Invalid mapping ID: {mapping_id}"
             )
 
         mapping_path = self.mappings_dir / f"{mapping_id}.yaml"
@@ -148,5 +180,16 @@ class MappingRegistry:
             raise MappingRegistryError(
                 f"Source type mismatch for mapping {mapping_id}"
             )
+
+        try:
+            MappingConfigValidator.validate(
+                config=config,
+                source_name=source_name,
+                source_config=source,
+            )
+        except MappingConfigurationError as exc:
+            raise MappingRegistryError(
+                f"Invalid mapping configuration {mapping_id}: {exc}"
+            ) from exc
 
         return config
