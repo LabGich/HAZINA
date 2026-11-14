@@ -4,12 +4,11 @@
 # 2. adapters -> preprocesses source-specific layouts into clean records
 # 3. mapping registry -> maps source records and YAML config to standardized fields
 
-
 from pathlib import Path
 from typing import Any
 
 from src.mapping.mapping_registry import MappingRegistry
-from src.ingestion.source_readers import CSVReader
+from src.ingestion.source_readers import FormatReaderRegistry
 from src.ingestion.adapters.registry import AdapterRegistry
 
 
@@ -18,7 +17,7 @@ class SourceFileReaderError(ValueError):
 
 
 class SourceFileReader:
-    """Unified entry point for reading registered file-based sources."""
+    """Unified entry point for registered file-based sources."""
 
     def __init__(
         self,
@@ -47,6 +46,15 @@ class SourceFileReader:
                 f"Source file not found: {path}"
             )
 
+        file_format = path.suffix.lower().lstrip(".").upper()
+        supported_formats = source.get("supported_formats", [])
+
+        if file_format not in supported_formats:
+            raise SourceFileReaderError(
+                f"{source_name} does not support {file_format} files. "
+                f"Supported formats: {', '.join(supported_formats)}"
+            )
+
         ingestion = source.get("ingestion", {})
         reader_options = ingestion.get("reader_options", {})
         adapter_name = ingestion.get("adapter")
@@ -60,6 +68,7 @@ class SourceFileReader:
                 )
 
                 records = result["records"]
+
                 metadata = {
                     key: value
                     for key, value in result.items()
@@ -67,16 +76,8 @@ class SourceFileReader:
                 }
 
             else:
-                suffix = path.suffix.lower()
-
-                if suffix != ".csv":
-                    raise SourceFileReaderError(
-                        f"Unsupported file format: {suffix}. "
-                        "CSV is currently supported."
-                    )
-
                 records = list(
-                    CSVReader.read(
+                    FormatReaderRegistry.read(
                         file_path=path,
                         options=reader_options,
                     )
@@ -93,7 +94,7 @@ class SourceFileReader:
                 "source_name": source_name.strip().upper(),
                 "source_type": "FILE",
                 "file_name": path.name,
-                "file_format": path.suffix.lower().lstrip(".").upper(),
+                "file_format": file_format,
                 "records_received": len(records),
                 "records": records,
                 "metadata": metadata,
