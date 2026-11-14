@@ -67,3 +67,14 @@ sources:
     default_mapping:
       mapping_id: explore_my_data_v1
       mapping_version: "1.0"
+
+  UTILLY:
+    source_type: FILE
+    source_identifier: utilly_bank_statement
+    description: Utilly fictional bank statement sample
+    enabled: true
+    supported_formats:
+      - CSV
+    default_mapping:
+      mapping_id: utilly_bank_v1
+      mapping_version: "1.0"
