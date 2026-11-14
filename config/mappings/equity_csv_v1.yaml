@@ -24,6 +24,7 @@ amount_fields:
 default_values:
   currency: KES
   status: COMPLETED
+  payment_method: UNKNOWN
 
 derived_fields:
   transaction_type:
