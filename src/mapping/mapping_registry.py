@@ -5,6 +5,7 @@ from typing import Any
 import re
 
 import yaml
+import codecs
 
 from config import sources
 from src.mapping.mapping_config_validator import (
@@ -167,28 +168,109 @@ class MappingRegistry:
                 f"reader_options must be a mapping for {source_name}."
             )
 
-        allowed_reader_options = {"header_row", "encoding"}
+        # Reader options must be supported by every format registered
+        # for this source. This prevents configuration that works for
+        # one format but fails when another format is submitted.
+        format_options = {
+            "CSV": {"header_row", "encoding", "delimiter"},
+            "XLSX": {"header_row", "sheet_name"},
+            "JSON": {"record_path", "encoding"},
+            "JSONL": {"encoding"},
+            "PARQUET": {"columns"},
+        }
 
-        unknown_options = set(reader_options) - allowed_reader_options
+        allowed_reader_options = set.intersection(
+            *[
+                format_options[fmt]
+                for fmt in supported_formats
+            ]
+        )
+
+        unknown_options = (
+            set(reader_options) - allowed_reader_options
+        )
 
         if unknown_options:
             raise MappingRegistryError(
                 f"Unsupported reader options for {source_name}: "
                 + ", ".join(sorted(unknown_options))
+                + ". Options must be supported by every registered "
+                "file format."
             )
 
-        header_row = reader_options.get("header_row", 1)
+        if "header_row" in reader_options:
+            header_row = reader_options["header_row"]
 
-        if (
-            not isinstance(header_row, int)
-            or isinstance(header_row, bool)
-            or header_row < 1
-        ):
-            raise MappingRegistryError(
-                f"header_row must be a positive integer for {source_name}."
-            )
+            if (
+                not isinstance(header_row, int)
+                or isinstance(header_row, bool)
+                or header_row < 1
+            ):
+                raise MappingRegistryError(
+                    f"header_row must be a positive integer "
+                    f"for {source_name}."
+                )
 
-        encoding = reader_options.get("encoding", "utf-8")
+        if "encoding" in reader_options:
+            encoding = reader_options["encoding"]
+
+            if not isinstance(encoding, str) or not encoding.strip():
+                raise MappingRegistryError(
+                    f"encoding must be a non-empty string "
+                    f"for {source_name}."
+                )
+
+            try:
+                codecs.lookup(encoding)
+            except LookupError as exc:
+                raise MappingRegistryError(
+                    f"Unknown text encoding '{encoding}' "
+                    f"for {source_name}."
+                ) from exc
+
+        if "delimiter" in reader_options:
+            delimiter = reader_options["delimiter"]
+
+            if not isinstance(delimiter, str) or len(delimiter) != 1:
+                raise MappingRegistryError(
+                    f"delimiter must be exactly one character "
+                    f"for {source_name}."
+                )
+
+        if "sheet_name" in reader_options:
+            sheet_name = reader_options["sheet_name"]
+
+            if not isinstance(sheet_name, str) or not sheet_name.strip():
+                raise MappingRegistryError(
+                    f"sheet_name must be a non-empty string "
+                    f"for {source_name}."
+                )
+
+        if "record_path" in reader_options:
+            record_path = reader_options["record_path"]
+
+            if not isinstance(record_path, str) or not record_path.strip():
+                raise MappingRegistryError(
+                    f"record_path must be a non-empty string "
+                    f"for {source_name}."
+                )
+
+        if "columns" in reader_options:
+            columns = reader_options["columns"]
+
+            if (
+                not isinstance(columns, list)
+                or not columns
+                or any(
+                    not isinstance(column, str) or not column.strip()
+                    for column in columns
+                )
+                or len(columns) != len(set(columns))
+            ):
+                raise MappingRegistryError(
+                    f"columns must be a non-empty list of unique "
+                    f"column names for {source_name}."
+                )
 
         if not isinstance(encoding, str) or not encoding.strip():
             raise MappingRegistryError(

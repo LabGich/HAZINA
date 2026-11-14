@@ -1,0 +1,1000 @@
+{"transaction_id":"TXN-000001","posted_date":"2025-04-01","account_id":"ACC-0001","description":"STARBUCKS #1042","category":"Coffee","amount":-94.75,"balance":5055.25,"currency":"USD"}
+{"transaction_id":"TXN-000002","posted_date":"2025-04-02","account_id":"ACC-0002","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-766.15,"balance":2898.85,"currency":"USD"}
+{"transaction_id":"TXN-000003","posted_date":"2025-04-02","account_id":"ACC-0003","description":"AMZN MKTPLACE","category":"Shopping","amount":-462.25,"balance":4909.75,"currency":"USD"}
+{"transaction_id":"TXN-000004","posted_date":"2025-04-03","account_id":"ACC-0004","description":"STARBUCKS #1042","category":"Coffee","amount":-197.33,"balance":10563.67,"currency":"USD"}
+{"transaction_id":"TXN-000005","posted_date":"2025-04-03","account_id":"ACC-0005","description":"APPLE.COM/BILL","category":"Software","amount":-359.17,"balance":9836.83,"currency":"USD"}
+{"transaction_id":"TXN-000006","posted_date":"2025-04-04","account_id":"ACC-0006","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-270.02,"balance":6894.98,"currency":"USD"}
+{"transaction_id":"TXN-000007","posted_date":"2025-04-04","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-61.1,"balance":10406.9,"currency":"USD"}
+{"transaction_id":"TXN-000008","posted_date":"2025-04-05","account_id":"ACC-0008","description":"PAYROLL DEPOSIT","category":"Income","amount":2780.76,"balance":12212.76,"currency":"USD"}
+{"transaction_id":"TXN-000009","posted_date":"2025-04-05","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":2967.33,"balance":12818.33,"currency":"USD"}
+{"transaction_id":"TXN-000010","posted_date":"2025-04-06","account_id":"ACC-0010","description":"PAYROLL DEPOSIT","category":"Income","amount":5634.8,"balance":9006.8,"currency":"USD"}
+{"transaction_id":"TXN-000011","posted_date":"2025-04-06","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":4003.85,"balance":13534.85,"currency":"USD"}
+{"transaction_id":"TXN-000012","posted_date":"2025-04-07","account_id":"ACC-0012","description":"SHELL OIL 574","category":"Fuel","amount":-161.58,"balance":3668.42,"currency":"USD"}
+{"transaction_id":"TXN-000013","posted_date":"2025-04-08","account_id":"ACC-0001","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-296.55,"balance":4758.7,"currency":"USD"}
+{"transaction_id":"TXN-000014","posted_date":"2025-04-08","account_id":"ACC-0002","description":"PAYROLL DEPOSIT","category":"Income","amount":5468.44,"balance":8367.29,"currency":"USD"}
+{"transaction_id":"TXN-000015","posted_date":"2025-04-09","account_id":"ACC-0003","description":"UBER TRIP","category":"Transport","amount":-140.01,"balance":4769.74,"currency":"USD"}
+{"transaction_id":"TXN-000016","posted_date":"2025-04-09","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-233.13,"balance":10330.54,"currency":"USD"}
+{"transaction_id":"TXN-000017","posted_date":"2025-04-10","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-867.69,"balance":8969.14,"currency":"USD"}
+{"transaction_id":"TXN-000018","posted_date":"2025-04-10","account_id":"ACC-0006","description":"SHELL OIL 574","category":"Fuel","amount":-95.63,"balance":6799.35,"currency":"USD"}
+{"transaction_id":"TXN-000019","posted_date":"2025-04-11","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":3770.89,"balance":14177.79,"currency":"USD"}
+{"transaction_id":"TXN-000020","posted_date":"2025-04-11","account_id":"ACC-0008","description":"PAYROLL DEPOSIT","category":"Income","amount":5735.92,"balance":17948.68,"currency":"USD"}
+{"transaction_id":"TXN-000021","posted_date":"2025-04-12","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":3388.33,"balance":16206.66,"currency":"USD"}
+{"transaction_id":"TXN-000022","posted_date":"2025-04-12","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-297.55,"balance":8709.25,"currency":"USD"}
+{"transaction_id":"TXN-000023","posted_date":"2025-04-13","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":2159.27,"balance":15694.12,"currency":"USD"}
+{"transaction_id":"TXN-000024","posted_date":"2025-04-14","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-421.98,"balance":3246.44,"currency":"USD"}
+{"transaction_id":"TXN-000025","posted_date":"2025-04-14","account_id":"ACC-0001","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1286.05,"balance":3472.65,"currency":"USD"}
+{"transaction_id":"TXN-000026","posted_date":"2025-04-15","account_id":"ACC-0002","description":"AMZN MKTPLACE","category":"Shopping","amount":-970.69,"balance":7396.6,"currency":"USD"}
+{"transaction_id":"TXN-000027","posted_date":"2025-04-15","account_id":"ACC-0003","description":"UBER TRIP","category":"Transport","amount":-267.83,"balance":4501.91,"currency":"USD"}
+{"transaction_id":"TXN-000028","posted_date":"2025-04-16","account_id":"ACC-0004","description":"PAYROLL DEPOSIT","category":"Income","amount":1862.08,"balance":12192.62,"currency":"USD"}
+{"transaction_id":"TXN-000029","posted_date":"2025-04-16","account_id":"ACC-0005","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-569.75,"balance":8399.39,"currency":"USD"}
+{"transaction_id":"TXN-000030","posted_date":"2025-04-17","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-1007.12,"balance":5792.23,"currency":"USD"}
+{"transaction_id":"TXN-000031","posted_date":"2025-04-17","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-30.4,"balance":14147.39,"currency":"USD"}
+{"transaction_id":"TXN-000032","posted_date":"2025-04-18","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-926.14,"balance":17022.54,"currency":"USD"}
+{"transaction_id":"TXN-000033","posted_date":"2025-04-18","account_id":"ACC-0009","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-767.21,"balance":15439.45,"currency":"USD"}
+{"transaction_id":"TXN-000034","posted_date":"2025-04-19","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-20.78,"balance":8688.47,"currency":"USD"}
+{"transaction_id":"TXN-000035","posted_date":"2025-04-20","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-333.76,"balance":15360.36,"currency":"USD"}
+{"transaction_id":"TXN-000036","posted_date":"2025-04-20","account_id":"ACC-0012","description":"AMZN MKTPLACE","category":"Shopping","amount":-439.24,"balance":2807.2,"currency":"USD"}
+{"transaction_id":"TXN-000037","posted_date":"2025-04-21","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-29.44,"balance":3443.21,"currency":"USD"}
+{"transaction_id":"TXN-000038","posted_date":"2025-04-21","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-168.1,"balance":7228.5,"currency":"USD"}
+{"transaction_id":"TXN-000039","posted_date":"2025-04-22","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-255.1,"balance":4246.81,"currency":"USD"}
+{"transaction_id":"TXN-000040","posted_date":"2025-04-22","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-482.71,"balance":11709.91,"currency":"USD"}
+{"transaction_id":"TXN-000041","posted_date":"2025-04-23","account_id":"ACC-0005","description":"UBER TRIP","category":"Transport","amount":-807.86,"balance":7591.53,"currency":"USD"}
+{"transaction_id":"TXN-000042","posted_date":"2025-04-23","account_id":"ACC-0006","description":"APPLE.COM/BILL","category":"Software","amount":-778.33,"balance":5013.9,"currency":"USD"}
+{"transaction_id":"TXN-000043","posted_date":"2025-04-24","account_id":"ACC-0007","description":"RENT PAYMENT","category":"Housing","amount":-1048.35,"balance":13099.04,"currency":"USD"}
+{"transaction_id":"TXN-000044","posted_date":"2025-04-24","account_id":"ACC-0008","description":"PAYROLL DEPOSIT","category":"Income","amount":4620.49,"balance":21643.03,"currency":"USD"}
+{"transaction_id":"TXN-000045","posted_date":"2025-04-25","account_id":"ACC-0009","description":"UBER TRIP","category":"Transport","amount":-825.51,"balance":14613.94,"currency":"USD"}
+{"transaction_id":"TXN-000046","posted_date":"2025-04-26","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-445.07,"balance":8243.4,"currency":"USD"}
+{"transaction_id":"TXN-000047","posted_date":"2025-04-26","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-82.97,"balance":15277.39,"currency":"USD"}
+{"transaction_id":"TXN-000048","posted_date":"2025-04-27","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-255.05,"balance":2552.15,"currency":"USD"}
+{"transaction_id":"TXN-000049","posted_date":"2025-04-27","account_id":"ACC-0001","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-46.84,"balance":3396.37,"currency":"USD"}
+{"transaction_id":"TXN-000050","posted_date":"2025-04-28","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-264.1,"balance":6964.4,"currency":"USD"}
+{"transaction_id":"TXN-000051","posted_date":"2025-04-28","account_id":"ACC-0003","description":"LOCAL CAFE, LLC","category":"Dining","amount":-1229.27,"balance":3017.54,"currency":"USD"}
+{"transaction_id":"TXN-000052","posted_date":"2025-04-29","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-1091.64,"balance":10618.27,"currency":"USD"}
+{"transaction_id":"TXN-000053","posted_date":"2025-04-29","account_id":"ACC-0005","description":"RENT PAYMENT","category":"Housing","amount":-246.53,"balance":7345,"currency":"USD"}
+{"transaction_id":"TXN-000054","posted_date":"2025-04-30","account_id":"ACC-0006","description":"STARBUCKS #1042","category":"Coffee","amount":-498.36,"balance":4515.54,"currency":"USD"}
+{"transaction_id":"TXN-000055","posted_date":"2025-04-30","account_id":"ACC-0007","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-434.35,"balance":12664.69,"currency":"USD"}
+{"transaction_id":"TXN-000056","posted_date":"2025-05-01","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-462.35,"balance":21180.68,"currency":"USD"}
+{"transaction_id":"TXN-000057","posted_date":"2025-05-01","account_id":"ACC-0009","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-48.32,"balance":14565.62,"currency":"USD"}
+{"transaction_id":"TXN-000058","posted_date":"2025-05-02","account_id":"ACC-0010","description":"APPLE.COM/BILL","category":"Software","amount":-277.01,"balance":7966.39,"currency":"USD"}
+{"transaction_id":"TXN-000059","posted_date":"2025-05-03","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-476.62,"balance":14800.77,"currency":"USD"}
+{"transaction_id":"TXN-000060","posted_date":"2025-05-03","account_id":"ACC-0012","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-5.16,"balance":2546.99,"currency":"USD"}
+{"transaction_id":"TXN-000061","posted_date":"2025-05-04","account_id":"ACC-0001","description":"UBER TRIP","category":"Transport","amount":-7.74,"balance":3388.63,"currency":"USD"}
+{"transaction_id":"TXN-000062","posted_date":"2025-05-04","account_id":"ACC-0002","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-127.4,"balance":6837,"currency":"USD"}
+{"transaction_id":"TXN-000063","posted_date":"2025-05-05","account_id":"ACC-0003","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-163.72,"balance":2853.82,"currency":"USD"}
+{"transaction_id":"TXN-000064","posted_date":"2025-05-05","account_id":"ACC-0004","description":"WHOLE FOODS MKT","category":"Groceries","amount":-1018.85,"balance":9599.42,"currency":"USD"}
+{"transaction_id":"TXN-000065","posted_date":"2025-05-06","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-1154.63,"balance":6190.37,"currency":"USD"}
+{"transaction_id":"TXN-000066","posted_date":"2025-05-06","account_id":"ACC-0006","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-497.45,"balance":4018.09,"currency":"USD"}
+{"transaction_id":"TXN-000067","posted_date":"2025-05-07","account_id":"ACC-0007","description":"RENT PAYMENT","category":"Housing","amount":-270.35,"balance":12394.34,"currency":"USD"}
+{"transaction_id":"TXN-000068","posted_date":"2025-05-07","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-55.91,"balance":21124.77,"currency":"USD"}
+{"transaction_id":"TXN-000069","posted_date":"2025-05-08","account_id":"ACC-0009","description":"WHOLE FOODS MKT","category":"Groceries","amount":-323.72,"balance":14241.9,"currency":"USD"}
+{"transaction_id":"TXN-000070","posted_date":"2025-05-09","account_id":"ACC-0010","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-859.04,"balance":7107.35,"currency":"USD"}
+{"transaction_id":"TXN-000071","posted_date":"2025-05-09","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-53.38,"balance":14747.39,"currency":"USD"}
+{"transaction_id":"TXN-000072","posted_date":"2025-05-10","account_id":"ACC-0012","description":"DELTA AIR 0062","category":"Travel","amount":-16.47,"balance":2530.52,"currency":"USD"}
+{"transaction_id":"TXN-000073","posted_date":"2025-05-10","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-31.49,"balance":3357.14,"currency":"USD"}
+{"transaction_id":"TXN-000074","posted_date":"2025-05-11","account_id":"ACC-0002","description":"LOCAL CAFE, LLC","category":"Dining","amount":-374.8,"balance":6462.2,"currency":"USD"}
+{"transaction_id":"TXN-000075","posted_date":"2025-05-11","account_id":"ACC-0003","description":"WHOLE FOODS MKT","category":"Groceries","amount":-325.65,"balance":2528.17,"currency":"USD"}
+{"transaction_id":"TXN-000076","posted_date":"2025-05-12","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-82.27,"balance":9517.15,"currency":"USD"}
+{"transaction_id":"TXN-000077","posted_date":"2025-05-12","account_id":"ACC-0005","description":"WHOLE FOODS MKT","category":"Groceries","amount":-382.25,"balance":5808.12,"currency":"USD"}
+{"transaction_id":"TXN-000078","posted_date":"2025-05-13","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-55.28,"balance":3962.81,"currency":"USD"}
+{"transaction_id":"TXN-000079","posted_date":"2025-05-13","account_id":"ACC-0007","description":"RENT PAYMENT","category":"Housing","amount":-36.66,"balance":12357.68,"currency":"USD"}
+{"transaction_id":"TXN-000080","posted_date":"2025-05-14","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-117.7,"balance":21007.07,"currency":"USD"}
+{"transaction_id":"TXN-000081","posted_date":"2025-05-15","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-429.04,"balance":13812.86,"currency":"USD"}
+{"transaction_id":"TXN-000082","posted_date":"2025-05-15","account_id":"ACC-0010","description":"APPLE.COM/BILL","category":"Software","amount":-181.87,"balance":6925.48,"currency":"USD"}
+{"transaction_id":"TXN-000083","posted_date":"2025-05-16","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-554.19,"balance":14193.2,"currency":"USD"}
+{"transaction_id":"TXN-000084","posted_date":"2025-05-16","account_id":"ACC-0012","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-774.15,"balance":1756.37,"currency":"USD"}
+{"transaction_id":"TXN-000085","posted_date":"2025-05-17","account_id":"ACC-0001","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-321.01,"balance":3036.13,"currency":"USD"}
+{"transaction_id":"TXN-000086","posted_date":"2025-05-17","account_id":"ACC-0002","description":"UBER TRIP","category":"Transport","amount":-329.68,"balance":6132.52,"currency":"USD"}
+{"transaction_id":"TXN-000087","posted_date":"2025-05-18","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-591.31,"balance":1936.86,"currency":"USD"}
+{"transaction_id":"TXN-000088","posted_date":"2025-05-18","account_id":"ACC-0004","description":"WHOLE FOODS MKT","category":"Groceries","amount":-762.47,"balance":8754.68,"currency":"USD"}
+{"transaction_id":"TXN-000089","posted_date":"2025-05-19","account_id":"ACC-0005","description":"RENT PAYMENT","category":"Housing","amount":-397.19,"balance":5410.93,"currency":"USD"}
+{"transaction_id":"TXN-000090","posted_date":"2025-05-19","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-65.06,"balance":3897.75,"currency":"USD"}
+{"transaction_id":"TXN-000091","posted_date":"2025-05-20","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":3383.11,"balance":15740.79,"currency":"USD"}
+{"transaction_id":"TXN-000092","posted_date":"2025-05-21","account_id":"ACC-0008","description":"SHELL OIL 574","category":"Fuel","amount":-157.87,"balance":20849.2,"currency":"USD"}
+{"transaction_id":"TXN-000093","posted_date":"2025-05-21","account_id":"ACC-0009","description":"RENT PAYMENT","category":"Housing","amount":-478.47,"balance":13334.39,"currency":"USD"}
+{"transaction_id":"TXN-000094","posted_date":"2025-05-22","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-387.77,"balance":6537.71,"currency":"USD"}
+{"transaction_id":"TXN-000095","posted_date":"2025-05-22","account_id":"ACC-0011","description":"WHOLE FOODS MKT","category":"Groceries","amount":-31.73,"balance":14161.47,"currency":"USD"}
+{"transaction_id":"TXN-000096","posted_date":"2025-05-23","account_id":"ACC-0012","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-284.24,"balance":1472.13,"currency":"USD"}
+{"transaction_id":"TXN-000097","posted_date":"2025-05-23","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-244.99,"balance":2791.14,"currency":"USD"}
+{"transaction_id":"TXN-000098","posted_date":"2025-05-24","account_id":"ACC-0002","description":"WHOLE FOODS MKT","category":"Groceries","amount":-280.47,"balance":5852.05,"currency":"USD"}
+{"transaction_id":"TXN-000099","posted_date":"2025-05-24","account_id":"ACC-0003","description":"UBER TRIP","category":"Transport","amount":-384.58,"balance":1552.28,"currency":"USD"}
+{"transaction_id":"TXN-000100","posted_date":"2025-05-25","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1166.74,"balance":7587.94,"currency":"USD"}
+{"transaction_id":"TXN-000101","posted_date":"2025-05-25","account_id":"ACC-0005","description":"APPLE.COM/BILL","category":"Software","amount":-128.88,"balance":5282.05,"currency":"USD"}
+{"transaction_id":"TXN-000102","posted_date":"2025-05-26","account_id":"ACC-0006","description":"PAYROLL DEPOSIT","category":"Income","amount":4515.32,"balance":8413.07,"currency":"USD"}
+{"transaction_id":"TXN-000103","posted_date":"2025-05-27","account_id":"ACC-0007","description":"UBER TRIP","category":"Transport","amount":-22.14,"balance":15718.65,"currency":"USD"}
+{"transaction_id":"TXN-000104","posted_date":"2025-05-27","account_id":"ACC-0008","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-301.78,"balance":20547.42,"currency":"USD"}
+{"transaction_id":"TXN-000105","posted_date":"2025-05-28","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-324.74,"balance":13009.65,"currency":"USD"}
+{"transaction_id":"TXN-000106","posted_date":"2025-05-28","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-173.05,"balance":6364.66,"currency":"USD"}
+{"transaction_id":"TXN-000107","posted_date":"2025-05-29","account_id":"ACC-0011","description":"UBER TRIP","category":"Transport","amount":-6.97,"balance":14154.5,"currency":"USD"}
+{"transaction_id":"TXN-000108","posted_date":"2025-05-29","account_id":"ACC-0012","description":"RENT PAYMENT","category":"Housing","amount":-575.69,"balance":896.44,"currency":"USD"}
+{"transaction_id":"TXN-000109","posted_date":"2025-05-30","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-479.53,"balance":2311.61,"currency":"USD"}
+{"transaction_id":"TXN-000110","posted_date":"2025-05-30","account_id":"ACC-0002","description":"LOCAL CAFE, LLC","category":"Dining","amount":-83.43,"balance":5768.62,"currency":"USD"}
+{"transaction_id":"TXN-000111","posted_date":"2025-05-31","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-511.02,"balance":1041.26,"currency":"USD"}
+{"transaction_id":"TXN-000112","posted_date":"2025-05-31","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1081.36,"balance":6506.58,"currency":"USD"}
+{"transaction_id":"TXN-000113","posted_date":"2025-06-01","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-1271.73,"balance":4010.32,"currency":"USD"}
+{"transaction_id":"TXN-000114","posted_date":"2025-06-02","account_id":"ACC-0006","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-15.44,"balance":8397.63,"currency":"USD"}
+{"transaction_id":"TXN-000115","posted_date":"2025-06-02","account_id":"ACC-0007","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-811.08,"balance":14907.57,"currency":"USD"}
+{"transaction_id":"TXN-000116","posted_date":"2025-06-03","account_id":"ACC-0008","description":"STARBUCKS #1042","category":"Coffee","amount":-12.98,"balance":20534.44,"currency":"USD"}
+{"transaction_id":"TXN-000117","posted_date":"2025-06-03","account_id":"ACC-0009","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-20.59,"balance":12989.06,"currency":"USD"}
+{"transaction_id":"TXN-000118","posted_date":"2025-06-04","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-1254.63,"balance":5110.03,"currency":"USD"}
+{"transaction_id":"TXN-000119","posted_date":"2025-06-04","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-185.04,"balance":13969.46,"currency":"USD"}
+{"transaction_id":"TXN-000120","posted_date":"2025-06-05","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-473.32,"balance":423.12,"currency":"USD"}
+{"transaction_id":"TXN-000121","posted_date":"2025-06-05","account_id":"ACC-0001","description":"STARBUCKS #1042","category":"Coffee","amount":-752.44,"balance":1559.17,"currency":"USD"}
+{"transaction_id":"TXN-000122","posted_date":"2025-06-06","account_id":"ACC-0002","description":"CVS PHARMACY 8891","category":"Health","amount":-43.74,"balance":5724.88,"currency":"USD"}
+{"transaction_id":"TXN-000123","posted_date":"2025-06-06","account_id":"ACC-0003","description":"AMZN MKTPLACE","category":"Shopping","amount":-495.09,"balance":546.17,"currency":"USD"}
+{"transaction_id":"TXN-000124","posted_date":"2025-06-07","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-66.41,"balance":6440.17,"currency":"USD"}
+{"transaction_id":"TXN-000125","posted_date":"2025-06-08","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-887.23,"balance":3123.09,"currency":"USD"}
+{"transaction_id":"TXN-000126","posted_date":"2025-06-08","account_id":"ACC-0006","description":"RENT PAYMENT","category":"Housing","amount":-281.01,"balance":8116.62,"currency":"USD"}
+{"transaction_id":"TXN-000127","posted_date":"2025-06-09","account_id":"ACC-0007","description":"LOCAL CAFE, LLC","category":"Dining","amount":-756.04,"balance":14151.53,"currency":"USD"}
+{"transaction_id":"TXN-000128","posted_date":"2025-06-09","account_id":"ACC-0008","description":"PAYROLL DEPOSIT","category":"Income","amount":5091.18,"balance":25625.62,"currency":"USD"}
+{"transaction_id":"TXN-000129","posted_date":"2025-06-10","account_id":"ACC-0009","description":"DELTA AIR 0062","category":"Travel","amount":-381.67,"balance":12607.39,"currency":"USD"}
+{"transaction_id":"TXN-000130","posted_date":"2025-06-10","account_id":"ACC-0010","description":"APPLE.COM/BILL","category":"Software","amount":-473.32,"balance":4636.71,"currency":"USD"}
+{"transaction_id":"TXN-000131","posted_date":"2025-06-11","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-572.45,"balance":13397.01,"currency":"USD"}
+{"transaction_id":"TXN-000132","posted_date":"2025-06-11","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-659.25,"balance":-236.13,"currency":"USD"}
+{"transaction_id":"TXN-000133","posted_date":"2025-06-12","account_id":"ACC-0001","description":"CVS PHARMACY 8891","category":"Health","amount":-1107.82,"balance":451.35,"currency":"USD"}
+{"transaction_id":"TXN-000134","posted_date":"2025-06-12","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-228.92,"balance":5495.96,"currency":"USD"}
+{"transaction_id":"TXN-000135","posted_date":"2025-06-13","account_id":"ACC-0003","description":"PAYROLL DEPOSIT","category":"Income","amount":3537.03,"balance":4083.2,"currency":"USD"}
+{"transaction_id":"TXN-000136","posted_date":"2025-06-14","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-136.18,"balance":6303.99,"currency":"USD"}
+{"transaction_id":"TXN-000137","posted_date":"2025-06-14","account_id":"ACC-0005","description":"RENT PAYMENT","category":"Housing","amount":-125.68,"balance":2997.41,"currency":"USD"}
+{"transaction_id":"TXN-000138","posted_date":"2025-06-15","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-460.39,"balance":7656.23,"currency":"USD"}
+{"transaction_id":"TXN-000139","posted_date":"2025-06-15","account_id":"ACC-0007","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-802.24,"balance":13349.29,"currency":"USD"}
+{"transaction_id":"TXN-000140","posted_date":"2025-06-16","account_id":"ACC-0008","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-691.62,"balance":24934,"currency":"USD"}
+{"transaction_id":"TXN-000141","posted_date":"2025-06-16","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":5046.34,"balance":17653.73,"currency":"USD"}
+{"transaction_id":"TXN-000142","posted_date":"2025-06-17","account_id":"ACC-0010","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-1037.58,"balance":3599.13,"currency":"USD"}
+{"transaction_id":"TXN-000143","posted_date":"2025-06-17","account_id":"ACC-0011","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-244.54,"balance":13152.47,"currency":"USD"}
+{"transaction_id":"TXN-000144","posted_date":"2025-06-18","account_id":"ACC-0012","description":"PAYROLL DEPOSIT","category":"Income","amount":5508.9,"balance":5272.77,"currency":"USD"}
+{"transaction_id":"TXN-000145","posted_date":"2025-06-18","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-78.91,"balance":372.44,"currency":"USD"}
+{"transaction_id":"TXN-000146","posted_date":"2025-06-19","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-492.23,"balance":5003.73,"currency":"USD"}
+{"transaction_id":"TXN-000147","posted_date":"2025-06-20","account_id":"ACC-0003","description":"UBER TRIP","category":"Transport","amount":-154.21,"balance":3928.99,"currency":"USD"}
+{"transaction_id":"TXN-000148","posted_date":"2025-06-20","account_id":"ACC-0004","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-287.14,"balance":6016.85,"currency":"USD"}
+{"transaction_id":"TXN-000149","posted_date":"2025-06-21","account_id":"ACC-0005","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-387.86,"balance":2609.55,"currency":"USD"}
+{"transaction_id":"TXN-000150","posted_date":"2025-06-21","account_id":"ACC-0006","description":"STARBUCKS #1042","category":"Coffee","amount":-485.34,"balance":7170.89,"currency":"USD"}
+{"transaction_id":"TXN-000151","posted_date":"2025-06-22","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-196.46,"balance":13152.83,"currency":"USD"}
+{"transaction_id":"TXN-000152","posted_date":"2025-06-22","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-37.02,"balance":24896.98,"currency":"USD"}
+{"transaction_id":"TXN-000153","posted_date":"2025-06-23","account_id":"ACC-0009","description":"LOCAL CAFE, LLC","category":"Dining","amount":-133.69,"balance":17520.04,"currency":"USD"}
+{"transaction_id":"TXN-000154","posted_date":"2025-06-23","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-715.41,"balance":2883.72,"currency":"USD"}
+{"transaction_id":"TXN-000155","posted_date":"2025-06-24","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-685.37,"balance":12467.1,"currency":"USD"}
+{"transaction_id":"TXN-000156","posted_date":"2025-06-24","account_id":"ACC-0012","description":"AMZN MKTPLACE","category":"Shopping","amount":-400.96,"balance":4871.81,"currency":"USD"}
+{"transaction_id":"TXN-000157","posted_date":"2025-06-25","account_id":"ACC-0001","description":"AMZN MKTPLACE","category":"Shopping","amount":-715.24,"balance":-342.8,"currency":"USD"}
+{"transaction_id":"TXN-000158","posted_date":"2025-06-25","account_id":"ACC-0002","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-56.52,"balance":4947.21,"currency":"USD"}
+{"transaction_id":"TXN-000159","posted_date":"2025-06-26","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-324.73,"balance":3604.26,"currency":"USD"}
+{"transaction_id":"TXN-000160","posted_date":"2025-06-27","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-13.64,"balance":6003.21,"currency":"USD"}
+{"transaction_id":"TXN-000161","posted_date":"2025-06-27","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-379.37,"balance":2230.18,"currency":"USD"}
+{"transaction_id":"TXN-000162","posted_date":"2025-06-28","account_id":"ACC-0006","description":"WHOLE FOODS MKT","category":"Groceries","amount":-348.31,"balance":6822.58,"currency":"USD"}
+{"transaction_id":"TXN-000163","posted_date":"2025-06-28","account_id":"ACC-0007","description":"WHOLE FOODS MKT","category":"Groceries","amount":-645.44,"balance":12507.39,"currency":"USD"}
+{"transaction_id":"TXN-000164","posted_date":"2025-06-29","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-73.38,"balance":24823.6,"currency":"USD"}
+{"transaction_id":"TXN-000165","posted_date":"2025-06-29","account_id":"ACC-0009","description":"DELTA AIR 0062","category":"Travel","amount":-226.68,"balance":17293.36,"currency":"USD"}
+{"transaction_id":"TXN-000166","posted_date":"2025-06-30","account_id":"ACC-0010","description":"AMZN MKTPLACE","category":"Shopping","amount":-414.15,"balance":2469.57,"currency":"USD"}
+{"transaction_id":"TXN-000167","posted_date":"2025-06-30","account_id":"ACC-0011","description":"CVS PHARMACY 8891","category":"Health","amount":-530.55,"balance":11936.55,"currency":"USD"}
+{"transaction_id":"TXN-000168","posted_date":"2025-07-01","account_id":"ACC-0012","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-40.85,"balance":4830.96,"currency":"USD"}
+{"transaction_id":"TXN-000169","posted_date":"2025-07-01","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-12.3,"balance":-355.1,"currency":"USD"}
+{"transaction_id":"TXN-000170","posted_date":"2025-07-02","account_id":"ACC-0002","description":"UBER TRIP","category":"Transport","amount":-48.91,"balance":4898.3,"currency":"USD"}
+{"transaction_id":"TXN-000171","posted_date":"2025-07-03","account_id":"ACC-0003","description":"DELTA AIR 0062","category":"Travel","amount":-102.76,"balance":3501.5,"currency":"USD"}
+{"transaction_id":"TXN-000172","posted_date":"2025-07-03","account_id":"ACC-0004","description":"STARBUCKS #1042","category":"Coffee","amount":-670.42,"balance":5332.79,"currency":"USD"}
+{"transaction_id":"TXN-000173","posted_date":"2025-07-04","account_id":"ACC-0005","description":"CVS PHARMACY 8891","category":"Health","amount":-41.46,"balance":2188.72,"currency":"USD"}
+{"transaction_id":"TXN-000174","posted_date":"2025-07-04","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-14.9,"balance":6807.68,"currency":"USD"}
+{"transaction_id":"TXN-000175","posted_date":"2025-07-05","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-105.91,"balance":12401.48,"currency":"USD"}
+{"transaction_id":"TXN-000176","posted_date":"2025-07-05","account_id":"ACC-0008","description":"UBER TRIP","category":"Transport","amount":-108.25,"balance":24715.35,"currency":"USD"}
+{"transaction_id":"TXN-000177","posted_date":"2025-07-06","account_id":"ACC-0009","description":"LOCAL CAFE, LLC","category":"Dining","amount":-609.79,"balance":16683.57,"currency":"USD"}
+{"transaction_id":"TXN-000178","posted_date":"2025-07-06","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-395.95,"balance":2073.62,"currency":"USD"}
+{"transaction_id":"TXN-000179","posted_date":"2025-07-07","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-573.55,"balance":11363,"currency":"USD"}
+{"transaction_id":"TXN-000180","posted_date":"2025-07-07","account_id":"ACC-0012","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-395.8,"balance":4435.16,"currency":"USD"}
+{"transaction_id":"TXN-000181","posted_date":"2025-07-08","account_id":"ACC-0001","description":"LOCAL CAFE, LLC","category":"Dining","amount":-500.69,"balance":-855.79,"currency":"USD"}
+{"transaction_id":"TXN-000182","posted_date":"2025-07-09","account_id":"ACC-0002","description":"LOCAL CAFE, LLC","category":"Dining","amount":-368.95,"balance":4529.35,"currency":"USD"}
+{"transaction_id":"TXN-000183","posted_date":"2025-07-09","account_id":"ACC-0003","description":"PAYROLL DEPOSIT","category":"Income","amount":3673.51,"balance":7175.01,"currency":"USD"}
+{"transaction_id":"TXN-000184","posted_date":"2025-07-10","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-582.02,"balance":4750.77,"currency":"USD"}
+{"transaction_id":"TXN-000185","posted_date":"2025-07-10","account_id":"ACC-0005","description":"CVS PHARMACY 8891","category":"Health","amount":-739.38,"balance":1449.34,"currency":"USD"}
+{"transaction_id":"TXN-000186","posted_date":"2025-07-11","account_id":"ACC-0006","description":"DELTA AIR 0062","category":"Travel","amount":-51.76,"balance":6755.92,"currency":"USD"}
+{"transaction_id":"TXN-000187","posted_date":"2025-07-11","account_id":"ACC-0007","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-411.25,"balance":11990.23,"currency":"USD"}
+{"transaction_id":"TXN-000188","posted_date":"2025-07-12","account_id":"ACC-0008","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-430.52,"balance":24284.83,"currency":"USD"}
+{"transaction_id":"TXN-000189","posted_date":"2025-07-12","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-307.81,"balance":16375.76,"currency":"USD"}
+{"transaction_id":"TXN-000190","posted_date":"2025-07-13","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-874.85,"balance":1198.77,"currency":"USD"}
+{"transaction_id":"TXN-000191","posted_date":"2025-07-13","account_id":"ACC-0011","description":"APPLE.COM/BILL","category":"Software","amount":-87.5,"balance":11275.5,"currency":"USD"}
+{"transaction_id":"TXN-000192","posted_date":"2025-07-14","account_id":"ACC-0012","description":"PAYROLL DEPOSIT","category":"Income","amount":1894.75,"balance":6329.91,"currency":"USD"}
+{"transaction_id":"TXN-000193","posted_date":"2025-07-15","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-371.51,"balance":-1227.3,"currency":"USD"}
+{"transaction_id":"TXN-000194","posted_date":"2025-07-15","account_id":"ACC-0002","description":"PAYROLL DEPOSIT","category":"Income","amount":2011.83,"balance":6541.18,"currency":"USD"}
+{"transaction_id":"TXN-000195","posted_date":"2025-07-16","account_id":"ACC-0003","description":"DELTA AIR 0062","category":"Travel","amount":-17.92,"balance":7157.09,"currency":"USD"}
+{"transaction_id":"TXN-000196","posted_date":"2025-07-16","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-714.91,"balance":4035.86,"currency":"USD"}
+{"transaction_id":"TXN-000197","posted_date":"2025-07-17","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-229.25,"balance":1220.09,"currency":"USD"}
+{"transaction_id":"TXN-000198","posted_date":"2025-07-17","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-471.77,"balance":6284.15,"currency":"USD"}
+{"transaction_id":"TXN-000199","posted_date":"2025-07-18","account_id":"ACC-0007","description":"LOCAL CAFE, LLC","category":"Dining","amount":-171.32,"balance":11818.91,"currency":"USD"}
+{"transaction_id":"TXN-000200","posted_date":"2025-07-18","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-306.95,"balance":23977.88,"currency":"USD"}
+{"transaction_id":"TXN-000201","posted_date":"2025-07-19","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-1310.9,"balance":15064.86,"currency":"USD"}
+{"transaction_id":"TXN-000202","posted_date":"2025-07-19","account_id":"ACC-0010","description":"AMZN MKTPLACE","category":"Shopping","amount":-509.3,"balance":689.47,"currency":"USD"}
+{"transaction_id":"TXN-000203","posted_date":"2025-07-20","account_id":"ACC-0011","description":"APPLE.COM/BILL","category":"Software","amount":-176.64,"balance":11098.86,"currency":"USD"}
+{"transaction_id":"TXN-000204","posted_date":"2025-07-21","account_id":"ACC-0012","description":"APPLE.COM/BILL","category":"Software","amount":-364.75,"balance":5965.16,"currency":"USD"}
+{"transaction_id":"TXN-000205","posted_date":"2025-07-21","account_id":"ACC-0001","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-269.52,"balance":-1496.82,"currency":"USD"}
+{"transaction_id":"TXN-000206","posted_date":"2025-07-22","account_id":"ACC-0002","description":"UBER TRIP","category":"Transport","amount":-72.18,"balance":6469,"currency":"USD"}
+{"transaction_id":"TXN-000207","posted_date":"2025-07-22","account_id":"ACC-0003","description":"SHELL OIL 574","category":"Fuel","amount":-737.99,"balance":6419.1,"currency":"USD"}
+{"transaction_id":"TXN-000208","posted_date":"2025-07-23","account_id":"ACC-0004","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-284.53,"balance":3751.33,"currency":"USD"}
+{"transaction_id":"TXN-000209","posted_date":"2025-07-23","account_id":"ACC-0005","description":"SHELL OIL 574","category":"Fuel","amount":-490.03,"balance":730.06,"currency":"USD"}
+{"transaction_id":"TXN-000210","posted_date":"2025-07-24","account_id":"ACC-0006","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-72.32,"balance":6211.83,"currency":"USD"}
+{"transaction_id":"TXN-000211","posted_date":"2025-07-24","account_id":"ACC-0007","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-785.17,"balance":11033.74,"currency":"USD"}
+{"transaction_id":"TXN-000212","posted_date":"2025-07-25","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-1050.35,"balance":22927.53,"currency":"USD"}
+{"transaction_id":"TXN-000213","posted_date":"2025-07-25","account_id":"ACC-0009","description":"DELTA AIR 0062","category":"Travel","amount":-82.07,"balance":14982.79,"currency":"USD"}
+{"transaction_id":"TXN-000214","posted_date":"2025-07-26","account_id":"ACC-0010","description":"AMZN MKTPLACE","category":"Shopping","amount":-353.9,"balance":335.57,"currency":"USD"}
+{"transaction_id":"TXN-000215","posted_date":"2025-07-27","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-356.49,"balance":10742.37,"currency":"USD"}
+{"transaction_id":"TXN-000216","posted_date":"2025-07-27","account_id":"ACC-0012","description":"PAYROLL DEPOSIT","category":"Income","amount":3157.69,"balance":9122.85,"currency":"USD"}
+{"transaction_id":"TXN-000217","posted_date":"2025-07-28","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-67.24,"balance":-1564.06,"currency":"USD"}
+{"transaction_id":"TXN-000218","posted_date":"2025-07-28","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-817.13,"balance":5651.87,"currency":"USD"}
+{"transaction_id":"TXN-000219","posted_date":"2025-07-29","account_id":"ACC-0003","description":"LOCAL CAFE, LLC","category":"Dining","amount":-531.28,"balance":5887.82,"currency":"USD"}
+{"transaction_id":"TXN-000220","posted_date":"2025-07-29","account_id":"ACC-0004","description":"RENT PAYMENT","category":"Housing","amount":-145.1,"balance":3606.23,"currency":"USD"}
+{"transaction_id":"TXN-000221","posted_date":"2025-07-30","account_id":"ACC-0005","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-473.9,"balance":256.16,"currency":"USD"}
+{"transaction_id":"TXN-000222","posted_date":"2025-07-30","account_id":"ACC-0006","description":"STARBUCKS #1042","category":"Coffee","amount":-419.47,"balance":5792.36,"currency":"USD"}
+{"transaction_id":"TXN-000223","posted_date":"2025-07-31","account_id":"ACC-0007","description":"LOCAL CAFE, LLC","category":"Dining","amount":-49.6,"balance":10984.14,"currency":"USD"}
+{"transaction_id":"TXN-000224","posted_date":"2025-07-31","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-91.38,"balance":22836.15,"currency":"USD"}
+{"transaction_id":"TXN-000225","posted_date":"2025-08-01","account_id":"ACC-0009","description":"AMZN MKTPLACE","category":"Shopping","amount":-1051.1,"balance":13931.69,"currency":"USD"}
+{"transaction_id":"TXN-000226","posted_date":"2025-08-02","account_id":"ACC-0010","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1412.36,"balance":-1076.79,"currency":"USD"}
+{"transaction_id":"TXN-000227","posted_date":"2025-08-02","account_id":"ACC-0011","description":"WHOLE FOODS MKT","category":"Groceries","amount":-53.43,"balance":10688.94,"currency":"USD"}
+{"transaction_id":"TXN-000228","posted_date":"2025-08-03","account_id":"ACC-0012","description":"SHELL OIL 574","category":"Fuel","amount":-26.33,"balance":9096.52,"currency":"USD"}
+{"transaction_id":"TXN-000229","posted_date":"2025-08-03","account_id":"ACC-0001","description":"CVS PHARMACY 8891","category":"Health","amount":-137.48,"balance":-1701.54,"currency":"USD"}
+{"transaction_id":"TXN-000230","posted_date":"2025-08-04","account_id":"ACC-0002","description":"WHOLE FOODS MKT","category":"Groceries","amount":-784.71,"balance":4867.16,"currency":"USD"}
+{"transaction_id":"TXN-000231","posted_date":"2025-08-04","account_id":"ACC-0003","description":"SHELL OIL 574","category":"Fuel","amount":-1321.08,"balance":4566.74,"currency":"USD"}
+{"transaction_id":"TXN-000232","posted_date":"2025-08-05","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-985.18,"balance":2621.05,"currency":"USD"}
+{"transaction_id":"TXN-000233","posted_date":"2025-08-05","account_id":"ACC-0005","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-835.69,"balance":-579.53,"currency":"USD"}
+{"transaction_id":"TXN-000234","posted_date":"2025-08-06","account_id":"ACC-0006","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-4.45,"balance":5787.91,"currency":"USD"}
+{"transaction_id":"TXN-000235","posted_date":"2025-08-06","account_id":"ACC-0007","description":"DELTA AIR 0062","category":"Travel","amount":-38.7,"balance":10945.44,"currency":"USD"}
+{"transaction_id":"TXN-000236","posted_date":"2025-08-07","account_id":"ACC-0008","description":"APPLE.COM/BILL","category":"Software","amount":-1119.24,"balance":21716.91,"currency":"USD"}
+{"transaction_id":"TXN-000237","posted_date":"2025-08-08","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":5289.86,"balance":19221.55,"currency":"USD"}
+{"transaction_id":"TXN-000238","posted_date":"2025-08-08","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-490.14,"balance":-1566.93,"currency":"USD"}
+{"transaction_id":"TXN-000239","posted_date":"2025-08-09","account_id":"ACC-0011","description":"APPLE.COM/BILL","category":"Software","amount":-975.55,"balance":9713.39,"currency":"USD"}
+{"transaction_id":"TXN-000240","posted_date":"2025-08-09","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-112.01,"balance":8984.51,"currency":"USD"}
+{"transaction_id":"TXN-000241","posted_date":"2025-08-10","account_id":"ACC-0001","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-783.61,"balance":-2485.15,"currency":"USD"}
+{"transaction_id":"TXN-000242","posted_date":"2025-08-10","account_id":"ACC-0002","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-687.69,"balance":4179.47,"currency":"USD"}
+{"transaction_id":"TXN-000243","posted_date":"2025-08-11","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-890.41,"balance":3676.33,"currency":"USD"}
+{"transaction_id":"TXN-000244","posted_date":"2025-08-11","account_id":"ACC-0004","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-265.2,"balance":2355.85,"currency":"USD"}
+{"transaction_id":"TXN-000245","posted_date":"2025-08-12","account_id":"ACC-0005","description":"PAYROLL DEPOSIT","category":"Income","amount":4417.55,"balance":3838.02,"currency":"USD"}
+{"transaction_id":"TXN-000246","posted_date":"2025-08-12","account_id":"ACC-0006","description":"RENT PAYMENT","category":"Housing","amount":-733.31,"balance":5054.6,"currency":"USD"}
+{"transaction_id":"TXN-000247","posted_date":"2025-08-13","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-871.45,"balance":10073.99,"currency":"USD"}
+{"transaction_id":"TXN-000248","posted_date":"2025-08-14","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-369.25,"balance":21347.66,"currency":"USD"}
+{"transaction_id":"TXN-000249","posted_date":"2025-08-14","account_id":"ACC-0009","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-95.2,"balance":19126.35,"currency":"USD"}
+{"transaction_id":"TXN-000250","posted_date":"2025-08-15","account_id":"ACC-0010","description":"STARBUCKS #1042","category":"Coffee","amount":-1382.67,"balance":-2949.6,"currency":"USD"}
+{"transaction_id":"TXN-000251","posted_date":"2025-08-15","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-105.54,"balance":9607.85,"currency":"USD"}
+{"transaction_id":"TXN-000252","posted_date":"2025-08-16","account_id":"ACC-0012","description":"DELTA AIR 0062","category":"Travel","amount":-1002.98,"balance":7981.53,"currency":"USD"}
+{"transaction_id":"TXN-000253","posted_date":"2025-08-16","account_id":"ACC-0001","description":"STARBUCKS #1042","category":"Coffee","amount":-138.96,"balance":-2624.11,"currency":"USD"}
+{"transaction_id":"TXN-000254","posted_date":"2025-08-17","account_id":"ACC-0002","description":"UBER TRIP","category":"Transport","amount":-70.12,"balance":4109.35,"currency":"USD"}
+{"transaction_id":"TXN-000255","posted_date":"2025-08-17","account_id":"ACC-0003","description":"RENT PAYMENT","category":"Housing","amount":-12.56,"balance":3663.77,"currency":"USD"}
+{"transaction_id":"TXN-000256","posted_date":"2025-08-18","account_id":"ACC-0004","description":"SHELL OIL 574","category":"Fuel","amount":-691.94,"balance":1663.91,"currency":"USD"}
+{"transaction_id":"TXN-000257","posted_date":"2025-08-18","account_id":"ACC-0005","description":"RENT PAYMENT","category":"Housing","amount":-334.26,"balance":3503.76,"currency":"USD"}
+{"transaction_id":"TXN-000258","posted_date":"2025-08-19","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-38.92,"balance":5015.68,"currency":"USD"}
+{"transaction_id":"TXN-000259","posted_date":"2025-08-19","account_id":"ACC-0007","description":"SHELL OIL 574","category":"Fuel","amount":-618.18,"balance":9455.81,"currency":"USD"}
+{"transaction_id":"TXN-000260","posted_date":"2025-08-20","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-1008.07,"balance":20339.59,"currency":"USD"}
+{"transaction_id":"TXN-000261","posted_date":"2025-08-21","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-465.22,"balance":18661.13,"currency":"USD"}
+{"transaction_id":"TXN-000262","posted_date":"2025-08-21","account_id":"ACC-0010","description":"AMZN MKTPLACE","category":"Shopping","amount":-184.58,"balance":-3134.18,"currency":"USD"}
+{"transaction_id":"TXN-000263","posted_date":"2025-08-22","account_id":"ACC-0011","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-526.54,"balance":9081.31,"currency":"USD"}
+{"transaction_id":"TXN-000264","posted_date":"2025-08-22","account_id":"ACC-0012","description":"RENT PAYMENT","category":"Housing","amount":-32.69,"balance":7948.84,"currency":"USD"}
+{"transaction_id":"TXN-000265","posted_date":"2025-08-23","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-1381.48,"balance":-4005.59,"currency":"USD"}
+{"transaction_id":"TXN-000266","posted_date":"2025-08-23","account_id":"ACC-0002","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-32.13,"balance":4077.22,"currency":"USD"}
+{"transaction_id":"TXN-000267","posted_date":"2025-08-24","account_id":"ACC-0003","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-366.75,"balance":3297.02,"currency":"USD"}
+{"transaction_id":"TXN-000268","posted_date":"2025-08-24","account_id":"ACC-0004","description":"LOCAL CAFE, LLC","category":"Dining","amount":-334.45,"balance":1329.46,"currency":"USD"}
+{"transaction_id":"TXN-000269","posted_date":"2025-08-25","account_id":"ACC-0005","description":"WHOLE FOODS MKT","category":"Groceries","amount":-165.84,"balance":3337.92,"currency":"USD"}
+{"transaction_id":"TXN-000270","posted_date":"2025-08-25","account_id":"ACC-0006","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-214.03,"balance":4801.65,"currency":"USD"}
+{"transaction_id":"TXN-000271","posted_date":"2025-08-26","account_id":"ACC-0007","description":"STARBUCKS #1042","category":"Coffee","amount":-1408.62,"balance":8047.19,"currency":"USD"}
+{"transaction_id":"TXN-000272","posted_date":"2025-08-27","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-202.49,"balance":20137.1,"currency":"USD"}
+{"transaction_id":"TXN-000273","posted_date":"2025-08-27","account_id":"ACC-0009","description":"LOCAL CAFE, LLC","category":"Dining","amount":-305.92,"balance":18355.21,"currency":"USD"}
+{"transaction_id":"TXN-000274","posted_date":"2025-08-28","account_id":"ACC-0010","description":"RENT PAYMENT","category":"Housing","amount":-528.5,"balance":-3662.68,"currency":"USD"}
+{"transaction_id":"TXN-000275","posted_date":"2025-08-28","account_id":"ACC-0011","description":"CVS PHARMACY 8891","category":"Health","amount":-313.61,"balance":8767.7,"currency":"USD"}
+{"transaction_id":"TXN-000276","posted_date":"2025-08-29","account_id":"ACC-0012","description":"LOCAL CAFE, LLC","category":"Dining","amount":-20.55,"balance":7928.29,"currency":"USD"}
+{"transaction_id":"TXN-000277","posted_date":"2025-08-29","account_id":"ACC-0001","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-237.12,"balance":-4242.71,"currency":"USD"}
+{"transaction_id":"TXN-000278","posted_date":"2025-08-30","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-268.59,"balance":3808.63,"currency":"USD"}
+{"transaction_id":"TXN-000279","posted_date":"2025-08-30","account_id":"ACC-0003","description":"SHELL OIL 574","category":"Fuel","amount":-1366.82,"balance":1930.2,"currency":"USD"}
+{"transaction_id":"TXN-000280","posted_date":"2025-08-31","account_id":"ACC-0004","description":"SHELL OIL 574","category":"Fuel","amount":-12.18,"balance":1317.28,"currency":"USD"}
+{"transaction_id":"TXN-000281","posted_date":"2025-08-31","account_id":"ACC-0005","description":"CVS PHARMACY 8891","category":"Health","amount":-175.11,"balance":3162.81,"currency":"USD"}
+{"transaction_id":"TXN-000282","posted_date":"2025-09-01","account_id":"ACC-0006","description":"PAYROLL DEPOSIT","category":"Income","amount":4046.69,"balance":8848.34,"currency":"USD"}
+{"transaction_id":"TXN-000283","posted_date":"2025-09-02","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-54.1,"balance":7993.09,"currency":"USD"}
+{"transaction_id":"TXN-000284","posted_date":"2025-09-02","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-285.66,"balance":19851.44,"currency":"USD"}
+{"transaction_id":"TXN-000285","posted_date":"2025-09-03","account_id":"ACC-0009","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-426.59,"balance":17928.62,"currency":"USD"}
+{"transaction_id":"TXN-000286","posted_date":"2025-09-03","account_id":"ACC-0010","description":"RENT PAYMENT","category":"Housing","amount":-470.81,"balance":-4133.49,"currency":"USD"}
+{"transaction_id":"TXN-000287","posted_date":"2025-09-04","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-280.67,"balance":8487.03,"currency":"USD"}
+{"transaction_id":"TXN-000288","posted_date":"2025-09-04","account_id":"ACC-0012","description":"AMZN MKTPLACE","category":"Shopping","amount":-42.48,"balance":7885.81,"currency":"USD"}
+{"transaction_id":"TXN-000289","posted_date":"2025-09-05","account_id":"ACC-0001","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-120.21,"balance":-4362.92,"currency":"USD"}
+{"transaction_id":"TXN-000290","posted_date":"2025-09-05","account_id":"ACC-0002","description":"LOCAL CAFE, LLC","category":"Dining","amount":-911.67,"balance":2896.96,"currency":"USD"}
+{"transaction_id":"TXN-000291","posted_date":"2025-09-06","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-126.54,"balance":1803.66,"currency":"USD"}
+{"transaction_id":"TXN-000292","posted_date":"2025-09-06","account_id":"ACC-0004","description":"UBER TRIP","category":"Transport","amount":-1197.72,"balance":119.56,"currency":"USD"}
+{"transaction_id":"TXN-000293","posted_date":"2025-09-07","account_id":"ACC-0005","description":"CVS PHARMACY 8891","category":"Health","amount":-361.99,"balance":2800.82,"currency":"USD"}
+{"transaction_id":"TXN-000294","posted_date":"2025-09-08","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-334.84,"balance":8513.5,"currency":"USD"}
+{"transaction_id":"TXN-000295","posted_date":"2025-09-08","account_id":"ACC-0007","description":"STARBUCKS #1042","category":"Coffee","amount":-1241.66,"balance":6751.43,"currency":"USD"}
+{"transaction_id":"TXN-000296","posted_date":"2025-09-09","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-375.78,"balance":19475.66,"currency":"USD"}
+{"transaction_id":"TXN-000297","posted_date":"2025-09-09","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-49.19,"balance":17879.43,"currency":"USD"}
+{"transaction_id":"TXN-000298","posted_date":"2025-09-10","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-862.97,"balance":-4996.46,"currency":"USD"}
+{"transaction_id":"TXN-000299","posted_date":"2025-09-10","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-21.16,"balance":8465.87,"currency":"USD"}
+{"transaction_id":"TXN-000300","posted_date":"2025-09-11","account_id":"ACC-0012","description":"DELTA AIR 0062","category":"Travel","amount":-399.32,"balance":7486.49,"currency":"USD"}
+{"transaction_id":"TXN-000301","posted_date":"2025-09-11","account_id":"ACC-0001","description":"PAYROLL DEPOSIT","category":"Income","amount":5215.3,"balance":852.38,"currency":"USD"}
+{"transaction_id":"TXN-000302","posted_date":"2025-09-12","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-434.29,"balance":2462.67,"currency":"USD"}
+{"transaction_id":"TXN-000303","posted_date":"2025-09-12","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-80.62,"balance":1723.04,"currency":"USD"}
+{"transaction_id":"TXN-000304","posted_date":"2025-09-13","account_id":"ACC-0004","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-91.3,"balance":28.26,"currency":"USD"}
+{"transaction_id":"TXN-000305","posted_date":"2025-09-14","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-282.62,"balance":2518.2,"currency":"USD"}
+{"transaction_id":"TXN-000306","posted_date":"2025-09-14","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-982.55,"balance":7530.95,"currency":"USD"}
+{"transaction_id":"TXN-000307","posted_date":"2025-09-15","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-307.89,"balance":6443.54,"currency":"USD"}
+{"transaction_id":"TXN-000308","posted_date":"2025-09-15","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-597.94,"balance":18877.72,"currency":"USD"}
+{"transaction_id":"TXN-000309","posted_date":"2025-09-16","account_id":"ACC-0009","description":"RENT PAYMENT","category":"Housing","amount":-424.67,"balance":17454.76,"currency":"USD"}
+{"transaction_id":"TXN-000310","posted_date":"2025-09-16","account_id":"ACC-0010","description":"RENT PAYMENT","category":"Housing","amount":-45.35,"balance":-5041.81,"currency":"USD"}
+{"transaction_id":"TXN-000311","posted_date":"2025-09-17","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-20.26,"balance":8445.61,"currency":"USD"}
+{"transaction_id":"TXN-000312","posted_date":"2025-09-17","account_id":"ACC-0012","description":"WHOLE FOODS MKT","category":"Groceries","amount":-493.67,"balance":6992.82,"currency":"USD"}
+{"transaction_id":"TXN-000313","posted_date":"2025-09-18","account_id":"ACC-0001","description":"WHOLE FOODS MKT","category":"Groceries","amount":-538.04,"balance":314.34,"currency":"USD"}
+{"transaction_id":"TXN-000314","posted_date":"2025-09-18","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-312.75,"balance":2149.92,"currency":"USD"}
+{"transaction_id":"TXN-000315","posted_date":"2025-09-19","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-61.26,"balance":1661.78,"currency":"USD"}
+{"transaction_id":"TXN-000316","posted_date":"2025-09-20","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-86.06,"balance":-57.8,"currency":"USD"}
+{"transaction_id":"TXN-000317","posted_date":"2025-09-20","account_id":"ACC-0005","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-293.33,"balance":2224.87,"currency":"USD"}
+{"transaction_id":"TXN-000318","posted_date":"2025-09-21","account_id":"ACC-0006","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-715.98,"balance":6814.97,"currency":"USD"}
+{"transaction_id":"TXN-000319","posted_date":"2025-09-21","account_id":"ACC-0007","description":"DELTA AIR 0062","category":"Travel","amount":-229.31,"balance":6214.23,"currency":"USD"}
+{"transaction_id":"TXN-000320","posted_date":"2025-09-22","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-1141.36,"balance":17736.36,"currency":"USD"}
+{"transaction_id":"TXN-000321","posted_date":"2025-09-22","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":5988.72,"balance":23443.48,"currency":"USD"}
+{"transaction_id":"TXN-000322","posted_date":"2025-09-23","account_id":"ACC-0010","description":"STARBUCKS #1042","category":"Coffee","amount":-779.68,"balance":-5821.49,"currency":"USD"}
+{"transaction_id":"TXN-000323","posted_date":"2025-09-23","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-209.08,"balance":8236.53,"currency":"USD"}
+{"transaction_id":"TXN-000324","posted_date":"2025-09-24","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-440.46,"balance":6552.36,"currency":"USD"}
+{"transaction_id":"TXN-000325","posted_date":"2025-09-24","account_id":"ACC-0001","description":"APPLE.COM/BILL","category":"Software","amount":-336.63,"balance":-22.29,"currency":"USD"}
+{"transaction_id":"TXN-000326","posted_date":"2025-09-25","account_id":"ACC-0002","description":"LOCAL CAFE, LLC","category":"Dining","amount":-1471.14,"balance":678.78,"currency":"USD"}
+{"transaction_id":"TXN-000327","posted_date":"2025-09-26","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-714.93,"balance":946.85,"currency":"USD"}
+{"transaction_id":"TXN-000328","posted_date":"2025-09-26","account_id":"ACC-0004","description":"WHOLE FOODS MKT","category":"Groceries","amount":-1037.35,"balance":-1095.15,"currency":"USD"}
+{"transaction_id":"TXN-000329","posted_date":"2025-09-27","account_id":"ACC-0005","description":"PAYROLL DEPOSIT","category":"Income","amount":3258.49,"balance":5483.36,"currency":"USD"}
+{"transaction_id":"TXN-000330","posted_date":"2025-09-27","account_id":"ACC-0006","description":"CVS PHARMACY 8891","category":"Health","amount":-18.6,"balance":6796.37,"currency":"USD"}
+{"transaction_id":"TXN-000331","posted_date":"2025-09-28","account_id":"ACC-0007","description":"SHELL OIL 574","category":"Fuel","amount":-1041.62,"balance":5172.61,"currency":"USD"}
+{"transaction_id":"TXN-000332","posted_date":"2025-09-28","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-32.14,"balance":17704.22,"currency":"USD"}
+{"transaction_id":"TXN-000333","posted_date":"2025-09-29","account_id":"ACC-0009","description":"UBER TRIP","category":"Transport","amount":-130.32,"balance":23313.16,"currency":"USD"}
+{"transaction_id":"TXN-000334","posted_date":"2025-09-29","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-1273.69,"balance":-7095.18,"currency":"USD"}
+{"transaction_id":"TXN-000335","posted_date":"2025-09-30","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-253.88,"balance":7982.65,"currency":"USD"}
+{"transaction_id":"TXN-000336","posted_date":"2025-09-30","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-28.13,"balance":6524.23,"currency":"USD"}
+{"transaction_id":"TXN-000337","posted_date":"2025-10-01","account_id":"ACC-0001","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-190.25,"balance":-212.54,"currency":"USD"}
+{"transaction_id":"TXN-000338","posted_date":"2025-10-02","account_id":"ACC-0002","description":"WHOLE FOODS MKT","category":"Groceries","amount":-166.85,"balance":511.93,"currency":"USD"}
+{"transaction_id":"TXN-000339","posted_date":"2025-10-02","account_id":"ACC-0003","description":"LOCAL CAFE, LLC","category":"Dining","amount":-68.97,"balance":877.88,"currency":"USD"}
+{"transaction_id":"TXN-000340","posted_date":"2025-10-03","account_id":"ACC-0004","description":"WHOLE FOODS MKT","category":"Groceries","amount":-561.58,"balance":-1656.73,"currency":"USD"}
+{"transaction_id":"TXN-000341","posted_date":"2025-10-03","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-235.11,"balance":5248.25,"currency":"USD"}
+{"transaction_id":"TXN-000342","posted_date":"2025-10-04","account_id":"ACC-0006","description":"RENT PAYMENT","category":"Housing","amount":-204.85,"balance":6591.52,"currency":"USD"}
+{"transaction_id":"TXN-000343","posted_date":"2025-10-04","account_id":"ACC-0007","description":"WHOLE FOODS MKT","category":"Groceries","amount":-740.26,"balance":4432.35,"currency":"USD"}
+{"transaction_id":"TXN-000344","posted_date":"2025-10-05","account_id":"ACC-0008","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-65.67,"balance":17638.55,"currency":"USD"}
+{"transaction_id":"TXN-000345","posted_date":"2025-10-05","account_id":"ACC-0009","description":"WHOLE FOODS MKT","category":"Groceries","amount":-351.3,"balance":22961.86,"currency":"USD"}
+{"transaction_id":"TXN-000346","posted_date":"2025-10-06","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-1012.4,"balance":-8107.58,"currency":"USD"}
+{"transaction_id":"TXN-000347","posted_date":"2025-10-06","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-47.47,"balance":7935.18,"currency":"USD"}
+{"transaction_id":"TXN-000348","posted_date":"2025-10-07","account_id":"ACC-0012","description":"SHELL OIL 574","category":"Fuel","amount":-365.72,"balance":6158.51,"currency":"USD"}
+{"transaction_id":"TXN-000349","posted_date":"2025-10-08","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-8.48,"balance":-221.02,"currency":"USD"}
+{"transaction_id":"TXN-000350","posted_date":"2025-10-08","account_id":"ACC-0002","description":"LOCAL CAFE, LLC","category":"Dining","amount":-945.24,"balance":-433.31,"currency":"USD"}
+{"transaction_id":"TXN-000351","posted_date":"2025-10-09","account_id":"ACC-0003","description":"RENT PAYMENT","category":"Housing","amount":-48.01,"balance":829.87,"currency":"USD"}
+{"transaction_id":"TXN-000352","posted_date":"2025-10-09","account_id":"ACC-0004","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-384.99,"balance":-2041.72,"currency":"USD"}
+{"transaction_id":"TXN-000353","posted_date":"2025-10-10","account_id":"ACC-0005","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-172.33,"balance":5075.92,"currency":"USD"}
+{"transaction_id":"TXN-000354","posted_date":"2025-10-10","account_id":"ACC-0006","description":"RENT PAYMENT","category":"Housing","amount":-83.56,"balance":6507.96,"currency":"USD"}
+{"transaction_id":"TXN-000355","posted_date":"2025-10-11","account_id":"ACC-0007","description":"APPLE.COM/BILL","category":"Software","amount":-645.82,"balance":3786.53,"currency":"USD"}
+{"transaction_id":"TXN-000356","posted_date":"2025-10-11","account_id":"ACC-0008","description":"APPLE.COM/BILL","category":"Software","amount":-60.9,"balance":17577.65,"currency":"USD"}
+{"transaction_id":"TXN-000357","posted_date":"2025-10-12","account_id":"ACC-0009","description":"LOCAL CAFE, LLC","category":"Dining","amount":-128.38,"balance":22833.48,"currency":"USD"}
+{"transaction_id":"TXN-000358","posted_date":"2025-10-12","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-202.41,"balance":-8309.99,"currency":"USD"}
+{"transaction_id":"TXN-000359","posted_date":"2025-10-13","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":2184.21,"balance":10119.39,"currency":"USD"}
+{"transaction_id":"TXN-000360","posted_date":"2025-10-13","account_id":"ACC-0012","description":"UBER TRIP","category":"Transport","amount":-44.32,"balance":6114.19,"currency":"USD"}
+{"transaction_id":"TXN-000361","posted_date":"2025-10-14","account_id":"ACC-0001","description":"CVS PHARMACY 8891","category":"Health","amount":-419.58,"balance":-640.6,"currency":"USD"}
+{"transaction_id":"TXN-000362","posted_date":"2025-10-15","account_id":"ACC-0002","description":"PAYROLL DEPOSIT","category":"Income","amount":4406.5,"balance":3973.19,"currency":"USD"}
+{"transaction_id":"TXN-000363","posted_date":"2025-10-15","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-207.12,"balance":622.75,"currency":"USD"}
+{"transaction_id":"TXN-000364","posted_date":"2025-10-16","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-65.24,"balance":-2106.96,"currency":"USD"}
+{"transaction_id":"TXN-000365","posted_date":"2025-10-16","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-188.2,"balance":4887.72,"currency":"USD"}
+{"transaction_id":"TXN-000366","posted_date":"2025-10-17","account_id":"ACC-0006","description":"DELTA AIR 0062","category":"Travel","amount":-58.05,"balance":6449.91,"currency":"USD"}
+{"transaction_id":"TXN-000367","posted_date":"2025-10-17","account_id":"ACC-0007","description":"DELTA AIR 0062","category":"Travel","amount":-327.44,"balance":3459.09,"currency":"USD"}
+{"transaction_id":"TXN-000368","posted_date":"2025-10-18","account_id":"ACC-0008","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-564.53,"balance":17013.12,"currency":"USD"}
+{"transaction_id":"TXN-000369","posted_date":"2025-10-18","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-560.49,"balance":22272.99,"currency":"USD"}
+{"transaction_id":"TXN-000370","posted_date":"2025-10-19","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-95.39,"balance":-8405.38,"currency":"USD"}
+{"transaction_id":"TXN-000371","posted_date":"2025-10-19","account_id":"ACC-0011","description":"UBER TRIP","category":"Transport","amount":-101.82,"balance":10017.57,"currency":"USD"}
+{"transaction_id":"TXN-000372","posted_date":"2025-10-20","account_id":"ACC-0012","description":"RENT PAYMENT","category":"Housing","amount":-4.32,"balance":6109.87,"currency":"USD"}
+{"transaction_id":"TXN-000373","posted_date":"2025-10-21","account_id":"ACC-0001","description":"CVS PHARMACY 8891","category":"Health","amount":-426.17,"balance":-1066.77,"currency":"USD"}
+{"transaction_id":"TXN-000374","posted_date":"2025-10-21","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-30.53,"balance":3942.66,"currency":"USD"}
+{"transaction_id":"TXN-000375","posted_date":"2025-10-22","account_id":"ACC-0003","description":"CVS PHARMACY 8891","category":"Health","amount":-416.26,"balance":206.49,"currency":"USD"}
+{"transaction_id":"TXN-000376","posted_date":"2025-10-22","account_id":"ACC-0004","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-850.53,"balance":-2957.49,"currency":"USD"}
+{"transaction_id":"TXN-000377","posted_date":"2025-10-23","account_id":"ACC-0005","description":"STARBUCKS #1042","category":"Coffee","amount":-645.12,"balance":4242.6,"currency":"USD"}
+{"transaction_id":"TXN-000378","posted_date":"2025-10-23","account_id":"ACC-0006","description":"WHOLE FOODS MKT","category":"Groceries","amount":-733.19,"balance":5716.72,"currency":"USD"}
+{"transaction_id":"TXN-000379","posted_date":"2025-10-24","account_id":"ACC-0007","description":"APPLE.COM/BILL","category":"Software","amount":-91.7,"balance":3367.39,"currency":"USD"}
+{"transaction_id":"TXN-000380","posted_date":"2025-10-24","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-17.36,"balance":16995.76,"currency":"USD"}
+{"transaction_id":"TXN-000381","posted_date":"2025-10-25","account_id":"ACC-0009","description":"RENT PAYMENT","category":"Housing","amount":-82.86,"balance":22190.13,"currency":"USD"}
+{"transaction_id":"TXN-000382","posted_date":"2025-10-25","account_id":"ACC-0010","description":"PAYROLL DEPOSIT","category":"Income","amount":2716.99,"balance":-5688.39,"currency":"USD"}
+{"transaction_id":"TXN-000383","posted_date":"2025-10-26","account_id":"ACC-0011","description":"AMZN MKTPLACE","category":"Shopping","amount":-103.58,"balance":9913.99,"currency":"USD"}
+{"transaction_id":"TXN-000384","posted_date":"2025-10-27","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-953.47,"balance":5156.4,"currency":"USD"}
+{"transaction_id":"TXN-000385","posted_date":"2025-10-27","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-14.7,"balance":-1081.47,"currency":"USD"}
+{"transaction_id":"TXN-000386","posted_date":"2025-10-28","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1390.78,"balance":2551.88,"currency":"USD"}
+{"transaction_id":"TXN-000387","posted_date":"2025-10-28","account_id":"ACC-0003","description":"RENT PAYMENT","category":"Housing","amount":-79.86,"balance":126.63,"currency":"USD"}
+{"transaction_id":"TXN-000388","posted_date":"2025-10-29","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-1046.13,"balance":-4003.62,"currency":"USD"}
+{"transaction_id":"TXN-000389","posted_date":"2025-10-29","account_id":"ACC-0005","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-801.84,"balance":3440.76,"currency":"USD"}
+{"transaction_id":"TXN-000390","posted_date":"2025-10-30","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-323.19,"balance":5393.53,"currency":"USD"}
+{"transaction_id":"TXN-000391","posted_date":"2025-10-30","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":3249.66,"balance":6617.05,"currency":"USD"}
+{"transaction_id":"TXN-000392","posted_date":"2025-10-31","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-939.95,"balance":16055.81,"currency":"USD"}
+{"transaction_id":"TXN-000393","posted_date":"2025-10-31","account_id":"ACC-0009","description":"AMZN MKTPLACE","category":"Shopping","amount":-1030.46,"balance":21159.67,"currency":"USD"}
+{"transaction_id":"TXN-000394","posted_date":"2025-11-01","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-549.83,"balance":-6238.22,"currency":"USD"}
+{"transaction_id":"TXN-000395","posted_date":"2025-11-02","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-1157.78,"balance":8756.21,"currency":"USD"}
+{"transaction_id":"TXN-000396","posted_date":"2025-11-02","account_id":"ACC-0012","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-1149.6,"balance":4006.8,"currency":"USD"}
+{"transaction_id":"TXN-000397","posted_date":"2025-11-03","account_id":"ACC-0001","description":"STARBUCKS #1042","category":"Coffee","amount":-211.58,"balance":-1293.05,"currency":"USD"}
+{"transaction_id":"TXN-000398","posted_date":"2025-11-03","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-26.18,"balance":2525.7,"currency":"USD"}
+{"transaction_id":"TXN-000399","posted_date":"2025-11-04","account_id":"ACC-0003","description":"UBER TRIP","category":"Transport","amount":-138.63,"balance":-12,"currency":"USD"}
+{"transaction_id":"TXN-000400","posted_date":"2025-11-04","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-16.12,"balance":-4019.74,"currency":"USD"}
+{"transaction_id":"TXN-000401","posted_date":"2025-11-05","account_id":"ACC-0005","description":"PAYROLL DEPOSIT","category":"Income","amount":4965.3,"balance":8406.06,"currency":"USD"}
+{"transaction_id":"TXN-000402","posted_date":"2025-11-05","account_id":"ACC-0006","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-3.79,"balance":5389.74,"currency":"USD"}
+{"transaction_id":"TXN-000403","posted_date":"2025-11-06","account_id":"ACC-0007","description":"SHELL OIL 574","category":"Fuel","amount":-337.8,"balance":6279.25,"currency":"USD"}
+{"transaction_id":"TXN-000404","posted_date":"2025-11-06","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-1127.97,"balance":14927.84,"currency":"USD"}
+{"transaction_id":"TXN-000405","posted_date":"2025-11-07","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":5259.84,"balance":26419.51,"currency":"USD"}
+{"transaction_id":"TXN-000406","posted_date":"2025-11-08","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-547.31,"balance":-6785.53,"currency":"USD"}
+{"transaction_id":"TXN-000407","posted_date":"2025-11-08","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-304.9,"balance":8451.31,"currency":"USD"}
+{"transaction_id":"TXN-000408","posted_date":"2025-11-09","account_id":"ACC-0012","description":"SHELL OIL 574","category":"Fuel","amount":-63.44,"balance":3943.36,"currency":"USD"}
+{"transaction_id":"TXN-000409","posted_date":"2025-11-09","account_id":"ACC-0001","description":"UBER TRIP","category":"Transport","amount":-818.9,"balance":-2111.95,"currency":"USD"}
+{"transaction_id":"TXN-000410","posted_date":"2025-11-10","account_id":"ACC-0002","description":"APPLE.COM/BILL","category":"Software","amount":-17.16,"balance":2508.54,"currency":"USD"}
+{"transaction_id":"TXN-000411","posted_date":"2025-11-10","account_id":"ACC-0003","description":"WHOLE FOODS MKT","category":"Groceries","amount":-34.02,"balance":-46.02,"currency":"USD"}
+{"transaction_id":"TXN-000412","posted_date":"2025-11-11","account_id":"ACC-0004","description":"PAYROLL DEPOSIT","category":"Income","amount":3205.52,"balance":-814.22,"currency":"USD"}
+{"transaction_id":"TXN-000413","posted_date":"2025-11-11","account_id":"ACC-0005","description":"LOCAL CAFE, LLC","category":"Dining","amount":-907.33,"balance":7498.73,"currency":"USD"}
+{"transaction_id":"TXN-000414","posted_date":"2025-11-12","account_id":"ACC-0006","description":"DELTA AIR 0062","category":"Travel","amount":-366.74,"balance":5023,"currency":"USD"}
+{"transaction_id":"TXN-000415","posted_date":"2025-11-12","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":5096.1,"balance":11375.35,"currency":"USD"}
+{"transaction_id":"TXN-000416","posted_date":"2025-11-13","account_id":"ACC-0008","description":"SHELL OIL 574","category":"Fuel","amount":-150.68,"balance":14777.16,"currency":"USD"}
+{"transaction_id":"TXN-000417","posted_date":"2025-11-14","account_id":"ACC-0009","description":"CVS PHARMACY 8891","category":"Health","amount":-53.77,"balance":26365.74,"currency":"USD"}
+{"transaction_id":"TXN-000418","posted_date":"2025-11-14","account_id":"ACC-0010","description":"RENT PAYMENT","category":"Housing","amount":-91.23,"balance":-6876.76,"currency":"USD"}
+{"transaction_id":"TXN-000419","posted_date":"2025-11-15","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-114.53,"balance":8336.78,"currency":"USD"}
+{"transaction_id":"TXN-000420","posted_date":"2025-11-15","account_id":"ACC-0012","description":"RENT PAYMENT","category":"Housing","amount":-1065.73,"balance":2877.63,"currency":"USD"}
+{"transaction_id":"TXN-000421","posted_date":"2025-11-16","account_id":"ACC-0001","description":"WHOLE FOODS MKT","category":"Groceries","amount":-352.74,"balance":-2464.69,"currency":"USD"}
+{"transaction_id":"TXN-000422","posted_date":"2025-11-16","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-379.07,"balance":2129.47,"currency":"USD"}
+{"transaction_id":"TXN-000423","posted_date":"2025-11-17","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-290.01,"balance":-336.03,"currency":"USD"}
+{"transaction_id":"TXN-000424","posted_date":"2025-11-17","account_id":"ACC-0004","description":"UBER TRIP","category":"Transport","amount":-785.72,"balance":-1599.94,"currency":"USD"}
+{"transaction_id":"TXN-000425","posted_date":"2025-11-18","account_id":"ACC-0005","description":"SHELL OIL 574","category":"Fuel","amount":-633.23,"balance":6865.5,"currency":"USD"}
+{"transaction_id":"TXN-000426","posted_date":"2025-11-18","account_id":"ACC-0006","description":"APPLE.COM/BILL","category":"Software","amount":-1161.02,"balance":3861.98,"currency":"USD"}
+{"transaction_id":"TXN-000427","posted_date":"2025-11-19","account_id":"ACC-0007","description":"UBER TRIP","category":"Transport","amount":-555.75,"balance":10819.6,"currency":"USD"}
+{"transaction_id":"TXN-000428","posted_date":"2025-11-20","account_id":"ACC-0008","description":"APPLE.COM/BILL","category":"Software","amount":-21.57,"balance":14755.59,"currency":"USD"}
+{"transaction_id":"TXN-000429","posted_date":"2025-11-20","account_id":"ACC-0009","description":"APPLE.COM/BILL","category":"Software","amount":-82.81,"balance":26282.93,"currency":"USD"}
+{"transaction_id":"TXN-000430","posted_date":"2025-11-21","account_id":"ACC-0010","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-813.32,"balance":-7690.08,"currency":"USD"}
+{"transaction_id":"TXN-000431","posted_date":"2025-11-21","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":1804.22,"balance":10141,"currency":"USD"}
+{"transaction_id":"TXN-000432","posted_date":"2025-11-22","account_id":"ACC-0012","description":"UBER TRIP","category":"Transport","amount":-649.49,"balance":2228.14,"currency":"USD"}
+{"transaction_id":"TXN-000433","posted_date":"2025-11-22","account_id":"ACC-0001","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-4.56,"balance":-2469.25,"currency":"USD"}
+{"transaction_id":"TXN-000434","posted_date":"2025-11-23","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-683.12,"balance":1446.35,"currency":"USD"}
+{"transaction_id":"TXN-000435","posted_date":"2025-11-23","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-904.63,"balance":-1240.66,"currency":"USD"}
+{"transaction_id":"TXN-000436","posted_date":"2025-11-24","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-157.95,"balance":-1757.89,"currency":"USD"}
+{"transaction_id":"TXN-000437","posted_date":"2025-11-24","account_id":"ACC-0005","description":"UBER TRIP","category":"Transport","amount":-14.98,"balance":6850.52,"currency":"USD"}
+{"transaction_id":"TXN-000438","posted_date":"2025-11-25","account_id":"ACC-0006","description":"CVS PHARMACY 8891","category":"Health","amount":-627.51,"balance":3234.47,"currency":"USD"}
+{"transaction_id":"TXN-000439","posted_date":"2025-11-26","account_id":"ACC-0007","description":"WHOLE FOODS MKT","category":"Groceries","amount":-238.56,"balance":10581.04,"currency":"USD"}
+{"transaction_id":"TXN-000440","posted_date":"2025-11-26","account_id":"ACC-0008","description":"SHELL OIL 574","category":"Fuel","amount":-66.62,"balance":14688.97,"currency":"USD"}
+{"transaction_id":"TXN-000441","posted_date":"2025-11-27","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-125.48,"balance":26157.45,"currency":"USD"}
+{"transaction_id":"TXN-000442","posted_date":"2025-11-27","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-288.02,"balance":-7978.1,"currency":"USD"}
+{"transaction_id":"TXN-000443","posted_date":"2025-11-28","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-37.69,"balance":10103.31,"currency":"USD"}
+{"transaction_id":"TXN-000444","posted_date":"2025-11-28","account_id":"ACC-0012","description":"DELTA AIR 0062","category":"Travel","amount":-434.53,"balance":1793.61,"currency":"USD"}
+{"transaction_id":"TXN-000445","posted_date":"2025-11-29","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-452.49,"balance":-2921.74,"currency":"USD"}
+{"transaction_id":"TXN-000446","posted_date":"2025-11-29","account_id":"ACC-0002","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-4.86,"balance":1441.49,"currency":"USD"}
+{"transaction_id":"TXN-000447","posted_date":"2025-11-30","account_id":"ACC-0003","description":"WHOLE FOODS MKT","category":"Groceries","amount":-536.14,"balance":-1776.8,"currency":"USD"}
+{"transaction_id":"TXN-000448","posted_date":"2025-11-30","account_id":"ACC-0004","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-565.64,"balance":-2323.53,"currency":"USD"}
+{"transaction_id":"TXN-000449","posted_date":"2025-12-01","account_id":"ACC-0005","description":"WHOLE FOODS MKT","category":"Groceries","amount":-4.04,"balance":6846.48,"currency":"USD"}
+{"transaction_id":"TXN-000450","posted_date":"2025-12-02","account_id":"ACC-0006","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-204.22,"balance":3030.25,"currency":"USD"}
+{"transaction_id":"TXN-000451","posted_date":"2025-12-02","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-917.9,"balance":9663.14,"currency":"USD"}
+{"transaction_id":"TXN-000452","posted_date":"2025-12-03","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-19.24,"balance":14669.73,"currency":"USD"}
+{"transaction_id":"TXN-000453","posted_date":"2025-12-03","account_id":"ACC-0009","description":"AMZN MKTPLACE","category":"Shopping","amount":-402.86,"balance":25754.59,"currency":"USD"}
+{"transaction_id":"TXN-000454","posted_date":"2025-12-04","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-75.42,"balance":-8053.52,"currency":"USD"}
+{"transaction_id":"TXN-000455","posted_date":"2025-12-04","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-392.41,"balance":9710.9,"currency":"USD"}
+{"transaction_id":"TXN-000456","posted_date":"2025-12-05","account_id":"ACC-0012","description":"UBER TRIP","category":"Transport","amount":-100.23,"balance":1693.38,"currency":"USD"}
+{"transaction_id":"TXN-000457","posted_date":"2025-12-05","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-241.84,"balance":-3163.58,"currency":"USD"}
+{"transaction_id":"TXN-000458","posted_date":"2025-12-06","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-348.15,"balance":1093.34,"currency":"USD"}
+{"transaction_id":"TXN-000459","posted_date":"2025-12-06","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-284.63,"balance":-2061.43,"currency":"USD"}
+{"transaction_id":"TXN-000460","posted_date":"2025-12-07","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-399.87,"balance":-2723.4,"currency":"USD"}
+{"transaction_id":"TXN-000461","posted_date":"2025-12-07","account_id":"ACC-0005","description":"UBER TRIP","category":"Transport","amount":-557.83,"balance":6288.65,"currency":"USD"}
+{"transaction_id":"TXN-000462","posted_date":"2025-12-08","account_id":"ACC-0006","description":"CVS PHARMACY 8891","category":"Health","amount":-713.7,"balance":2316.55,"currency":"USD"}
+{"transaction_id":"TXN-000463","posted_date":"2025-12-09","account_id":"ACC-0007","description":"STARBUCKS #1042","category":"Coffee","amount":-1154.83,"balance":8508.31,"currency":"USD"}
+{"transaction_id":"TXN-000464","posted_date":"2025-12-09","account_id":"ACC-0008","description":"STARBUCKS #1042","category":"Coffee","amount":-281.92,"balance":14387.81,"currency":"USD"}
+{"transaction_id":"TXN-000465","posted_date":"2025-12-10","account_id":"ACC-0009","description":"WHOLE FOODS MKT","category":"Groceries","amount":-67.54,"balance":25687.05,"currency":"USD"}
+{"transaction_id":"TXN-000466","posted_date":"2025-12-10","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-320.24,"balance":-8373.76,"currency":"USD"}
+{"transaction_id":"TXN-000467","posted_date":"2025-12-11","account_id":"ACC-0011","description":"CVS PHARMACY 8891","category":"Health","amount":-1236.79,"balance":8474.11,"currency":"USD"}
+{"transaction_id":"TXN-000468","posted_date":"2025-12-11","account_id":"ACC-0012","description":"LOCAL CAFE, LLC","category":"Dining","amount":-451.54,"balance":1241.84,"currency":"USD"}
+{"transaction_id":"TXN-000469","posted_date":"2025-12-12","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-3.03,"balance":-3166.61,"currency":"USD"}
+{"transaction_id":"TXN-000470","posted_date":"2025-12-12","account_id":"ACC-0002","description":"APPLE.COM/BILL","category":"Software","amount":-109.87,"balance":983.47,"currency":"USD"}
+{"transaction_id":"TXN-000471","posted_date":"2025-12-13","account_id":"ACC-0003","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-888.39,"balance":-2949.82,"currency":"USD"}
+{"transaction_id":"TXN-000472","posted_date":"2025-12-13","account_id":"ACC-0004","description":"SHELL OIL 574","category":"Fuel","amount":-893.81,"balance":-3617.21,"currency":"USD"}
+{"transaction_id":"TXN-000473","posted_date":"2025-12-14","account_id":"ACC-0005","description":"CVS PHARMACY 8891","category":"Health","amount":-427.76,"balance":5860.89,"currency":"USD"}
+{"transaction_id":"TXN-000474","posted_date":"2025-12-15","account_id":"ACC-0006","description":"CVS PHARMACY 8891","category":"Health","amount":-209.72,"balance":2106.83,"currency":"USD"}
+{"transaction_id":"TXN-000475","posted_date":"2025-12-15","account_id":"ACC-0007","description":"CVS PHARMACY 8891","category":"Health","amount":-42.27,"balance":8466.04,"currency":"USD"}
+{"transaction_id":"TXN-000476","posted_date":"2025-12-16","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-262.4,"balance":14125.41,"currency":"USD"}
+{"transaction_id":"TXN-000477","posted_date":"2025-12-16","account_id":"ACC-0009","description":"WHOLE FOODS MKT","category":"Groceries","amount":-588.79,"balance":25098.26,"currency":"USD"}
+{"transaction_id":"TXN-000478","posted_date":"2025-12-17","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-20.64,"balance":-8394.4,"currency":"USD"}
+{"transaction_id":"TXN-000479","posted_date":"2025-12-17","account_id":"ACC-0011","description":"UBER TRIP","category":"Transport","amount":-535.82,"balance":7938.29,"currency":"USD"}
+{"transaction_id":"TXN-000480","posted_date":"2025-12-18","account_id":"ACC-0012","description":"WHOLE FOODS MKT","category":"Groceries","amount":-17.42,"balance":1224.42,"currency":"USD"}
+{"transaction_id":"TXN-000481","posted_date":"2025-12-18","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-571.53,"balance":-3738.14,"currency":"USD"}
+{"transaction_id":"TXN-000482","posted_date":"2025-12-19","account_id":"ACC-0002","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-24.05,"balance":959.42,"currency":"USD"}
+{"transaction_id":"TXN-000483","posted_date":"2025-12-19","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-367.24,"balance":-3317.06,"currency":"USD"}
+{"transaction_id":"TXN-000484","posted_date":"2025-12-20","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-757.79,"balance":-4375,"currency":"USD"}
+{"transaction_id":"TXN-000485","posted_date":"2025-12-21","account_id":"ACC-0005","description":"SHELL OIL 574","category":"Fuel","amount":-179.43,"balance":5681.46,"currency":"USD"}
+{"transaction_id":"TXN-000486","posted_date":"2025-12-21","account_id":"ACC-0006","description":"PAYROLL DEPOSIT","category":"Income","amount":2770.69,"balance":4877.52,"currency":"USD"}
+{"transaction_id":"TXN-000487","posted_date":"2025-12-22","account_id":"ACC-0007","description":"WHOLE FOODS MKT","category":"Groceries","amount":-226.21,"balance":8239.83,"currency":"USD"}
+{"transaction_id":"TXN-000488","posted_date":"2025-12-22","account_id":"ACC-0008","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-249.75,"balance":13875.66,"currency":"USD"}
+{"transaction_id":"TXN-000489","posted_date":"2025-12-23","account_id":"ACC-0009","description":"CVS PHARMACY 8891","category":"Health","amount":-169.98,"balance":24928.28,"currency":"USD"}
+{"transaction_id":"TXN-000490","posted_date":"2025-12-23","account_id":"ACC-0010","description":"AMZN MKTPLACE","category":"Shopping","amount":-424.74,"balance":-8819.14,"currency":"USD"}
+{"transaction_id":"TXN-000491","posted_date":"2025-12-24","account_id":"ACC-0011","description":"APPLE.COM/BILL","category":"Software","amount":-872.8,"balance":7065.49,"currency":"USD"}
+{"transaction_id":"TXN-000492","posted_date":"2025-12-24","account_id":"ACC-0012","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-445.61,"balance":778.81,"currency":"USD"}
+{"transaction_id":"TXN-000493","posted_date":"2025-12-25","account_id":"ACC-0001","description":"PAYROLL DEPOSIT","category":"Income","amount":3058.69,"balance":-679.45,"currency":"USD"}
+{"transaction_id":"TXN-000494","posted_date":"2025-12-25","account_id":"ACC-0002","description":"AMZN MKTPLACE","category":"Shopping","amount":-3.04,"balance":956.38,"currency":"USD"}
+{"transaction_id":"TXN-000495","posted_date":"2025-12-26","account_id":"ACC-0003","description":"PAYROLL DEPOSIT","category":"Income","amount":4846.25,"balance":1529.19,"currency":"USD"}
+{"transaction_id":"TXN-000496","posted_date":"2025-12-27","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-823.46,"balance":-5198.46,"currency":"USD"}
+{"transaction_id":"TXN-000497","posted_date":"2025-12-27","account_id":"ACC-0005","description":"APPLE.COM/BILL","category":"Software","amount":-179.69,"balance":5501.77,"currency":"USD"}
+{"transaction_id":"TXN-000498","posted_date":"2025-12-28","account_id":"ACC-0006","description":"DELTA AIR 0062","category":"Travel","amount":-182.84,"balance":4694.68,"currency":"USD"}
+{"transaction_id":"TXN-000499","posted_date":"2025-12-28","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-12.88,"balance":8226.95,"currency":"USD"}
+{"transaction_id":"TXN-000500","posted_date":"2025-12-29","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-21.68,"balance":13853.98,"currency":"USD"}
+{"transaction_id":"TXN-000501","posted_date":"2025-12-29","account_id":"ACC-0009","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-805.5,"balance":24122.78,"currency":"USD"}
+{"transaction_id":"TXN-000502","posted_date":"2025-12-30","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-1159.19,"balance":-9978.33,"currency":"USD"}
+{"transaction_id":"TXN-000503","posted_date":"2025-12-30","account_id":"ACC-0011","description":"LOCAL CAFE, LLC","category":"Dining","amount":-43.05,"balance":7022.44,"currency":"USD"}
+{"transaction_id":"TXN-000504","posted_date":"2025-12-31","account_id":"ACC-0012","description":"RENT PAYMENT","category":"Housing","amount":-181.04,"balance":597.77,"currency":"USD"}
+{"transaction_id":"TXN-000505","posted_date":"2025-12-31","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-162.94,"balance":-842.39,"currency":"USD"}
+{"transaction_id":"TXN-000506","posted_date":"2026-01-01","account_id":"ACC-0002","description":"UBER TRIP","category":"Transport","amount":-402.15,"balance":554.23,"currency":"USD"}
+{"transaction_id":"TXN-000507","posted_date":"2026-01-02","account_id":"ACC-0003","description":"SHELL OIL 574","category":"Fuel","amount":-85.42,"balance":1443.77,"currency":"USD"}
+{"transaction_id":"TXN-000508","posted_date":"2026-01-02","account_id":"ACC-0004","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-540.15,"balance":-5738.61,"currency":"USD"}
+{"transaction_id":"TXN-000509","posted_date":"2026-01-03","account_id":"ACC-0005","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-459.93,"balance":5041.84,"currency":"USD"}
+{"transaction_id":"TXN-000510","posted_date":"2026-01-03","account_id":"ACC-0006","description":"APPLE.COM/BILL","category":"Software","amount":-3.42,"balance":4691.26,"currency":"USD"}
+{"transaction_id":"TXN-000511","posted_date":"2026-01-04","account_id":"ACC-0007","description":"APPLE.COM/BILL","category":"Software","amount":-88.99,"balance":8137.96,"currency":"USD"}
+{"transaction_id":"TXN-000512","posted_date":"2026-01-04","account_id":"ACC-0008","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-44.73,"balance":13809.25,"currency":"USD"}
+{"transaction_id":"TXN-000513","posted_date":"2026-01-05","account_id":"ACC-0009","description":"WHOLE FOODS MKT","category":"Groceries","amount":-15.07,"balance":24107.71,"currency":"USD"}
+{"transaction_id":"TXN-000514","posted_date":"2026-01-05","account_id":"ACC-0010","description":"RENT PAYMENT","category":"Housing","amount":-42.17,"balance":-10020.5,"currency":"USD"}
+{"transaction_id":"TXN-000515","posted_date":"2026-01-06","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":3809.21,"balance":10831.65,"currency":"USD"}
+{"transaction_id":"TXN-000516","posted_date":"2026-01-06","account_id":"ACC-0012","description":"AMZN MKTPLACE","category":"Shopping","amount":-215.96,"balance":381.81,"currency":"USD"}
+{"transaction_id":"TXN-000517","posted_date":"2026-01-07","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-488.25,"balance":-1330.64,"currency":"USD"}
+{"transaction_id":"TXN-000518","posted_date":"2026-01-08","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-345.54,"balance":208.69,"currency":"USD"}
+{"transaction_id":"TXN-000519","posted_date":"2026-01-08","account_id":"ACC-0003","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-59.52,"balance":1384.25,"currency":"USD"}
+{"transaction_id":"TXN-000520","posted_date":"2026-01-09","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-114.02,"balance":-5852.63,"currency":"USD"}
+{"transaction_id":"TXN-000521","posted_date":"2026-01-09","account_id":"ACC-0005","description":"STARBUCKS #1042","category":"Coffee","amount":-485.16,"balance":4556.68,"currency":"USD"}
+{"transaction_id":"TXN-000522","posted_date":"2026-01-10","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-210.74,"balance":4480.52,"currency":"USD"}
+{"transaction_id":"TXN-000523","posted_date":"2026-01-10","account_id":"ACC-0007","description":"DELTA AIR 0062","category":"Travel","amount":-238.8,"balance":7899.16,"currency":"USD"}
+{"transaction_id":"TXN-000524","posted_date":"2026-01-11","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-785.26,"balance":13023.99,"currency":"USD"}
+{"transaction_id":"TXN-000525","posted_date":"2026-01-11","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-508.88,"balance":23598.83,"currency":"USD"}
+{"transaction_id":"TXN-000526","posted_date":"2026-01-12","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-680,"balance":-10700.5,"currency":"USD"}
+{"transaction_id":"TXN-000527","posted_date":"2026-01-12","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-1107.62,"balance":9724.03,"currency":"USD"}
+{"transaction_id":"TXN-000528","posted_date":"2026-01-13","account_id":"ACC-0012","description":"PAYROLL DEPOSIT","category":"Income","amount":2872.67,"balance":3254.48,"currency":"USD"}
+{"transaction_id":"TXN-000529","posted_date":"2026-01-14","account_id":"ACC-0001","description":"UBER TRIP","category":"Transport","amount":-255,"balance":-1585.64,"currency":"USD"}
+{"transaction_id":"TXN-000530","posted_date":"2026-01-14","account_id":"ACC-0002","description":"CVS PHARMACY 8891","category":"Health","amount":-1237.08,"balance":-1028.39,"currency":"USD"}
+{"transaction_id":"TXN-000531","posted_date":"2026-01-15","account_id":"ACC-0003","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-270.81,"balance":1113.44,"currency":"USD"}
+{"transaction_id":"TXN-000532","posted_date":"2026-01-15","account_id":"ACC-0004","description":"STARBUCKS #1042","category":"Coffee","amount":-1433.56,"balance":-7286.19,"currency":"USD"}
+{"transaction_id":"TXN-000533","posted_date":"2026-01-16","account_id":"ACC-0005","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-45.3,"balance":4511.38,"currency":"USD"}
+{"transaction_id":"TXN-000534","posted_date":"2026-01-16","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-833.35,"balance":3647.17,"currency":"USD"}
+{"transaction_id":"TXN-000535","posted_date":"2026-01-17","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-1492.91,"balance":6406.25,"currency":"USD"}
+{"transaction_id":"TXN-000536","posted_date":"2026-01-17","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-252.42,"balance":12771.57,"currency":"USD"}
+{"transaction_id":"TXN-000537","posted_date":"2026-01-18","account_id":"ACC-0009","description":"LOCAL CAFE, LLC","category":"Dining","amount":-40.89,"balance":23557.94,"currency":"USD"}
+{"transaction_id":"TXN-000538","posted_date":"2026-01-18","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-183.11,"balance":-10883.61,"currency":"USD"}
+{"transaction_id":"TXN-000539","posted_date":"2026-01-19","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-49.8,"balance":9674.23,"currency":"USD"}
+{"transaction_id":"TXN-000540","posted_date":"2026-01-20","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-93.95,"balance":3160.53,"currency":"USD"}
+{"transaction_id":"TXN-000541","posted_date":"2026-01-20","account_id":"ACC-0001","description":"LOCAL CAFE, LLC","category":"Dining","amount":-497.94,"balance":-2083.58,"currency":"USD"}
+{"transaction_id":"TXN-000542","posted_date":"2026-01-21","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-21.43,"balance":-1049.82,"currency":"USD"}
+{"transaction_id":"TXN-000543","posted_date":"2026-01-21","account_id":"ACC-0003","description":"LOCAL CAFE, LLC","category":"Dining","amount":-68.06,"balance":1045.38,"currency":"USD"}
+{"transaction_id":"TXN-000544","posted_date":"2026-01-22","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-790.87,"balance":-8077.06,"currency":"USD"}
+{"transaction_id":"TXN-000545","posted_date":"2026-01-22","account_id":"ACC-0005","description":"APPLE.COM/BILL","category":"Software","amount":-459.75,"balance":4051.63,"currency":"USD"}
+{"transaction_id":"TXN-000546","posted_date":"2026-01-23","account_id":"ACC-0006","description":"DELTA AIR 0062","category":"Travel","amount":-1111.76,"balance":2535.41,"currency":"USD"}
+{"transaction_id":"TXN-000547","posted_date":"2026-01-23","account_id":"ACC-0007","description":"WHOLE FOODS MKT","category":"Groceries","amount":-234.63,"balance":6171.62,"currency":"USD"}
+{"transaction_id":"TXN-000548","posted_date":"2026-01-24","account_id":"ACC-0008","description":"APPLE.COM/BILL","category":"Software","amount":-960.3,"balance":11811.27,"currency":"USD"}
+{"transaction_id":"TXN-000549","posted_date":"2026-01-24","account_id":"ACC-0009","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-1121.78,"balance":22436.16,"currency":"USD"}
+{"transaction_id":"TXN-000550","posted_date":"2026-01-25","account_id":"ACC-0010","description":"SHELL OIL 574","category":"Fuel","amount":-754.44,"balance":-11638.05,"currency":"USD"}
+{"transaction_id":"TXN-000551","posted_date":"2026-01-25","account_id":"ACC-0011","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-378.71,"balance":9295.52,"currency":"USD"}
+{"transaction_id":"TXN-000552","posted_date":"2026-01-26","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-979.79,"balance":2180.74,"currency":"USD"}
+{"transaction_id":"TXN-000553","posted_date":"2026-01-27","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-13.66,"balance":-2097.24,"currency":"USD"}
+{"transaction_id":"TXN-000554","posted_date":"2026-01-27","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1222.75,"balance":-2272.57,"currency":"USD"}
+{"transaction_id":"TXN-000555","posted_date":"2026-01-28","account_id":"ACC-0003","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-706.66,"balance":338.72,"currency":"USD"}
+{"transaction_id":"TXN-000556","posted_date":"2026-01-28","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-463.49,"balance":-8540.55,"currency":"USD"}
+{"transaction_id":"TXN-000557","posted_date":"2026-01-29","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-657.35,"balance":3394.28,"currency":"USD"}
+{"transaction_id":"TXN-000558","posted_date":"2026-01-29","account_id":"ACC-0006","description":"SHELL OIL 574","category":"Fuel","amount":-145.62,"balance":2389.79,"currency":"USD"}
+{"transaction_id":"TXN-000559","posted_date":"2026-01-30","account_id":"ACC-0007","description":"RENT PAYMENT","category":"Housing","amount":-580.85,"balance":5590.77,"currency":"USD"}
+{"transaction_id":"TXN-000560","posted_date":"2026-01-30","account_id":"ACC-0008","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-215.48,"balance":11595.79,"currency":"USD"}
+{"transaction_id":"TXN-000561","posted_date":"2026-01-31","account_id":"ACC-0009","description":"DELTA AIR 0062","category":"Travel","amount":-249.78,"balance":22186.38,"currency":"USD"}
+{"transaction_id":"TXN-000562","posted_date":"2026-01-31","account_id":"ACC-0010","description":"APPLE.COM/BILL","category":"Software","amount":-493.49,"balance":-12131.54,"currency":"USD"}
+{"transaction_id":"TXN-000563","posted_date":"2026-02-01","account_id":"ACC-0011","description":"APPLE.COM/BILL","category":"Software","amount":-11.12,"balance":9284.4,"currency":"USD"}
+{"transaction_id":"TXN-000564","posted_date":"2026-02-02","account_id":"ACC-0012","description":"UBER TRIP","category":"Transport","amount":-18.29,"balance":2162.45,"currency":"USD"}
+{"transaction_id":"TXN-000565","posted_date":"2026-02-02","account_id":"ACC-0001","description":"PAYROLL DEPOSIT","category":"Income","amount":3969.08,"balance":1871.84,"currency":"USD"}
+{"transaction_id":"TXN-000566","posted_date":"2026-02-03","account_id":"ACC-0002","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-541.14,"balance":-2813.71,"currency":"USD"}
+{"transaction_id":"TXN-000567","posted_date":"2026-02-03","account_id":"ACC-0003","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-74.96,"balance":263.76,"currency":"USD"}
+{"transaction_id":"TXN-000568","posted_date":"2026-02-04","account_id":"ACC-0004","description":"RENT PAYMENT","category":"Housing","amount":-197.21,"balance":-8737.76,"currency":"USD"}
+{"transaction_id":"TXN-000569","posted_date":"2026-02-04","account_id":"ACC-0005","description":"RENT PAYMENT","category":"Housing","amount":-119.22,"balance":3275.06,"currency":"USD"}
+{"transaction_id":"TXN-000570","posted_date":"2026-02-05","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-433.39,"balance":1956.4,"currency":"USD"}
+{"transaction_id":"TXN-000571","posted_date":"2026-02-05","account_id":"ACC-0007","description":"WHOLE FOODS MKT","category":"Groceries","amount":-48.71,"balance":5542.06,"currency":"USD"}
+{"transaction_id":"TXN-000572","posted_date":"2026-02-06","account_id":"ACC-0008","description":"STARBUCKS #1042","category":"Coffee","amount":-52.09,"balance":11543.7,"currency":"USD"}
+{"transaction_id":"TXN-000573","posted_date":"2026-02-06","account_id":"ACC-0009","description":"AMZN MKTPLACE","category":"Shopping","amount":-611.72,"balance":21574.66,"currency":"USD"}
+{"transaction_id":"TXN-000574","posted_date":"2026-02-07","account_id":"ACC-0010","description":"APPLE.COM/BILL","category":"Software","amount":-827.9,"balance":-12959.44,"currency":"USD"}
+{"transaction_id":"TXN-000575","posted_date":"2026-02-08","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-587.46,"balance":8696.94,"currency":"USD"}
+{"transaction_id":"TXN-000576","posted_date":"2026-02-08","account_id":"ACC-0012","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-44.76,"balance":2117.69,"currency":"USD"}
+{"transaction_id":"TXN-000577","posted_date":"2026-02-09","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-35,"balance":1836.84,"currency":"USD"}
+{"transaction_id":"TXN-000578","posted_date":"2026-02-09","account_id":"ACC-0002","description":"UBER TRIP","category":"Transport","amount":-701.28,"balance":-3514.99,"currency":"USD"}
+{"transaction_id":"TXN-000579","posted_date":"2026-02-10","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-173.56,"balance":90.2,"currency":"USD"}
+{"transaction_id":"TXN-000580","posted_date":"2026-02-10","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-126.18,"balance":-8863.94,"currency":"USD"}
+{"transaction_id":"TXN-000581","posted_date":"2026-02-11","account_id":"ACC-0005","description":"STARBUCKS #1042","category":"Coffee","amount":-593.33,"balance":2681.73,"currency":"USD"}
+{"transaction_id":"TXN-000582","posted_date":"2026-02-11","account_id":"ACC-0006","description":"STARBUCKS #1042","category":"Coffee","amount":-1013.17,"balance":943.23,"currency":"USD"}
+{"transaction_id":"TXN-000583","posted_date":"2026-02-12","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":2218.22,"balance":7760.28,"currency":"USD"}
+{"transaction_id":"TXN-000584","posted_date":"2026-02-12","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-471.47,"balance":11072.23,"currency":"USD"}
+{"transaction_id":"TXN-000585","posted_date":"2026-02-13","account_id":"ACC-0009","description":"UBER TRIP","category":"Transport","amount":-424.4,"balance":21150.26,"currency":"USD"}
+{"transaction_id":"TXN-000586","posted_date":"2026-02-14","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-4.37,"balance":-12963.81,"currency":"USD"}
+{"transaction_id":"TXN-000587","posted_date":"2026-02-14","account_id":"ACC-0011","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-583.84,"balance":8113.1,"currency":"USD"}
+{"transaction_id":"TXN-000588","posted_date":"2026-02-15","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-28.47,"balance":2089.22,"currency":"USD"}
+{"transaction_id":"TXN-000589","posted_date":"2026-02-15","account_id":"ACC-0001","description":"AMZN MKTPLACE","category":"Shopping","amount":-168.62,"balance":1668.22,"currency":"USD"}
+{"transaction_id":"TXN-000590","posted_date":"2026-02-16","account_id":"ACC-0002","description":"PAYROLL DEPOSIT","category":"Income","amount":3721.94,"balance":206.95,"currency":"USD"}
+{"transaction_id":"TXN-000591","posted_date":"2026-02-16","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-636.51,"balance":-546.31,"currency":"USD"}
+{"transaction_id":"TXN-000592","posted_date":"2026-02-17","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-29.42,"balance":-8893.36,"currency":"USD"}
+{"transaction_id":"TXN-000593","posted_date":"2026-02-17","account_id":"ACC-0005","description":"STARBUCKS #1042","category":"Coffee","amount":-878.08,"balance":1803.65,"currency":"USD"}
+{"transaction_id":"TXN-000594","posted_date":"2026-02-18","account_id":"ACC-0006","description":"PAYROLL DEPOSIT","category":"Income","amount":4512.05,"balance":5455.28,"currency":"USD"}
+{"transaction_id":"TXN-000595","posted_date":"2026-02-18","account_id":"ACC-0007","description":"STARBUCKS #1042","category":"Coffee","amount":-265.58,"balance":7494.7,"currency":"USD"}
+{"transaction_id":"TXN-000596","posted_date":"2026-02-19","account_id":"ACC-0008","description":"LOCAL CAFE, LLC","category":"Dining","amount":-574.53,"balance":10497.7,"currency":"USD"}
+{"transaction_id":"TXN-000597","posted_date":"2026-02-20","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-699.82,"balance":20450.44,"currency":"USD"}
+{"transaction_id":"TXN-000598","posted_date":"2026-02-20","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-378.5,"balance":-13342.31,"currency":"USD"}
+{"transaction_id":"TXN-000599","posted_date":"2026-02-21","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-1026.32,"balance":7086.78,"currency":"USD"}
+{"transaction_id":"TXN-000600","posted_date":"2026-02-21","account_id":"ACC-0012","description":"LOCAL CAFE, LLC","category":"Dining","amount":-242.55,"balance":1846.67,"currency":"USD"}
+{"transaction_id":"TXN-000601","posted_date":"2026-02-22","account_id":"ACC-0001","description":"UBER TRIP","category":"Transport","amount":-693.39,"balance":974.83,"currency":"USD"}
+{"transaction_id":"TXN-000602","posted_date":"2026-02-22","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-59.67,"balance":147.28,"currency":"USD"}
+{"transaction_id":"TXN-000603","posted_date":"2026-02-23","account_id":"ACC-0003","description":"PAYROLL DEPOSIT","category":"Income","amount":3951.87,"balance":3405.56,"currency":"USD"}
+{"transaction_id":"TXN-000604","posted_date":"2026-02-23","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-656.99,"balance":-9550.35,"currency":"USD"}
+{"transaction_id":"TXN-000605","posted_date":"2026-02-24","account_id":"ACC-0005","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-818.59,"balance":985.06,"currency":"USD"}
+{"transaction_id":"TXN-000606","posted_date":"2026-02-24","account_id":"ACC-0006","description":"APPLE.COM/BILL","category":"Software","amount":-776.01,"balance":4679.27,"currency":"USD"}
+{"transaction_id":"TXN-000607","posted_date":"2026-02-25","account_id":"ACC-0007","description":"RENT PAYMENT","category":"Housing","amount":-11.35,"balance":7483.35,"currency":"USD"}
+{"transaction_id":"TXN-000608","posted_date":"2026-02-26","account_id":"ACC-0008","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-781.54,"balance":9716.16,"currency":"USD"}
+{"transaction_id":"TXN-000609","posted_date":"2026-02-26","account_id":"ACC-0009","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-570.5,"balance":19879.94,"currency":"USD"}
+{"transaction_id":"TXN-000610","posted_date":"2026-02-27","account_id":"ACC-0010","description":"RENT PAYMENT","category":"Housing","amount":-58.14,"balance":-13400.45,"currency":"USD"}
+{"transaction_id":"TXN-000611","posted_date":"2026-02-27","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-99.56,"balance":6987.22,"currency":"USD"}
+{"transaction_id":"TXN-000612","posted_date":"2026-02-28","account_id":"ACC-0012","description":"AMZN MKTPLACE","category":"Shopping","amount":-945.88,"balance":900.79,"currency":"USD"}
+{"transaction_id":"TXN-000613","posted_date":"2026-02-28","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-370.23,"balance":604.6,"currency":"USD"}
+{"transaction_id":"TXN-000614","posted_date":"2026-03-01","account_id":"ACC-0002","description":"CVS PHARMACY 8891","category":"Health","amount":-534.04,"balance":-386.76,"currency":"USD"}
+{"transaction_id":"TXN-000615","posted_date":"2026-03-01","account_id":"ACC-0003","description":"DELTA AIR 0062","category":"Travel","amount":-191.91,"balance":3213.65,"currency":"USD"}
+{"transaction_id":"TXN-000616","posted_date":"2026-03-02","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-155.25,"balance":-9705.6,"currency":"USD"}
+{"transaction_id":"TXN-000617","posted_date":"2026-03-02","account_id":"ACC-0005","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-99.17,"balance":885.89,"currency":"USD"}
+{"transaction_id":"TXN-000618","posted_date":"2026-03-03","account_id":"ACC-0006","description":"CVS PHARMACY 8891","category":"Health","amount":-8.7,"balance":4670.57,"currency":"USD"}
+{"transaction_id":"TXN-000619","posted_date":"2026-03-04","account_id":"ACC-0007","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-738.66,"balance":6744.69,"currency":"USD"}
+{"transaction_id":"TXN-000620","posted_date":"2026-03-04","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-567.52,"balance":9148.64,"currency":"USD"}
+{"transaction_id":"TXN-000621","posted_date":"2026-03-05","account_id":"ACC-0009","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-570.73,"balance":19309.21,"currency":"USD"}
+{"transaction_id":"TXN-000622","posted_date":"2026-03-05","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-112.29,"balance":-13512.74,"currency":"USD"}
+{"transaction_id":"TXN-000623","posted_date":"2026-03-06","account_id":"ACC-0011","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-290.85,"balance":6696.37,"currency":"USD"}
+{"transaction_id":"TXN-000624","posted_date":"2026-03-06","account_id":"ACC-0012","description":"SHELL OIL 574","category":"Fuel","amount":-477.78,"balance":423.01,"currency":"USD"}
+{"transaction_id":"TXN-000625","posted_date":"2026-03-07","account_id":"ACC-0001","description":"AMZN MKTPLACE","category":"Shopping","amount":-228.91,"balance":375.69,"currency":"USD"}
+{"transaction_id":"TXN-000626","posted_date":"2026-03-07","account_id":"ACC-0002","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-35.24,"balance":-422,"currency":"USD"}
+{"transaction_id":"TXN-000627","posted_date":"2026-03-08","account_id":"ACC-0003","description":"UBER TRIP","category":"Transport","amount":-75.51,"balance":3138.14,"currency":"USD"}
+{"transaction_id":"TXN-000628","posted_date":"2026-03-08","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-424.37,"balance":-10129.97,"currency":"USD"}
+{"transaction_id":"TXN-000629","posted_date":"2026-03-09","account_id":"ACC-0005","description":"STARBUCKS #1042","category":"Coffee","amount":-669.43,"balance":216.46,"currency":"USD"}
+{"transaction_id":"TXN-000630","posted_date":"2026-03-10","account_id":"ACC-0006","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-970.47,"balance":3700.1,"currency":"USD"}
+{"transaction_id":"TXN-000631","posted_date":"2026-03-10","account_id":"ACC-0007","description":"DELTA AIR 0062","category":"Travel","amount":-63.95,"balance":6680.74,"currency":"USD"}
+{"transaction_id":"TXN-000632","posted_date":"2026-03-11","account_id":"ACC-0008","description":"LOCAL CAFE, LLC","category":"Dining","amount":-106.67,"balance":9041.97,"currency":"USD"}
+{"transaction_id":"TXN-000633","posted_date":"2026-03-11","account_id":"ACC-0009","description":"WHOLE FOODS MKT","category":"Groceries","amount":-91.36,"balance":19217.85,"currency":"USD"}
+{"transaction_id":"TXN-000634","posted_date":"2026-03-12","account_id":"ACC-0010","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-586.47,"balance":-14099.21,"currency":"USD"}
+{"transaction_id":"TXN-000635","posted_date":"2026-03-12","account_id":"ACC-0011","description":"CVS PHARMACY 8891","category":"Health","amount":-4.31,"balance":6692.06,"currency":"USD"}
+{"transaction_id":"TXN-000636","posted_date":"2026-03-13","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-171.67,"balance":251.34,"currency":"USD"}
+{"transaction_id":"TXN-000637","posted_date":"2026-03-13","account_id":"ACC-0001","description":"APPLE.COM/BILL","category":"Software","amount":-97.1,"balance":278.59,"currency":"USD"}
+{"transaction_id":"TXN-000638","posted_date":"2026-03-14","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-129.82,"balance":-551.82,"currency":"USD"}
+{"transaction_id":"TXN-000639","posted_date":"2026-03-14","account_id":"ACC-0003","description":"AMZN MKTPLACE","category":"Shopping","amount":-36.83,"balance":3101.31,"currency":"USD"}
+{"transaction_id":"TXN-000640","posted_date":"2026-03-15","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-7.13,"balance":-10137.1,"currency":"USD"}
+{"transaction_id":"TXN-000641","posted_date":"2026-03-16","account_id":"ACC-0005","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-86.11,"balance":130.35,"currency":"USD"}
+{"transaction_id":"TXN-000642","posted_date":"2026-03-16","account_id":"ACC-0006","description":"SHELL OIL 574","category":"Fuel","amount":-310.78,"balance":3389.32,"currency":"USD"}
+{"transaction_id":"TXN-000643","posted_date":"2026-03-17","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":3032.26,"balance":9713,"currency":"USD"}
+{"transaction_id":"TXN-000644","posted_date":"2026-03-17","account_id":"ACC-0008","description":"STARBUCKS #1042","category":"Coffee","amount":-347.16,"balance":8694.81,"currency":"USD"}
+{"transaction_id":"TXN-000645","posted_date":"2026-03-18","account_id":"ACC-0009","description":"UBER TRIP","category":"Transport","amount":-269.93,"balance":18947.92,"currency":"USD"}
+{"transaction_id":"TXN-000646","posted_date":"2026-03-18","account_id":"ACC-0010","description":"PAYROLL DEPOSIT","category":"Income","amount":3312.14,"balance":-10787.07,"currency":"USD"}
+{"transaction_id":"TXN-000647","posted_date":"2026-03-19","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":2667.12,"balance":9359.18,"currency":"USD"}
+{"transaction_id":"TXN-000648","posted_date":"2026-03-19","account_id":"ACC-0012","description":"LOCAL CAFE, LLC","category":"Dining","amount":-79.59,"balance":171.75,"currency":"USD"}
+{"transaction_id":"TXN-000649","posted_date":"2026-03-20","account_id":"ACC-0001","description":"UBER TRIP","category":"Transport","amount":-1039.78,"balance":-761.19,"currency":"USD"}
+{"transaction_id":"TXN-000650","posted_date":"2026-03-20","account_id":"ACC-0002","description":"WHOLE FOODS MKT","category":"Groceries","amount":-685.8,"balance":-1237.62,"currency":"USD"}
+{"transaction_id":"TXN-000651","posted_date":"2026-03-21","account_id":"ACC-0003","description":"WHOLE FOODS MKT","category":"Groceries","amount":-84.16,"balance":3017.15,"currency":"USD"}
+{"transaction_id":"TXN-000652","posted_date":"2026-03-21","account_id":"ACC-0004","description":"PAYROLL DEPOSIT","category":"Income","amount":5221.33,"balance":-4915.77,"currency":"USD"}
+{"transaction_id":"TXN-000653","posted_date":"2026-03-22","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-95.18,"balance":35.17,"currency":"USD"}
+{"transaction_id":"TXN-000654","posted_date":"2026-03-23","account_id":"ACC-0006","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-25.33,"balance":3363.99,"currency":"USD"}
+{"transaction_id":"TXN-000655","posted_date":"2026-03-23","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":2749.06,"balance":12462.06,"currency":"USD"}
+{"transaction_id":"TXN-000656","posted_date":"2026-03-24","account_id":"ACC-0008","description":"LOCAL CAFE, LLC","category":"Dining","amount":-1178.26,"balance":7516.55,"currency":"USD"}
+{"transaction_id":"TXN-000657","posted_date":"2026-03-24","account_id":"ACC-0009","description":"RENT PAYMENT","category":"Housing","amount":-271.59,"balance":18676.33,"currency":"USD"}
+{"transaction_id":"TXN-000658","posted_date":"2026-03-25","account_id":"ACC-0010","description":"LOCAL CAFE, LLC","category":"Dining","amount":-528.46,"balance":-11315.53,"currency":"USD"}
+{"transaction_id":"TXN-000659","posted_date":"2026-03-25","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-644.53,"balance":8714.65,"currency":"USD"}
+{"transaction_id":"TXN-000660","posted_date":"2026-03-26","account_id":"ACC-0012","description":"PAYROLL DEPOSIT","category":"Income","amount":1902.03,"balance":2073.78,"currency":"USD"}
+{"transaction_id":"TXN-000661","posted_date":"2026-03-26","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-269.82,"balance":-1031.01,"currency":"USD"}
+{"transaction_id":"TXN-000662","posted_date":"2026-03-27","account_id":"ACC-0002","description":"AMZN MKTPLACE","category":"Shopping","amount":-442.49,"balance":-1680.11,"currency":"USD"}
+{"transaction_id":"TXN-000663","posted_date":"2026-03-27","account_id":"ACC-0003","description":"CVS PHARMACY 8891","category":"Health","amount":-1143.9,"balance":1873.25,"currency":"USD"}
+{"transaction_id":"TXN-000664","posted_date":"2026-03-28","account_id":"ACC-0004","description":"PAYROLL DEPOSIT","category":"Income","amount":3177.73,"balance":-1738.04,"currency":"USD"}
+{"transaction_id":"TXN-000665","posted_date":"2026-03-29","account_id":"ACC-0005","description":"RENT PAYMENT","category":"Housing","amount":-81.4,"balance":-46.23,"currency":"USD"}
+{"transaction_id":"TXN-000666","posted_date":"2026-03-29","account_id":"ACC-0006","description":"WHOLE FOODS MKT","category":"Groceries","amount":-614.62,"balance":2749.37,"currency":"USD"}
+{"transaction_id":"TXN-000667","posted_date":"2026-03-30","account_id":"ACC-0007","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-166.27,"balance":12295.79,"currency":"USD"}
+{"transaction_id":"TXN-000668","posted_date":"2026-03-30","account_id":"ACC-0008","description":"SHELL OIL 574","category":"Fuel","amount":-137.13,"balance":7379.42,"currency":"USD"}
+{"transaction_id":"TXN-000669","posted_date":"2026-03-31","account_id":"ACC-0009","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-25.57,"balance":18650.76,"currency":"USD"}
+{"transaction_id":"TXN-000670","posted_date":"2026-03-31","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-244.76,"balance":-11560.29,"currency":"USD"}
+{"transaction_id":"TXN-000671","posted_date":"2026-04-01","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-874.24,"balance":7840.41,"currency":"USD"}
+{"transaction_id":"TXN-000672","posted_date":"2026-04-01","account_id":"ACC-0012","description":"RENT PAYMENT","category":"Housing","amount":-488.16,"balance":1585.62,"currency":"USD"}
+{"transaction_id":"TXN-000673","posted_date":"2026-04-02","account_id":"ACC-0001","description":"STARBUCKS #1042","category":"Coffee","amount":-1502.42,"balance":-2533.43,"currency":"USD"}
+{"transaction_id":"TXN-000674","posted_date":"2026-04-02","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-3.43,"balance":-1683.54,"currency":"USD"}
+{"transaction_id":"TXN-000675","posted_date":"2026-04-03","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-78.29,"balance":1794.96,"currency":"USD"}
+{"transaction_id":"TXN-000676","posted_date":"2026-04-04","account_id":"ACC-0004","description":"WHOLE FOODS MKT","category":"Groceries","amount":-33.67,"balance":-1771.71,"currency":"USD"}
+{"transaction_id":"TXN-000677","posted_date":"2026-04-04","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-72.02,"balance":-118.25,"currency":"USD"}
+{"transaction_id":"TXN-000678","posted_date":"2026-04-05","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-164.9,"balance":2584.47,"currency":"USD"}
+{"transaction_id":"TXN-000679","posted_date":"2026-04-05","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-3.77,"balance":12292.02,"currency":"USD"}
+{"transaction_id":"TXN-000680","posted_date":"2026-04-06","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-40.69,"balance":7338.73,"currency":"USD"}
+{"transaction_id":"TXN-000681","posted_date":"2026-04-06","account_id":"ACC-0009","description":"RENT PAYMENT","category":"Housing","amount":-525.96,"balance":18124.8,"currency":"USD"}
+{"transaction_id":"TXN-000682","posted_date":"2026-04-07","account_id":"ACC-0010","description":"WHOLE FOODS MKT","category":"Groceries","amount":-182.94,"balance":-11743.23,"currency":"USD"}
+{"transaction_id":"TXN-000683","posted_date":"2026-04-07","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-39.5,"balance":7800.91,"currency":"USD"}
+{"transaction_id":"TXN-000684","posted_date":"2026-04-08","account_id":"ACC-0012","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-492.8,"balance":1092.82,"currency":"USD"}
+{"transaction_id":"TXN-000685","posted_date":"2026-04-08","account_id":"ACC-0001","description":"PAYROLL DEPOSIT","category":"Income","amount":2212.76,"balance":-320.67,"currency":"USD"}
+{"transaction_id":"TXN-000686","posted_date":"2026-04-09","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-1346.55,"balance":-3030.09,"currency":"USD"}
+{"transaction_id":"TXN-000687","posted_date":"2026-04-10","account_id":"ACC-0003","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-83.95,"balance":1711.01,"currency":"USD"}
+{"transaction_id":"TXN-000688","posted_date":"2026-04-10","account_id":"ACC-0004","description":"STARBUCKS #1042","category":"Coffee","amount":-126.58,"balance":-1898.29,"currency":"USD"}
+{"transaction_id":"TXN-000689","posted_date":"2026-04-11","account_id":"ACC-0005","description":"WHOLE FOODS MKT","category":"Groceries","amount":-565.06,"balance":-683.31,"currency":"USD"}
+{"transaction_id":"TXN-000690","posted_date":"2026-04-11","account_id":"ACC-0006","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-629.28,"balance":1955.19,"currency":"USD"}
+{"transaction_id":"TXN-000691","posted_date":"2026-04-12","account_id":"ACC-0007","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-55.47,"balance":12236.55,"currency":"USD"}
+{"transaction_id":"TXN-000692","posted_date":"2026-04-12","account_id":"ACC-0008","description":"RENT PAYMENT","category":"Housing","amount":-620.17,"balance":6718.56,"currency":"USD"}
+{"transaction_id":"TXN-000693","posted_date":"2026-04-13","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-703.76,"balance":17421.04,"currency":"USD"}
+{"transaction_id":"TXN-000694","posted_date":"2026-04-13","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-18.32,"balance":-11761.55,"currency":"USD"}
+{"transaction_id":"TXN-000695","posted_date":"2026-04-14","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-770.15,"balance":7030.76,"currency":"USD"}
+{"transaction_id":"TXN-000696","posted_date":"2026-04-14","account_id":"ACC-0012","description":"LOCAL CAFE, LLC","category":"Dining","amount":-38.58,"balance":1054.24,"currency":"USD"}
+{"transaction_id":"TXN-000697","posted_date":"2026-04-15","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-17.41,"balance":-338.08,"currency":"USD"}
+{"transaction_id":"TXN-000698","posted_date":"2026-04-16","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1052.28,"balance":-4082.37,"currency":"USD"}
+{"transaction_id":"TXN-000699","posted_date":"2026-04-16","account_id":"ACC-0003","description":"SHELL OIL 574","category":"Fuel","amount":-452.86,"balance":1258.15,"currency":"USD"}
+{"transaction_id":"TXN-000700","posted_date":"2026-04-17","account_id":"ACC-0004","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-938.22,"balance":-2836.51,"currency":"USD"}
+{"transaction_id":"TXN-000701","posted_date":"2026-04-17","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-129.89,"balance":-813.2,"currency":"USD"}
+{"transaction_id":"TXN-000702","posted_date":"2026-04-18","account_id":"ACC-0006","description":"DELTA AIR 0062","category":"Travel","amount":-513.86,"balance":1441.33,"currency":"USD"}
+{"transaction_id":"TXN-000703","posted_date":"2026-04-18","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-288.77,"balance":11947.78,"currency":"USD"}
+{"transaction_id":"TXN-000704","posted_date":"2026-04-19","account_id":"ACC-0008","description":"UBER TRIP","category":"Transport","amount":-434.98,"balance":6283.58,"currency":"USD"}
+{"transaction_id":"TXN-000705","posted_date":"2026-04-19","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-921.97,"balance":16499.07,"currency":"USD"}
+{"transaction_id":"TXN-000706","posted_date":"2026-04-20","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-284.95,"balance":-12046.5,"currency":"USD"}
+{"transaction_id":"TXN-000707","posted_date":"2026-04-20","account_id":"ACC-0011","description":"DELTA AIR 0062","category":"Travel","amount":-258.45,"balance":6772.31,"currency":"USD"}
+{"transaction_id":"TXN-000708","posted_date":"2026-04-21","account_id":"ACC-0012","description":"DELTA AIR 0062","category":"Travel","amount":-489.59,"balance":564.65,"currency":"USD"}
+{"transaction_id":"TXN-000709","posted_date":"2026-04-22","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-904.4,"balance":-1242.48,"currency":"USD"}
+{"transaction_id":"TXN-000710","posted_date":"2026-04-22","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-726.29,"balance":-4808.66,"currency":"USD"}
+{"transaction_id":"TXN-000711","posted_date":"2026-04-23","account_id":"ACC-0003","description":"RENT PAYMENT","category":"Housing","amount":-793.72,"balance":464.43,"currency":"USD"}
+{"transaction_id":"TXN-000712","posted_date":"2026-04-23","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-265.19,"balance":-3101.7,"currency":"USD"}
+{"transaction_id":"TXN-000713","posted_date":"2026-04-24","account_id":"ACC-0005","description":"SHELL OIL 574","category":"Fuel","amount":-1380.79,"balance":-2193.99,"currency":"USD"}
+{"transaction_id":"TXN-000714","posted_date":"2026-04-24","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-111.05,"balance":1330.28,"currency":"USD"}
+{"transaction_id":"TXN-000715","posted_date":"2026-04-25","account_id":"ACC-0007","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-531.78,"balance":11416,"currency":"USD"}
+{"transaction_id":"TXN-000716","posted_date":"2026-04-25","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-43.8,"balance":6239.78,"currency":"USD"}
+{"transaction_id":"TXN-000717","posted_date":"2026-04-26","account_id":"ACC-0009","description":"RENT PAYMENT","category":"Housing","amount":-208.88,"balance":16290.19,"currency":"USD"}
+{"transaction_id":"TXN-000718","posted_date":"2026-04-26","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-232.11,"balance":-12278.61,"currency":"USD"}
+{"transaction_id":"TXN-000719","posted_date":"2026-04-27","account_id":"ACC-0011","description":"AMZN MKTPLACE","category":"Shopping","amount":-482.78,"balance":6289.53,"currency":"USD"}
+{"transaction_id":"TXN-000720","posted_date":"2026-04-28","account_id":"ACC-0012","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-499.78,"balance":64.87,"currency":"USD"}
+{"transaction_id":"TXN-000721","posted_date":"2026-04-28","account_id":"ACC-0001","description":"PAYROLL DEPOSIT","category":"Income","amount":2171.9,"balance":929.42,"currency":"USD"}
+{"transaction_id":"TXN-000722","posted_date":"2026-04-29","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-37.04,"balance":-4845.7,"currency":"USD"}
+{"transaction_id":"TXN-000723","posted_date":"2026-04-29","account_id":"ACC-0003","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-795.82,"balance":-331.39,"currency":"USD"}
+{"transaction_id":"TXN-000724","posted_date":"2026-04-30","account_id":"ACC-0004","description":"LOCAL CAFE, LLC","category":"Dining","amount":-444.73,"balance":-3546.43,"currency":"USD"}
+{"transaction_id":"TXN-000725","posted_date":"2026-04-30","account_id":"ACC-0005","description":"WHOLE FOODS MKT","category":"Groceries","amount":-258.46,"balance":-2452.45,"currency":"USD"}
+{"transaction_id":"TXN-000726","posted_date":"2026-05-01","account_id":"ACC-0006","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-403.47,"balance":926.81,"currency":"USD"}
+{"transaction_id":"TXN-000727","posted_date":"2026-05-01","account_id":"ACC-0007","description":"WHOLE FOODS MKT","category":"Groceries","amount":-392.79,"balance":11023.21,"currency":"USD"}
+{"transaction_id":"TXN-000728","posted_date":"2026-05-02","account_id":"ACC-0008","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-277.62,"balance":5962.16,"currency":"USD"}
+{"transaction_id":"TXN-000729","posted_date":"2026-05-02","account_id":"ACC-0009","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-133.92,"balance":16156.27,"currency":"USD"}
+{"transaction_id":"TXN-000730","posted_date":"2026-05-03","account_id":"ACC-0010","description":"STARBUCKS #1042","category":"Coffee","amount":-233.21,"balance":-12511.82,"currency":"USD"}
+{"transaction_id":"TXN-000731","posted_date":"2026-05-04","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-94.79,"balance":6194.74,"currency":"USD"}
+{"transaction_id":"TXN-000732","posted_date":"2026-05-04","account_id":"ACC-0012","description":"SHELL OIL 574","category":"Fuel","amount":-677.7,"balance":-612.83,"currency":"USD"}
+{"transaction_id":"TXN-000733","posted_date":"2026-05-05","account_id":"ACC-0001","description":"LOCAL CAFE, LLC","category":"Dining","amount":-67.25,"balance":862.17,"currency":"USD"}
+{"transaction_id":"TXN-000734","posted_date":"2026-05-05","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-103.04,"balance":-4948.74,"currency":"USD"}
+{"transaction_id":"TXN-000735","posted_date":"2026-05-06","account_id":"ACC-0003","description":"WHOLE FOODS MKT","category":"Groceries","amount":-572.78,"balance":-904.17,"currency":"USD"}
+{"transaction_id":"TXN-000736","posted_date":"2026-05-06","account_id":"ACC-0004","description":"LOCAL CAFE, LLC","category":"Dining","amount":-903.55,"balance":-4449.98,"currency":"USD"}
+{"transaction_id":"TXN-000737","posted_date":"2026-05-07","account_id":"ACC-0005","description":"STARBUCKS #1042","category":"Coffee","amount":-211.91,"balance":-2664.36,"currency":"USD"}
+{"transaction_id":"TXN-000738","posted_date":"2026-05-07","account_id":"ACC-0006","description":"STARBUCKS #1042","category":"Coffee","amount":-779.55,"balance":147.26,"currency":"USD"}
+{"transaction_id":"TXN-000739","posted_date":"2026-05-08","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":2193.75,"balance":13216.96,"currency":"USD"}
+{"transaction_id":"TXN-000740","posted_date":"2026-05-08","account_id":"ACC-0008","description":"UBER TRIP","category":"Transport","amount":-685.35,"balance":5276.81,"currency":"USD"}
+{"transaction_id":"TXN-000741","posted_date":"2026-05-09","account_id":"ACC-0009","description":"LOCAL CAFE, LLC","category":"Dining","amount":-247.6,"balance":15908.67,"currency":"USD"}
+{"transaction_id":"TXN-000742","posted_date":"2026-05-10","account_id":"ACC-0010","description":"RENT PAYMENT","category":"Housing","amount":-200.99,"balance":-12712.81,"currency":"USD"}
+{"transaction_id":"TXN-000743","posted_date":"2026-05-10","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-161.22,"balance":6033.52,"currency":"USD"}
+{"transaction_id":"TXN-000744","posted_date":"2026-05-11","account_id":"ACC-0012","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-1286.29,"balance":-1899.12,"currency":"USD"}
+{"transaction_id":"TXN-000745","posted_date":"2026-05-11","account_id":"ACC-0001","description":"SHELL OIL 574","category":"Fuel","amount":-432,"balance":430.17,"currency":"USD"}
+{"transaction_id":"TXN-000746","posted_date":"2026-05-12","account_id":"ACC-0002","description":"APPLE.COM/BILL","category":"Software","amount":-851.67,"balance":-5800.41,"currency":"USD"}
+{"transaction_id":"TXN-000747","posted_date":"2026-05-12","account_id":"ACC-0003","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-80.88,"balance":-985.05,"currency":"USD"}
+{"transaction_id":"TXN-000748","posted_date":"2026-05-13","account_id":"ACC-0004","description":"SHELL OIL 574","category":"Fuel","amount":-56.83,"balance":-4506.81,"currency":"USD"}
+{"transaction_id":"TXN-000749","posted_date":"2026-05-13","account_id":"ACC-0005","description":"AMZN MKTPLACE","category":"Shopping","amount":-138.43,"balance":-2802.79,"currency":"USD"}
+{"transaction_id":"TXN-000750","posted_date":"2026-05-14","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-28.34,"balance":118.92,"currency":"USD"}
+{"transaction_id":"TXN-000751","posted_date":"2026-05-14","account_id":"ACC-0007","description":"SHELL OIL 574","category":"Fuel","amount":-202.38,"balance":13014.58,"currency":"USD"}
+{"transaction_id":"TXN-000752","posted_date":"2026-05-15","account_id":"ACC-0008","description":"UBER TRIP","category":"Transport","amount":-142.12,"balance":5134.69,"currency":"USD"}
+{"transaction_id":"TXN-000753","posted_date":"2026-05-15","account_id":"ACC-0009","description":"CVS PHARMACY 8891","category":"Health","amount":-319.84,"balance":15588.83,"currency":"USD"}
+{"transaction_id":"TXN-000754","posted_date":"2026-05-16","account_id":"ACC-0010","description":"AMZN MKTPLACE","category":"Shopping","amount":-702.93,"balance":-13415.74,"currency":"USD"}
+{"transaction_id":"TXN-000755","posted_date":"2026-05-17","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-83.15,"balance":5950.37,"currency":"USD"}
+{"transaction_id":"TXN-000756","posted_date":"2026-05-17","account_id":"ACC-0012","description":"AMZN MKTPLACE","category":"Shopping","amount":-289.5,"balance":-2188.62,"currency":"USD"}
+{"transaction_id":"TXN-000757","posted_date":"2026-05-18","account_id":"ACC-0001","description":"APPLE.COM/BILL","category":"Software","amount":-285.07,"balance":145.1,"currency":"USD"}
+{"transaction_id":"TXN-000758","posted_date":"2026-05-18","account_id":"ACC-0002","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-11.11,"balance":-5811.52,"currency":"USD"}
+{"transaction_id":"TXN-000759","posted_date":"2026-05-19","account_id":"ACC-0003","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-560.71,"balance":-1545.76,"currency":"USD"}
+{"transaction_id":"TXN-000760","posted_date":"2026-05-19","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-1047.08,"balance":-5553.89,"currency":"USD"}
+{"transaction_id":"TXN-000761","posted_date":"2026-05-20","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-7.24,"balance":-2810.03,"currency":"USD"}
+{"transaction_id":"TXN-000762","posted_date":"2026-05-20","account_id":"ACC-0006","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-3.07,"balance":115.85,"currency":"USD"}
+{"transaction_id":"TXN-000763","posted_date":"2026-05-21","account_id":"ACC-0007","description":"PAYROLL DEPOSIT","category":"Income","amount":2155.72,"balance":15170.3,"currency":"USD"}
+{"transaction_id":"TXN-000764","posted_date":"2026-05-21","account_id":"ACC-0008","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-286.77,"balance":4847.92,"currency":"USD"}
+{"transaction_id":"TXN-000765","posted_date":"2026-05-22","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-414.18,"balance":15174.65,"currency":"USD"}
+{"transaction_id":"TXN-000766","posted_date":"2026-05-23","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-644.55,"balance":-14060.29,"currency":"USD"}
+{"transaction_id":"TXN-000767","posted_date":"2026-05-23","account_id":"ACC-0011","description":"LOCAL CAFE, LLC","category":"Dining","amount":-55.1,"balance":5895.27,"currency":"USD"}
+{"transaction_id":"TXN-000768","posted_date":"2026-05-24","account_id":"ACC-0012","description":"DELTA AIR 0062","category":"Travel","amount":-29.41,"balance":-2218.03,"currency":"USD"}
+{"transaction_id":"TXN-000769","posted_date":"2026-05-24","account_id":"ACC-0001","description":"APPLE.COM/BILL","category":"Software","amount":-44.75,"balance":100.35,"currency":"USD"}
+{"transaction_id":"TXN-000770","posted_date":"2026-05-25","account_id":"ACC-0002","description":"APPLE.COM/BILL","category":"Software","amount":-466.45,"balance":-6277.97,"currency":"USD"}
+{"transaction_id":"TXN-000771","posted_date":"2026-05-25","account_id":"ACC-0003","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-1017.75,"balance":-2563.51,"currency":"USD"}
+{"transaction_id":"TXN-000772","posted_date":"2026-05-26","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-1414.81,"balance":-6968.7,"currency":"USD"}
+{"transaction_id":"TXN-000773","posted_date":"2026-05-26","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-153.12,"balance":-2963.15,"currency":"USD"}
+{"transaction_id":"TXN-000774","posted_date":"2026-05-27","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-1239.17,"balance":-1123.32,"currency":"USD"}
+{"transaction_id":"TXN-000775","posted_date":"2026-05-27","account_id":"ACC-0007","description":"RENT PAYMENT","category":"Housing","amount":-969.94,"balance":14200.36,"currency":"USD"}
+{"transaction_id":"TXN-000776","posted_date":"2026-05-28","account_id":"ACC-0008","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-43.24,"balance":4804.68,"currency":"USD"}
+{"transaction_id":"TXN-000777","posted_date":"2026-05-29","account_id":"ACC-0009","description":"APPLE.COM/BILL","category":"Software","amount":-19.31,"balance":15155.34,"currency":"USD"}
+{"transaction_id":"TXN-000778","posted_date":"2026-05-29","account_id":"ACC-0010","description":"DELTA AIR 0062","category":"Travel","amount":-500.41,"balance":-14560.7,"currency":"USD"}
+{"transaction_id":"TXN-000779","posted_date":"2026-05-30","account_id":"ACC-0011","description":"LOCAL CAFE, LLC","category":"Dining","amount":-273.72,"balance":5621.55,"currency":"USD"}
+{"transaction_id":"TXN-000780","posted_date":"2026-05-30","account_id":"ACC-0012","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-167.42,"balance":-2385.45,"currency":"USD"}
+{"transaction_id":"TXN-000781","posted_date":"2026-05-31","account_id":"ACC-0001","description":"WHOLE FOODS MKT","category":"Groceries","amount":-146.13,"balance":-45.78,"currency":"USD"}
+{"transaction_id":"TXN-000782","posted_date":"2026-05-31","account_id":"ACC-0002","description":"UBER TRIP","category":"Transport","amount":-155.55,"balance":-6433.52,"currency":"USD"}
+{"transaction_id":"TXN-000783","posted_date":"2026-06-01","account_id":"ACC-0003","description":"UBER TRIP","category":"Transport","amount":-125.4,"balance":-2688.91,"currency":"USD"}
+{"transaction_id":"TXN-000784","posted_date":"2026-06-01","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-609.19,"balance":-7577.89,"currency":"USD"}
+{"transaction_id":"TXN-000785","posted_date":"2026-06-02","account_id":"ACC-0005","description":"DELTA AIR 0062","category":"Travel","amount":-240.57,"balance":-3203.72,"currency":"USD"}
+{"transaction_id":"TXN-000786","posted_date":"2026-06-02","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-151.39,"balance":-1274.71,"currency":"USD"}
+{"transaction_id":"TXN-000787","posted_date":"2026-06-03","account_id":"ACC-0007","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-219.39,"balance":13980.97,"currency":"USD"}
+{"transaction_id":"TXN-000788","posted_date":"2026-06-04","account_id":"ACC-0008","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-1042.37,"balance":3762.31,"currency":"USD"}
+{"transaction_id":"TXN-000789","posted_date":"2026-06-04","account_id":"ACC-0009","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-8.83,"balance":15146.51,"currency":"USD"}
+{"transaction_id":"TXN-000790","posted_date":"2026-06-05","account_id":"ACC-0010","description":"STARBUCKS #1042","category":"Coffee","amount":-111.58,"balance":-14672.28,"currency":"USD"}
+{"transaction_id":"TXN-000791","posted_date":"2026-06-05","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-642.77,"balance":4978.78,"currency":"USD"}
+{"transaction_id":"TXN-000792","posted_date":"2026-06-06","account_id":"ACC-0012","description":"STARBUCKS #1042","category":"Coffee","amount":-1027.63,"balance":-3413.08,"currency":"USD"}
+{"transaction_id":"TXN-000793","posted_date":"2026-06-06","account_id":"ACC-0001","description":"PAYROLL DEPOSIT","category":"Income","amount":2604.67,"balance":2558.89,"currency":"USD"}
+{"transaction_id":"TXN-000794","posted_date":"2026-06-07","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-265.03,"balance":-6698.55,"currency":"USD"}
+{"transaction_id":"TXN-000795","posted_date":"2026-06-07","account_id":"ACC-0003","description":"STARBUCKS #1042","category":"Coffee","amount":-922.04,"balance":-3610.95,"currency":"USD"}
+{"transaction_id":"TXN-000796","posted_date":"2026-06-08","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-154.36,"balance":-7732.25,"currency":"USD"}
+{"transaction_id":"TXN-000797","posted_date":"2026-06-08","account_id":"ACC-0005","description":"APPLE.COM/BILL","category":"Software","amount":-72.93,"balance":-3276.65,"currency":"USD"}
+{"transaction_id":"TXN-000798","posted_date":"2026-06-09","account_id":"ACC-0006","description":"WHOLE FOODS MKT","category":"Groceries","amount":-746.16,"balance":-2020.87,"currency":"USD"}
+{"transaction_id":"TXN-000799","posted_date":"2026-06-10","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-223.59,"balance":13757.38,"currency":"USD"}
+{"transaction_id":"TXN-000800","posted_date":"2026-06-10","account_id":"ACC-0008","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-124.81,"balance":3637.5,"currency":"USD"}
+{"transaction_id":"TXN-000801","posted_date":"2026-06-11","account_id":"ACC-0009","description":"CVS PHARMACY 8891","category":"Health","amount":-53.56,"balance":15092.95,"currency":"USD"}
+{"transaction_id":"TXN-000802","posted_date":"2026-06-11","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-68.55,"balance":-14740.83,"currency":"USD"}
+{"transaction_id":"TXN-000803","posted_date":"2026-06-12","account_id":"ACC-0011","description":"WHOLE FOODS MKT","category":"Groceries","amount":-105.08,"balance":4873.7,"currency":"USD"}
+{"transaction_id":"TXN-000804","posted_date":"2026-06-12","account_id":"ACC-0012","description":"UBER TRIP","category":"Transport","amount":-1105.93,"balance":-4519.01,"currency":"USD"}
+{"transaction_id":"TXN-000805","posted_date":"2026-06-13","account_id":"ACC-0001","description":"WHOLE FOODS MKT","category":"Groceries","amount":-1286.73,"balance":1272.16,"currency":"USD"}
+{"transaction_id":"TXN-000806","posted_date":"2026-06-13","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-150.67,"balance":-6849.22,"currency":"USD"}
+{"transaction_id":"TXN-000807","posted_date":"2026-06-14","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-231.23,"balance":-3842.18,"currency":"USD"}
+{"transaction_id":"TXN-000808","posted_date":"2026-06-14","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-1333.03,"balance":-9065.28,"currency":"USD"}
+{"transaction_id":"TXN-000809","posted_date":"2026-06-15","account_id":"ACC-0005","description":"PAYROLL DEPOSIT","category":"Income","amount":1901.63,"balance":-1375.02,"currency":"USD"}
+{"transaction_id":"TXN-000810","posted_date":"2026-06-16","account_id":"ACC-0006","description":"APPLE.COM/BILL","category":"Software","amount":-742.44,"balance":-2763.31,"currency":"USD"}
+{"transaction_id":"TXN-000811","posted_date":"2026-06-16","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-107.12,"balance":13650.26,"currency":"USD"}
+{"transaction_id":"TXN-000812","posted_date":"2026-06-17","account_id":"ACC-0008","description":"STARBUCKS #1042","category":"Coffee","amount":-28.13,"balance":3609.37,"currency":"USD"}
+{"transaction_id":"TXN-000813","posted_date":"2026-06-17","account_id":"ACC-0009","description":"DELTA AIR 0062","category":"Travel","amount":-466.8,"balance":14626.15,"currency":"USD"}
+{"transaction_id":"TXN-000814","posted_date":"2026-06-18","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-599.39,"balance":-15340.22,"currency":"USD"}
+{"transaction_id":"TXN-000815","posted_date":"2026-06-18","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-214.25,"balance":4659.45,"currency":"USD"}
+{"transaction_id":"TXN-000816","posted_date":"2026-06-19","account_id":"ACC-0012","description":"APPLE.COM/BILL","category":"Software","amount":-271.01,"balance":-4790.02,"currency":"USD"}
+{"transaction_id":"TXN-000817","posted_date":"2026-06-19","account_id":"ACC-0001","description":"STARBUCKS #1042","category":"Coffee","amount":-867.68,"balance":404.48,"currency":"USD"}
+{"transaction_id":"TXN-000818","posted_date":"2026-06-20","account_id":"ACC-0002","description":"AMZN MKTPLACE","category":"Shopping","amount":-23.38,"balance":-6872.6,"currency":"USD"}
+{"transaction_id":"TXN-000819","posted_date":"2026-06-20","account_id":"ACC-0003","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-7.93,"balance":-3850.11,"currency":"USD"}
+{"transaction_id":"TXN-000820","posted_date":"2026-06-21","account_id":"ACC-0004","description":"RENT PAYMENT","category":"Housing","amount":-445.62,"balance":-9510.9,"currency":"USD"}
+{"transaction_id":"TXN-000821","posted_date":"2026-06-22","account_id":"ACC-0005","description":"LOCAL CAFE, LLC","category":"Dining","amount":-788.28,"balance":-2163.3,"currency":"USD"}
+{"transaction_id":"TXN-000822","posted_date":"2026-06-22","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-12.89,"balance":-2776.2,"currency":"USD"}
+{"transaction_id":"TXN-000823","posted_date":"2026-06-23","account_id":"ACC-0007","description":"APPLE.COM/BILL","category":"Software","amount":-758.51,"balance":12891.75,"currency":"USD"}
+{"transaction_id":"TXN-000824","posted_date":"2026-06-23","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-303.76,"balance":3305.61,"currency":"USD"}
+{"transaction_id":"TXN-000825","posted_date":"2026-06-24","account_id":"ACC-0009","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-516.86,"balance":14109.29,"currency":"USD"}
+{"transaction_id":"TXN-000826","posted_date":"2026-06-24","account_id":"ACC-0010","description":"LOCAL CAFE, LLC","category":"Dining","amount":-1211.89,"balance":-16552.11,"currency":"USD"}
+{"transaction_id":"TXN-000827","posted_date":"2026-06-25","account_id":"ACC-0011","description":"SHELL OIL 574","category":"Fuel","amount":-960.16,"balance":3699.29,"currency":"USD"}
+{"transaction_id":"TXN-000828","posted_date":"2026-06-25","account_id":"ACC-0012","description":"WHOLE FOODS MKT","category":"Groceries","amount":-93.06,"balance":-4883.08,"currency":"USD"}
+{"transaction_id":"TXN-000829","posted_date":"2026-06-26","account_id":"ACC-0001","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-301.36,"balance":103.12,"currency":"USD"}
+{"transaction_id":"TXN-000830","posted_date":"2026-06-26","account_id":"ACC-0002","description":"APPLE.COM/BILL","category":"Software","amount":-68.04,"balance":-6940.64,"currency":"USD"}
+{"transaction_id":"TXN-000831","posted_date":"2026-06-27","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-656.28,"balance":-4506.39,"currency":"USD"}
+{"transaction_id":"TXN-000832","posted_date":"2026-06-28","account_id":"ACC-0004","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-288.67,"balance":-9799.57,"currency":"USD"}
+{"transaction_id":"TXN-000833","posted_date":"2026-06-28","account_id":"ACC-0005","description":"LOCAL CAFE, LLC","category":"Dining","amount":-944.81,"balance":-3108.11,"currency":"USD"}
+{"transaction_id":"TXN-000834","posted_date":"2026-06-29","account_id":"ACC-0006","description":"CVS PHARMACY 8891","category":"Health","amount":-5.98,"balance":-2782.18,"currency":"USD"}
+{"transaction_id":"TXN-000835","posted_date":"2026-06-29","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-515.94,"balance":12375.81,"currency":"USD"}
+{"transaction_id":"TXN-000836","posted_date":"2026-06-30","account_id":"ACC-0008","description":"WHOLE FOODS MKT","category":"Groceries","amount":-117.5,"balance":3188.11,"currency":"USD"}
+{"transaction_id":"TXN-000837","posted_date":"2026-06-30","account_id":"ACC-0009","description":"CVS PHARMACY 8891","category":"Health","amount":-266.26,"balance":13843.03,"currency":"USD"}
+{"transaction_id":"TXN-000838","posted_date":"2026-07-01","account_id":"ACC-0010","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-78.35,"balance":-16630.46,"currency":"USD"}
+{"transaction_id":"TXN-000839","posted_date":"2026-07-01","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-6.08,"balance":3693.21,"currency":"USD"}
+{"transaction_id":"TXN-000840","posted_date":"2026-07-02","account_id":"ACC-0012","description":"UBER TRIP","category":"Transport","amount":-105.04,"balance":-4988.12,"currency":"USD"}
+{"transaction_id":"TXN-000841","posted_date":"2026-07-02","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-636.58,"balance":-533.46,"currency":"USD"}
+{"transaction_id":"TXN-000842","posted_date":"2026-07-03","account_id":"ACC-0002","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-795.72,"balance":-7736.36,"currency":"USD"}
+{"transaction_id":"TXN-000843","posted_date":"2026-07-04","account_id":"ACC-0003","description":"CVS PHARMACY 8891","category":"Health","amount":-224.08,"balance":-4730.47,"currency":"USD"}
+{"transaction_id":"TXN-000844","posted_date":"2026-07-04","account_id":"ACC-0004","description":"APPLE.COM/BILL","category":"Software","amount":-64.09,"balance":-9863.66,"currency":"USD"}
+{"transaction_id":"TXN-000845","posted_date":"2026-07-05","account_id":"ACC-0005","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-301.9,"balance":-3410.01,"currency":"USD"}
+{"transaction_id":"TXN-000846","posted_date":"2026-07-05","account_id":"ACC-0006","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-726.95,"balance":-3509.13,"currency":"USD"}
+{"transaction_id":"TXN-000847","posted_date":"2026-07-06","account_id":"ACC-0007","description":"APPLE.COM/BILL","category":"Software","amount":-1400.31,"balance":10975.5,"currency":"USD"}
+{"transaction_id":"TXN-000848","posted_date":"2026-07-06","account_id":"ACC-0008","description":"CVS PHARMACY 8891","category":"Health","amount":-936.3,"balance":2251.81,"currency":"USD"}
+{"transaction_id":"TXN-000849","posted_date":"2026-07-07","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-203.33,"balance":13639.7,"currency":"USD"}
+{"transaction_id":"TXN-000850","posted_date":"2026-07-07","account_id":"ACC-0010","description":"WHOLE FOODS MKT","category":"Groceries","amount":-209.08,"balance":-16839.54,"currency":"USD"}
+{"transaction_id":"TXN-000851","posted_date":"2026-07-08","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":3778.84,"balance":7472.05,"currency":"USD"}
+{"transaction_id":"TXN-000852","posted_date":"2026-07-08","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-569.36,"balance":-5557.48,"currency":"USD"}
+{"transaction_id":"TXN-000853","posted_date":"2026-07-09","account_id":"ACC-0001","description":"LOCAL CAFE, LLC","category":"Dining","amount":-35.45,"balance":-568.91,"currency":"USD"}
+{"transaction_id":"TXN-000854","posted_date":"2026-07-09","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-417.84,"balance":-8154.2,"currency":"USD"}
+{"transaction_id":"TXN-000855","posted_date":"2026-07-10","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-123.24,"balance":-4853.71,"currency":"USD"}
+{"transaction_id":"TXN-000856","posted_date":"2026-07-11","account_id":"ACC-0004","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-395.91,"balance":-10259.57,"currency":"USD"}
+{"transaction_id":"TXN-000857","posted_date":"2026-07-11","account_id":"ACC-0005","description":"PAYROLL DEPOSIT","category":"Income","amount":5396.06,"balance":1986.05,"currency":"USD"}
+{"transaction_id":"TXN-000858","posted_date":"2026-07-12","account_id":"ACC-0006","description":"WHOLE FOODS MKT","category":"Groceries","amount":-492.65,"balance":-4001.78,"currency":"USD"}
+{"transaction_id":"TXN-000859","posted_date":"2026-07-12","account_id":"ACC-0007","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-309.27,"balance":10666.23,"currency":"USD"}
+{"transaction_id":"TXN-000860","posted_date":"2026-07-13","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-38.77,"balance":2213.04,"currency":"USD"}
+{"transaction_id":"TXN-000861","posted_date":"2026-07-13","account_id":"ACC-0009","description":"APPLE.COM/BILL","category":"Software","amount":-209.02,"balance":13430.68,"currency":"USD"}
+{"transaction_id":"TXN-000862","posted_date":"2026-07-14","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-320.15,"balance":-17159.69,"currency":"USD"}
+{"transaction_id":"TXN-000863","posted_date":"2026-07-14","account_id":"ACC-0011","description":"CVS PHARMACY 8891","category":"Health","amount":-886.97,"balance":6585.08,"currency":"USD"}
+{"transaction_id":"TXN-000864","posted_date":"2026-07-15","account_id":"ACC-0012","description":"DELTA AIR 0062","category":"Travel","amount":-229.27,"balance":-5786.75,"currency":"USD"}
+{"transaction_id":"TXN-000865","posted_date":"2026-07-15","account_id":"ACC-0001","description":"UBER TRIP","category":"Transport","amount":-328.86,"balance":-897.77,"currency":"USD"}
+{"transaction_id":"TXN-000866","posted_date":"2026-07-16","account_id":"ACC-0002","description":"PAYROLL DEPOSIT","category":"Income","amount":1809.31,"balance":-6344.89,"currency":"USD"}
+{"transaction_id":"TXN-000867","posted_date":"2026-07-17","account_id":"ACC-0003","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-648.94,"balance":-5502.65,"currency":"USD"}
+{"transaction_id":"TXN-000868","posted_date":"2026-07-17","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-53.17,"balance":-10312.74,"currency":"USD"}
+{"transaction_id":"TXN-000869","posted_date":"2026-07-18","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-83.1,"balance":1902.95,"currency":"USD"}
+{"transaction_id":"TXN-000870","posted_date":"2026-07-18","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-255.34,"balance":-4257.12,"currency":"USD"}
+{"transaction_id":"TXN-000871","posted_date":"2026-07-19","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-66.36,"balance":10599.87,"currency":"USD"}
+{"transaction_id":"TXN-000872","posted_date":"2026-07-19","account_id":"ACC-0008","description":"WHOLE FOODS MKT","category":"Groceries","amount":-12.13,"balance":2200.91,"currency":"USD"}
+{"transaction_id":"TXN-000873","posted_date":"2026-07-20","account_id":"ACC-0009","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-541.57,"balance":12889.11,"currency":"USD"}
+{"transaction_id":"TXN-000874","posted_date":"2026-07-20","account_id":"ACC-0010","description":"APPLE.COM/BILL","category":"Software","amount":-614.73,"balance":-17774.42,"currency":"USD"}
+{"transaction_id":"TXN-000875","posted_date":"2026-07-21","account_id":"ACC-0011","description":"PAYROLL DEPOSIT","category":"Income","amount":3172.88,"balance":9757.96,"currency":"USD"}
+{"transaction_id":"TXN-000876","posted_date":"2026-07-21","account_id":"ACC-0012","description":"PAYROLL DEPOSIT","category":"Income","amount":2579.8,"balance":-3206.95,"currency":"USD"}
+{"transaction_id":"TXN-000877","posted_date":"2026-07-22","account_id":"ACC-0001","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-39.32,"balance":-937.09,"currency":"USD"}
+{"transaction_id":"TXN-000878","posted_date":"2026-07-23","account_id":"ACC-0002","description":"PAYROLL DEPOSIT","category":"Income","amount":5178.11,"balance":-1166.78,"currency":"USD"}
+{"transaction_id":"TXN-000879","posted_date":"2026-07-23","account_id":"ACC-0003","description":"LOCAL CAFE, LLC","category":"Dining","amount":-310.58,"balance":-5813.23,"currency":"USD"}
+{"transaction_id":"TXN-000880","posted_date":"2026-07-24","account_id":"ACC-0004","description":"CVS PHARMACY 8891","category":"Health","amount":-721.7,"balance":-11034.44,"currency":"USD"}
+{"transaction_id":"TXN-000881","posted_date":"2026-07-24","account_id":"ACC-0005","description":"PAYROLL DEPOSIT","category":"Income","amount":2936.23,"balance":4839.18,"currency":"USD"}
+{"transaction_id":"TXN-000882","posted_date":"2026-07-25","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-25.54,"balance":-4282.66,"currency":"USD"}
+{"transaction_id":"TXN-000883","posted_date":"2026-07-25","account_id":"ACC-0007","description":"STARBUCKS #1042","category":"Coffee","amount":-461.37,"balance":10138.5,"currency":"USD"}
+{"transaction_id":"TXN-000884","posted_date":"2026-07-26","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-224.57,"balance":1976.34,"currency":"USD"}
+{"transaction_id":"TXN-000885","posted_date":"2026-07-26","account_id":"ACC-0009","description":"WHOLE FOODS MKT","category":"Groceries","amount":-120,"balance":12769.11,"currency":"USD"}
+{"transaction_id":"TXN-000886","posted_date":"2026-07-27","account_id":"ACC-0010","description":"PAYROLL DEPOSIT","category":"Income","amount":3724.95,"balance":-14049.47,"currency":"USD"}
+{"transaction_id":"TXN-000887","posted_date":"2026-07-27","account_id":"ACC-0011","description":"APPLE.COM/BILL","category":"Software","amount":-1258.7,"balance":8499.26,"currency":"USD"}
+{"transaction_id":"TXN-000888","posted_date":"2026-07-28","account_id":"ACC-0012","description":"UBER TRIP","category":"Transport","amount":-22.54,"balance":-3229.49,"currency":"USD"}
+{"transaction_id":"TXN-000889","posted_date":"2026-07-29","account_id":"ACC-0001","description":"RENT PAYMENT","category":"Housing","amount":-214.77,"balance":-1151.86,"currency":"USD"}
+{"transaction_id":"TXN-000890","posted_date":"2026-07-29","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-99.5,"balance":-1266.28,"currency":"USD"}
+{"transaction_id":"TXN-000891","posted_date":"2026-07-30","account_id":"ACC-0003","description":"DELTA AIR 0062","category":"Travel","amount":-232.64,"balance":-6045.87,"currency":"USD"}
+{"transaction_id":"TXN-000892","posted_date":"2026-07-30","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-869.65,"balance":-11904.09,"currency":"USD"}
+{"transaction_id":"TXN-000893","posted_date":"2026-07-31","account_id":"ACC-0005","description":"CVS PHARMACY 8891","category":"Health","amount":-90.88,"balance":4748.3,"currency":"USD"}
+{"transaction_id":"TXN-000894","posted_date":"2026-07-31","account_id":"ACC-0006","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-1091.2,"balance":-5373.86,"currency":"USD"}
+{"transaction_id":"TXN-000895","posted_date":"2026-08-01","account_id":"ACC-0007","description":"SHELL OIL 574","category":"Fuel","amount":-440.91,"balance":9697.59,"currency":"USD"}
+{"transaction_id":"TXN-000896","posted_date":"2026-08-01","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-216.61,"balance":1759.73,"currency":"USD"}
+{"transaction_id":"TXN-000897","posted_date":"2026-08-02","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":2395.31,"balance":15164.42,"currency":"USD"}
+{"transaction_id":"TXN-000898","posted_date":"2026-08-02","account_id":"ACC-0010","description":"CVS PHARMACY 8891","category":"Health","amount":-841.6,"balance":-14891.07,"currency":"USD"}
+{"transaction_id":"TXN-000899","posted_date":"2026-08-03","account_id":"ACC-0011","description":"AMZN MKTPLACE","category":"Shopping","amount":-327.06,"balance":8172.2,"currency":"USD"}
+{"transaction_id":"TXN-000900","posted_date":"2026-08-04","account_id":"ACC-0012","description":"APPLE.COM/BILL","category":"Software","amount":-785.11,"balance":-4014.6,"currency":"USD"}
+{"transaction_id":"TXN-000901","posted_date":"2026-08-04","account_id":"ACC-0001","description":"LOCAL CAFE, LLC","category":"Dining","amount":-582.39,"balance":-1734.25,"currency":"USD"}
+{"transaction_id":"TXN-000902","posted_date":"2026-08-05","account_id":"ACC-0002","description":"SHELL OIL 574","category":"Fuel","amount":-45.01,"balance":-1311.29,"currency":"USD"}
+{"transaction_id":"TXN-000903","posted_date":"2026-08-05","account_id":"ACC-0003","description":"SHELL OIL 574","category":"Fuel","amount":-263.24,"balance":-6309.11,"currency":"USD"}
+{"transaction_id":"TXN-000904","posted_date":"2026-08-06","account_id":"ACC-0004","description":"AMZN MKTPLACE","category":"Shopping","amount":-655.76,"balance":-12559.85,"currency":"USD"}
+{"transaction_id":"TXN-000905","posted_date":"2026-08-06","account_id":"ACC-0005","description":"SHELL OIL 574","category":"Fuel","amount":-881.48,"balance":3866.82,"currency":"USD"}
+{"transaction_id":"TXN-000906","posted_date":"2026-08-07","account_id":"ACC-0006","description":"AMZN MKTPLACE","category":"Shopping","amount":-776.46,"balance":-6150.32,"currency":"USD"}
+{"transaction_id":"TXN-000907","posted_date":"2026-08-07","account_id":"ACC-0007","description":"CVS PHARMACY 8891","category":"Health","amount":-58.78,"balance":9638.81,"currency":"USD"}
+{"transaction_id":"TXN-000908","posted_date":"2026-08-08","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-454.82,"balance":1304.91,"currency":"USD"}
+{"transaction_id":"TXN-000909","posted_date":"2026-08-08","account_id":"ACC-0009","description":"AMZN MKTPLACE","category":"Shopping","amount":-604.02,"balance":14560.4,"currency":"USD"}
+{"transaction_id":"TXN-000910","posted_date":"2026-08-09","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-710.06,"balance":-15601.13,"currency":"USD"}
+{"transaction_id":"TXN-000911","posted_date":"2026-08-10","account_id":"ACC-0011","description":"AMZN MKTPLACE","category":"Shopping","amount":-225.5,"balance":7946.7,"currency":"USD"}
+{"transaction_id":"TXN-000912","posted_date":"2026-08-10","account_id":"ACC-0012","description":"APPLE.COM/BILL","category":"Software","amount":-166.4,"balance":-4181,"currency":"USD"}
+{"transaction_id":"TXN-000913","posted_date":"2026-08-11","account_id":"ACC-0001","description":"UBER TRIP","category":"Transport","amount":-901.63,"balance":-2635.88,"currency":"USD"}
+{"transaction_id":"TXN-000914","posted_date":"2026-08-11","account_id":"ACC-0002","description":"AMZN MKTPLACE","category":"Shopping","amount":-32.63,"balance":-1343.92,"currency":"USD"}
+{"transaction_id":"TXN-000915","posted_date":"2026-08-12","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-35.15,"balance":-6344.26,"currency":"USD"}
+{"transaction_id":"TXN-000916","posted_date":"2026-08-12","account_id":"ACC-0004","description":"WHOLE FOODS MKT","category":"Groceries","amount":-37.64,"balance":-12597.49,"currency":"USD"}
+{"transaction_id":"TXN-000917","posted_date":"2026-08-13","account_id":"ACC-0005","description":"APPLE.COM/BILL","category":"Software","amount":-330.88,"balance":3535.94,"currency":"USD"}
+{"transaction_id":"TXN-000918","posted_date":"2026-08-13","account_id":"ACC-0006","description":"CVS PHARMACY 8891","category":"Health","amount":-71.86,"balance":-6222.18,"currency":"USD"}
+{"transaction_id":"TXN-000919","posted_date":"2026-08-14","account_id":"ACC-0007","description":"RENT PAYMENT","category":"Housing","amount":-794.14,"balance":8844.67,"currency":"USD"}
+{"transaction_id":"TXN-000920","posted_date":"2026-08-14","account_id":"ACC-0008","description":"WHOLE FOODS MKT","category":"Groceries","amount":-596.24,"balance":708.67,"currency":"USD"}
+{"transaction_id":"TXN-000921","posted_date":"2026-08-15","account_id":"ACC-0009","description":"SHELL OIL 574","category":"Fuel","amount":-46.6,"balance":14513.8,"currency":"USD"}
+{"transaction_id":"TXN-000922","posted_date":"2026-08-16","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-486.07,"balance":-16087.2,"currency":"USD"}
+{"transaction_id":"TXN-000923","posted_date":"2026-08-16","account_id":"ACC-0011","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-601.29,"balance":7345.41,"currency":"USD"}
+{"transaction_id":"TXN-000924","posted_date":"2026-08-17","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-589.11,"balance":-4770.11,"currency":"USD"}
+{"transaction_id":"TXN-000925","posted_date":"2026-08-17","account_id":"ACC-0001","description":"PAYROLL DEPOSIT","category":"Income","amount":3859.83,"balance":1223.95,"currency":"USD"}
+{"transaction_id":"TXN-000926","posted_date":"2026-08-18","account_id":"ACC-0002","description":"STARBUCKS #1042","category":"Coffee","amount":-30.61,"balance":-1374.53,"currency":"USD"}
+{"transaction_id":"TXN-000927","posted_date":"2026-08-18","account_id":"ACC-0003","description":"RENT PAYMENT","category":"Housing","amount":-471.47,"balance":-6815.73,"currency":"USD"}
+{"transaction_id":"TXN-000928","posted_date":"2026-08-19","account_id":"ACC-0004","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-718.17,"balance":-13315.66,"currency":"USD"}
+{"transaction_id":"TXN-000929","posted_date":"2026-08-19","account_id":"ACC-0005","description":"APPLE.COM/BILL","category":"Software","amount":-742.02,"balance":2793.92,"currency":"USD"}
+{"transaction_id":"TXN-000930","posted_date":"2026-08-20","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-758.72,"balance":-6980.9,"currency":"USD"}
+{"transaction_id":"TXN-000931","posted_date":"2026-08-20","account_id":"ACC-0007","description":"CVS PHARMACY 8891","category":"Health","amount":-161.04,"balance":8683.63,"currency":"USD"}
+{"transaction_id":"TXN-000932","posted_date":"2026-08-21","account_id":"ACC-0008","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-436.08,"balance":272.59,"currency":"USD"}
+{"transaction_id":"TXN-000933","posted_date":"2026-08-22","account_id":"ACC-0009","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-859.34,"balance":13654.46,"currency":"USD"}
+{"transaction_id":"TXN-000934","posted_date":"2026-08-22","account_id":"ACC-0010","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-156.16,"balance":-16243.36,"currency":"USD"}
+{"transaction_id":"TXN-000935","posted_date":"2026-08-23","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-754.67,"balance":6590.74,"currency":"USD"}
+{"transaction_id":"TXN-000936","posted_date":"2026-08-23","account_id":"ACC-0012","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-149.78,"balance":-4919.89,"currency":"USD"}
+{"transaction_id":"TXN-000937","posted_date":"2026-08-24","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-29.32,"balance":1194.63,"currency":"USD"}
+{"transaction_id":"TXN-000938","posted_date":"2026-08-24","account_id":"ACC-0002","description":"APPLE.COM/BILL","category":"Software","amount":-474.33,"balance":-1848.86,"currency":"USD"}
+{"transaction_id":"TXN-000939","posted_date":"2026-08-25","account_id":"ACC-0003","description":"CVS PHARMACY 8891","category":"Health","amount":-1101.21,"balance":-7916.94,"currency":"USD"}
+{"transaction_id":"TXN-000940","posted_date":"2026-08-25","account_id":"ACC-0004","description":"DELTA AIR 0062","category":"Travel","amount":-866.4,"balance":-14182.06,"currency":"USD"}
+{"transaction_id":"TXN-000941","posted_date":"2026-08-26","account_id":"ACC-0005","description":"LOCAL CAFE, LLC","category":"Dining","amount":-448.83,"balance":2345.09,"currency":"USD"}
+{"transaction_id":"TXN-000942","posted_date":"2026-08-26","account_id":"ACC-0006","description":"RENT PAYMENT","category":"Housing","amount":-598.84,"balance":-7579.74,"currency":"USD"}
+{"transaction_id":"TXN-000943","posted_date":"2026-08-27","account_id":"ACC-0007","description":"STARBUCKS #1042","category":"Coffee","amount":-276.07,"balance":8407.56,"currency":"USD"}
+{"transaction_id":"TXN-000944","posted_date":"2026-08-28","account_id":"ACC-0008","description":"STARBUCKS #1042","category":"Coffee","amount":-180.18,"balance":92.41,"currency":"USD"}
+{"transaction_id":"TXN-000945","posted_date":"2026-08-28","account_id":"ACC-0009","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-18.88,"balance":13635.58,"currency":"USD"}
+{"transaction_id":"TXN-000946","posted_date":"2026-08-29","account_id":"ACC-0010","description":"APPLE.COM/BILL","category":"Software","amount":-414.89,"balance":-16658.25,"currency":"USD"}
+{"transaction_id":"TXN-000947","posted_date":"2026-08-29","account_id":"ACC-0011","description":"CVS PHARMACY 8891","category":"Health","amount":-3.38,"balance":6587.36,"currency":"USD"}
+{"transaction_id":"TXN-000948","posted_date":"2026-08-30","account_id":"ACC-0012","description":"RENT PAYMENT","category":"Housing","amount":-1033.35,"balance":-5953.24,"currency":"USD"}
+{"transaction_id":"TXN-000949","posted_date":"2026-08-30","account_id":"ACC-0001","description":"DELTA AIR 0062","category":"Travel","amount":-324.9,"balance":869.73,"currency":"USD"}
+{"transaction_id":"TXN-000950","posted_date":"2026-08-31","account_id":"ACC-0002","description":"STARBUCKS #1042","category":"Coffee","amount":-952.36,"balance":-2801.22,"currency":"USD"}
+{"transaction_id":"TXN-000951","posted_date":"2026-08-31","account_id":"ACC-0003","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-15.73,"balance":-7932.67,"currency":"USD"}
+{"transaction_id":"TXN-000952","posted_date":"2026-09-01","account_id":"ACC-0004","description":"SHELL OIL 574","category":"Fuel","amount":-106.26,"balance":-14288.32,"currency":"USD"}
+{"transaction_id":"TXN-000953","posted_date":"2026-09-01","account_id":"ACC-0005","description":"WHOLE FOODS MKT","category":"Groceries","amount":-799.36,"balance":1545.73,"currency":"USD"}
+{"transaction_id":"TXN-000954","posted_date":"2026-09-02","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-188.95,"balance":-7768.69,"currency":"USD"}
+{"transaction_id":"TXN-000955","posted_date":"2026-09-02","account_id":"ACC-0007","description":"UBER TRIP","category":"Transport","amount":-137,"balance":8270.56,"currency":"USD"}
+{"transaction_id":"TXN-000956","posted_date":"2026-09-03","account_id":"ACC-0008","description":"LOCAL CAFE, LLC","category":"Dining","amount":-1394.76,"balance":-1302.35,"currency":"USD"}
+{"transaction_id":"TXN-000957","posted_date":"2026-09-04","account_id":"ACC-0009","description":"PAYROLL DEPOSIT","category":"Income","amount":5226.26,"balance":18861.84,"currency":"USD"}
+{"transaction_id":"TXN-000958","posted_date":"2026-09-04","account_id":"ACC-0010","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-489.89,"balance":-17148.14,"currency":"USD"}
+{"transaction_id":"TXN-000959","posted_date":"2026-09-05","account_id":"ACC-0011","description":"APPLE.COM/BILL","category":"Software","amount":-405.67,"balance":6181.69,"currency":"USD"}
+{"transaction_id":"TXN-000960","posted_date":"2026-09-05","account_id":"ACC-0012","description":"LOCAL CAFE, LLC","category":"Dining","amount":-145.13,"balance":-6098.37,"currency":"USD"}
+{"transaction_id":"TXN-000961","posted_date":"2026-09-06","account_id":"ACC-0001","description":"ELECTRIC CO AUTOPAY","category":"Utilities","amount":-209.19,"balance":660.54,"currency":"USD"}
+{"transaction_id":"TXN-000962","posted_date":"2026-09-06","account_id":"ACC-0002","description":"DELTA AIR 0062","category":"Travel","amount":-170.66,"balance":-2971.88,"currency":"USD"}
+{"transaction_id":"TXN-000963","posted_date":"2026-09-07","account_id":"ACC-0003","description":"APPLE.COM/BILL","category":"Software","amount":-372.56,"balance":-8305.23,"currency":"USD"}
+{"transaction_id":"TXN-000964","posted_date":"2026-09-07","account_id":"ACC-0004","description":"RENT PAYMENT","category":"Housing","amount":-130.91,"balance":-14419.23,"currency":"USD"}
+{"transaction_id":"TXN-000965","posted_date":"2026-09-08","account_id":"ACC-0005","description":"CVS PHARMACY 8891","category":"Health","amount":-1426.37,"balance":119.36,"currency":"USD"}
+{"transaction_id":"TXN-000966","posted_date":"2026-09-08","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-593.96,"balance":-8362.65,"currency":"USD"}
+{"transaction_id":"TXN-000967","posted_date":"2026-09-09","account_id":"ACC-0007","description":"CVS PHARMACY 8891","category":"Health","amount":-773.33,"balance":7497.23,"currency":"USD"}
+{"transaction_id":"TXN-000968","posted_date":"2026-09-10","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-1021.26,"balance":-2323.61,"currency":"USD"}
+{"transaction_id":"TXN-000969","posted_date":"2026-09-10","account_id":"ACC-0009","description":"STARBUCKS #1042","category":"Coffee","amount":-139.88,"balance":18721.96,"currency":"USD"}
+{"transaction_id":"TXN-000970","posted_date":"2026-09-11","account_id":"ACC-0010","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-392.91,"balance":-17541.05,"currency":"USD"}
+{"transaction_id":"TXN-000971","posted_date":"2026-09-11","account_id":"ACC-0011","description":"STARBUCKS #1042","category":"Coffee","amount":-586.05,"balance":5595.64,"currency":"USD"}
+{"transaction_id":"TXN-000972","posted_date":"2026-09-12","account_id":"ACC-0012","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-497.54,"balance":-6595.91,"currency":"USD"}
+{"transaction_id":"TXN-000973","posted_date":"2026-09-12","account_id":"ACC-0001","description":"AMZN MKTPLACE","category":"Shopping","amount":-790.68,"balance":-130.14,"currency":"USD"}
+{"transaction_id":"TXN-000974","posted_date":"2026-09-13","account_id":"ACC-0002","description":"RENT PAYMENT","category":"Housing","amount":-314.09,"balance":-3285.97,"currency":"USD"}
+{"transaction_id":"TXN-000975","posted_date":"2026-09-13","account_id":"ACC-0003","description":"WHOLE FOODS MKT","category":"Groceries","amount":-799.14,"balance":-9104.37,"currency":"USD"}
+{"transaction_id":"TXN-000976","posted_date":"2026-09-14","account_id":"ACC-0004","description":"STARBUCKS #1042","category":"Coffee","amount":-852.67,"balance":-15271.9,"currency":"USD"}
+{"transaction_id":"TXN-000977","posted_date":"2026-09-14","account_id":"ACC-0005","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-561.82,"balance":-442.46,"currency":"USD"}
+{"transaction_id":"TXN-000978","posted_date":"2026-09-15","account_id":"ACC-0006","description":"LOCAL CAFE, LLC","category":"Dining","amount":-540.13,"balance":-8902.78,"currency":"USD"}
+{"transaction_id":"TXN-000979","posted_date":"2026-09-16","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-83.31,"balance":7413.92,"currency":"USD"}
+{"transaction_id":"TXN-000980","posted_date":"2026-09-16","account_id":"ACC-0008","description":"AMZN MKTPLACE","category":"Shopping","amount":-641.72,"balance":-2965.33,"currency":"USD"}
+{"transaction_id":"TXN-000981","posted_date":"2026-09-17","account_id":"ACC-0009","description":"RENT PAYMENT","category":"Housing","amount":-475.36,"balance":18246.6,"currency":"USD"}
+{"transaction_id":"TXN-000982","posted_date":"2026-09-17","account_id":"ACC-0010","description":"AMZN MKTPLACE","category":"Shopping","amount":-475.13,"balance":-18016.18,"currency":"USD"}
+{"transaction_id":"TXN-000983","posted_date":"2026-09-18","account_id":"ACC-0011","description":"RENT PAYMENT","category":"Housing","amount":-57.63,"balance":5538.01,"currency":"USD"}
+{"transaction_id":"TXN-000984","posted_date":"2026-09-18","account_id":"ACC-0012","description":"CVS PHARMACY 8891","category":"Health","amount":-619.19,"balance":-7215.1,"currency":"USD"}
+{"transaction_id":"TXN-000985","posted_date":"2026-09-19","account_id":"ACC-0001","description":"CVS PHARMACY 8891","category":"Health","amount":-151.76,"balance":-281.9,"currency":"USD"}
+{"transaction_id":"TXN-000986","posted_date":"2026-09-19","account_id":"ACC-0002","description":"PAYROLL DEPOSIT","category":"Income","amount":2802.13,"balance":-483.84,"currency":"USD"}
+{"transaction_id":"TXN-000987","posted_date":"2026-09-20","account_id":"ACC-0003","description":"PAYROLL DEPOSIT","category":"Income","amount":2702.81,"balance":-6401.56,"currency":"USD"}
+{"transaction_id":"TXN-000988","posted_date":"2026-09-20","account_id":"ACC-0004","description":"UBER TRIP","category":"Transport","amount":-650.75,"balance":-15922.65,"currency":"USD"}
+{"transaction_id":"TXN-000989","posted_date":"2026-09-21","account_id":"ACC-0005","description":"PAYROLL DEPOSIT","category":"Income","amount":4312.18,"balance":3869.72,"currency":"USD"}
+{"transaction_id":"TXN-000990","posted_date":"2026-09-22","account_id":"ACC-0006","description":"UBER TRIP","category":"Transport","amount":-372.12,"balance":-9274.9,"currency":"USD"}
+{"transaction_id":"TXN-000991","posted_date":"2026-09-22","account_id":"ACC-0007","description":"AMZN MKTPLACE","category":"Shopping","amount":-772.22,"balance":6641.7,"currency":"USD"}
+{"transaction_id":"TXN-000992","posted_date":"2026-09-23","account_id":"ACC-0008","description":"DELTA AIR 0062","category":"Travel","amount":-708.1,"balance":-3673.43,"currency":"USD"}
+{"transaction_id":"TXN-000993","posted_date":"2026-09-23","account_id":"ACC-0009","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-121.48,"balance":18125.12,"currency":"USD"}
+{"transaction_id":"TXN-000994","posted_date":"2026-09-24","account_id":"ACC-0010","description":"UBER TRIP","category":"Transport","amount":-721.21,"balance":-18737.39,"currency":"USD"}
+{"transaction_id":"TXN-000995","posted_date":"2026-09-24","account_id":"ACC-0011","description":"UBER TRIP","category":"Transport","amount":-488.75,"balance":5049.26,"currency":"USD"}
+{"transaction_id":"TXN-000996","posted_date":"2026-09-25","account_id":"ACC-0012","description":"WHOLE FOODS MKT","category":"Groceries","amount":-261.23,"balance":-7476.33,"currency":"USD"}
+{"transaction_id":"TXN-000997","posted_date":"2026-09-25","account_id":"ACC-0001","description":"AMZN MKTPLACE","category":"Shopping","amount":-1094.22,"balance":-1376.12,"currency":"USD"}
+{"transaction_id":"TXN-000998","posted_date":"2026-09-26","account_id":"ACC-0002","description":"SPOTIFY P07C1B","category":"Subscriptions","amount":-244.71,"balance":-728.55,"currency":"USD"}
+{"transaction_id":"TXN-000999","posted_date":"2026-09-26","account_id":"ACC-0003","description":"TRANSFER TO SAVINGS","category":"Transfer","amount":-116.51,"balance":-6518.07,"currency":"USD"}
+{"transaction_id":"TXN-001000","posted_date":"2026-09-27","account_id":"ACC-0004","description":"WHOLE FOODS MKT","category":"Groceries","amount":-462.44,"balance":-16385.09,"currency":"USD"}
