@@ -68,6 +68,7 @@ sources:
       mapping_id: explore_my_data_v1
       mapping_version: "1.0"
 
+  #requires an adapter since its actual format requires special preprocessing
   UTILLY:
     source_type: FILE
     source_identifier: utilly_bank_statement

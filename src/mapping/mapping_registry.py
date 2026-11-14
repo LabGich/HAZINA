@@ -60,6 +60,141 @@ class MappingRegistry:
 
         return data
 
+    @staticmethod
+    def _validate_source_config(
+        source_name: str,
+        source_config: dict[str, Any],
+    ) -> None:
+        """Validate source registration and optional ingestion settings."""
+
+        source_type = source_config.get("source_type")
+
+        if source_type not in {"FILE", "API"}:
+            raise MappingRegistryError(
+                f"Invalid source_type for {source_name}."
+            )
+
+        for field in ("source_identifier", "description"):
+            value = source_config.get(field)
+
+            if not isinstance(value, str) or not value.strip():
+                raise MappingRegistryError(
+                    f"{field} is required for source {source_name}."
+                )
+
+        if not isinstance(source_config.get("enabled"), bool):
+            raise MappingRegistryError(
+                f"enabled must be a boolean for source {source_name}."
+            )
+
+        supported_formats = source_config.get("supported_formats")
+
+        valid_formats = {
+            "CSV", "XLSX", "JSON", "JSONL", "PARQUET"
+        }
+
+        if (
+            not isinstance(supported_formats, list)
+            or not supported_formats
+            or any(
+                not isinstance(fmt, str)
+                or fmt not in valid_formats
+                for fmt in supported_formats
+            )
+            or len(supported_formats) != len(set(supported_formats))
+        ):
+            raise MappingRegistryError(
+                f"Invalid supported_formats for source {source_name}."
+            )
+
+        default_mapping = source_config.get("default_mapping")
+
+        if not isinstance(default_mapping, dict):
+            raise MappingRegistryError(
+                f"default_mapping must be a mapping for {source_name}."
+            )
+
+        mapping_id = default_mapping.get("mapping_id")
+        mapping_version = default_mapping.get("mapping_version")
+
+        if (
+            not isinstance(mapping_id, str)
+            or not re.fullmatch(
+                r"[A-Za-z0-9][A-Za-z0-9_-]*",
+                mapping_id,
+            )
+            or not isinstance(mapping_version, str)
+            or not mapping_version.strip()
+        ):
+            raise MappingRegistryError(
+                f"Invalid default mapping configuration for {source_name}."
+            )
+
+        ingestion = source_config.get("ingestion")
+
+        if ingestion is None:
+            return
+
+        if source_type != "FILE":
+            raise MappingRegistryError(
+                f"Ingestion reader settings are only valid for FILE "
+                f"sources: {source_name}."
+            )
+
+        if not isinstance(ingestion, dict):
+            raise MappingRegistryError(
+                f"ingestion must be a mapping for {source_name}."
+            )
+
+        adapter = ingestion.get("adapter")
+
+        if (
+            not isinstance(adapter, str)
+            or not re.fullmatch(
+                r"[a-z][a-z0-9_]*",
+                adapter,
+            )
+        ):
+            raise MappingRegistryError(
+                f"Invalid ingestion adapter for {source_name}."
+            )
+
+        reader_options = ingestion.get("reader_options", {})
+
+        if not isinstance(reader_options, dict):
+            raise MappingRegistryError(
+                f"reader_options must be a mapping for {source_name}."
+            )
+
+        allowed_reader_options = {"header_row", "encoding"}
+
+        unknown_options = set(reader_options) - allowed_reader_options
+
+        if unknown_options:
+            raise MappingRegistryError(
+                f"Unsupported reader options for {source_name}: "
+                + ", ".join(sorted(unknown_options))
+            )
+
+        header_row = reader_options.get("header_row", 1)
+
+        if (
+            not isinstance(header_row, int)
+            or isinstance(header_row, bool)
+            or header_row < 1
+        ):
+            raise MappingRegistryError(
+                f"header_row must be a positive integer for {source_name}."
+            )
+
+        encoding = reader_options.get("encoding", "utf-8")
+
+        if not isinstance(encoding, str) or not encoding.strip():
+            raise MappingRegistryError(
+                f"encoding must be a non-empty string for {source_name}."
+            )
+
+
     def _load_sources(self) -> dict[str, Any]:
         config = self._load_yaml(self.sources_path)
 
@@ -76,6 +211,10 @@ class MappingRegistry:
                 or not source_name.strip()
                 or not isinstance(source_config, dict)
             ):
+                self._validate_source_config(
+                source_name,
+                source_config,
+            )   
                 raise MappingRegistryError(
                     f"Invalid configuration for source: {source_name}"
                 )
