@@ -1,3 +1,12 @@
+#a reusable csv, xlsx, json, jsonl and parquet reader that:
+# Accepts a file path and reader options.
+# Reads the configured header row
+# Handles encoding
+# Normalizes column names by trimming surrounding whitespace
+# Returns records as dictionaries
+# Rejects missing headers, duplicate headers, and malformed CSV input
+# Does not contain any source-specific logic -> will be handled by adapters
+
 
 import csv
 import json
