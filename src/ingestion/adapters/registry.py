@@ -1,4 +1,5 @@
 # automated internal adapter selection
+# registry that resolves source-specific adapters from config names
 from src.ingestion.adapters.utilly import UtillyStatementAdapter
 
 

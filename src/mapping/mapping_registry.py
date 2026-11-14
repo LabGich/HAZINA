@@ -6,6 +6,7 @@ import re
 
 import yaml
 
+from config import sources
 from src.mapping.mapping_config_validator import (
     MappingConfigValidator,
     MappingConfigurationError,
@@ -211,13 +212,14 @@ class MappingRegistry:
                 or not source_name.strip()
                 or not isinstance(source_config, dict)
             ):
-                self._validate_source_config(
-                source_name,
-                source_config,
-            )   
                 raise MappingRegistryError(
                     f"Invalid configuration for source: {source_name}"
                 )
+
+            self._validate_source_config(
+                source_name,
+                source_config,
+            )
 
         return sources
 

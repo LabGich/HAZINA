@@ -1,4 +1,4 @@
-#a reusable csv reader that:
+#a reusable csv, xlsx, json, jsonl reader that:
 # Accepts a file path and reader options.
 # Reads the configured header row
 # Handles encoding
