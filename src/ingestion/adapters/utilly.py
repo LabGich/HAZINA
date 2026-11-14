@@ -122,7 +122,7 @@ class UtillyStatementAdapter:
 
         options = {
             **options,
-            "header_row": options.get("header_row", 3),
+            "header_row": options.get("header_row", 4),
         }
 
         try:
