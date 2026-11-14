@@ -1,15 +1,51 @@
+
 sources:
-  BANK:
+  EQUITY:
     source_type: FILE
-    source_identifier: bank_statement
-    description: Bank statement transaction files
+    source_identifier: equity_bank_statement
+    description: Equity Bank transaction statement files
     enabled: true
     supported_formats:
       - CSV
-      - XLSX
       - JSON
     default_mapping:
-      mapping_id: bank_csv_v1
+      mapping_id: equity_csv_v1
+      mapping_version: "1.0"
+
+  KCB:
+    source_type: FILE
+    source_identifier: kcb_bank_statement
+    description: KCB transaction statement files
+    enabled: true
+    supported_formats:
+      - CSV
+      - JSON
+    default_mapping:
+      mapping_id: kcb_csv_v1
+      mapping_version: "1.0"
+
+  COOP:
+    source_type: FILE
+    source_identifier: coop_bank_statement
+    description: Co-operative Bank transaction statement files
+    enabled: true
+    supported_formats:
+      - CSV
+      - JSON
+    default_mapping:
+      mapping_id: coop_csv_v1
+      mapping_version: "1.0"
+
+  NCBA:
+    source_type: FILE
+    source_identifier: ncba_bank_statement
+    description: NCBA transaction statement files
+    enabled: true
+    supported_formats:
+      - CSV
+      - JSON
+    default_mapping:
+      mapping_id: ncba_csv_v1
       mapping_version: "1.0"
 
   MPESA:
@@ -68,7 +104,7 @@ sources:
       mapping_id: explore_my_data_v1
       mapping_version: "1.0"
 
-  #requires an adapter since its actual format requires special preprocessing
+  # Requires an adapter for special preprocessing.
   UTILLY:
     source_type: FILE
     source_identifier: utilly_bank_statement
