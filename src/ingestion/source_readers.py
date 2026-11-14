@@ -18,7 +18,7 @@ class SourceReaderError(ValueError):
 class CSVReader:
     """Generic CSV reader shared by all file-based sources."""
 
-    DEFAULT_ENCODING = "utf-8"
+    DEFAULT_ENCODING = "utf-8-sig"
     DEFAULT_HEADER_ROW = 1
 
     @classmethod
