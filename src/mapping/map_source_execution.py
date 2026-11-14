@@ -236,24 +236,17 @@ def map_source_execution(
                         r.source_metadata
                     FROM raw.transactions r
                     WHERE r.run_id = %s
-                      AND r.source_execution_id = %s
-                      AND NOT EXISTS (
-                          SELECT 1
-                          FROM staging.transactions s
-                          WHERE s.raw_id = r.raw_id
-                      )
-                      AND NOT EXISTS (
-                          SELECT 1
-                          FROM ops.mapping_errors me
-                          WHERE me.raw_id = r.raw_id
-                            AND me.source_execution_id = %s
-                      )
+                    AND r.source_execution_id = %s
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM staging.transactions s
+                        WHERE s.raw_id = r.raw_id
+                    )
                     ORDER BY r.raw_id
                     FOR UPDATE OF r
                     """,
                     (
                         run_id,
-                        source_execution_id,
                         source_execution_id,
                     ),
                 )

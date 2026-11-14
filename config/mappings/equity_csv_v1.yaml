@@ -27,7 +27,7 @@ default_values:
 
 derived_fields:
   transaction_type:
-    source_field: description
+    source_field: Description
     rules:
       - contains: SALARY
         value: DEPOSIT
