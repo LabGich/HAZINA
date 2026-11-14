@@ -72,8 +72,15 @@ class SourceFileReader:
                 metadata = {
                     key: value
                     for key, value in result.items()
-                    if key != "records"
+                    if key not in {
+                        "records",
+                        "records_received",
+                        "records_returned",
+                    }
                 }
+
+                records_received = result["records_received"]
+                records_returned = result["records_returned"]
 
             else:
                 records = list(
@@ -84,6 +91,8 @@ class SourceFileReader:
                 )
 
                 metadata = {}
+                records_received = len(records)
+                records_returned = len(records)
 
             if not records:
                 raise SourceFileReaderError(
@@ -95,7 +104,8 @@ class SourceFileReader:
                 "source_type": "FILE",
                 "file_name": path.name,
                 "file_format": file_format,
-                "records_received": len(records),
+                "records_received": records_received,
+                "records_returned": records_returned,
                 "records": records,
                 "metadata": metadata,
             }
