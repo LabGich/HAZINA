@@ -414,6 +414,7 @@ def map_source_execution(
                     records_mapped += 1
 
                 # Persist mapping counters and mapping provenance.
+                # retry handling w/o deleting audit history
                 cursor.execute(
                     """
                     UPDATE ops.source_executions
