@@ -23,6 +23,7 @@ def test_registry_loads_all_registered_sources(registry):
         "PLAID",
         "DARAJA",
         "EXPLORE_MY_DATA",
+        "UTILLY",
     }
 
 
@@ -48,8 +49,15 @@ def test_disabled_source_raises_error(tmp_path):
         yaml.safe_dump({
             "sources": {
                 "BANK": {
-                    "enabled": False,
                     "source_type": "FILE",
+                    "source_identifier": "bank_statement",
+                    "description": "Test bank statement source",
+                    "enabled": False,
+                    "supported_formats": ["CSV"],
+                    "default_mapping": {
+                        "mapping_id": "bank_csv_v1",
+                        "mapping_version": "1.0",
+                    }
                 }
             }
         }),
@@ -310,4 +318,175 @@ def test_registry_rejects_mapping_path_traversal(registry):
             source_name="BANK",
             mapping_id="../bank_csv_v1",
             mapping_version="1.0",
+        )
+
+def create_registry_with_reader_options(
+    tmp_path,
+    supported_formats,
+    reader_options,
+):
+    sources_path = tmp_path / "sources.yaml"
+
+    config = {
+        "sources": {
+            "TEST_SOURCE": {
+                "source_type": "FILE",
+                "source_identifier": "test_source",
+                "description": "Test file source",
+                "enabled": True,
+                "supported_formats": supported_formats,
+                "default_mapping": {
+                    "mapping_id": "test_mapping_v1",
+                    "mapping_version": "1.0",
+                },
+                "ingestion": {
+                    "reader_options": reader_options,
+                },
+            }
+        }
+    }
+
+    with sources_path.open("w", encoding="utf-8") as file:
+        yaml.safe_dump(config, file)
+
+    return MappingRegistry(
+        sources_path=sources_path,
+        mappings_dir=tmp_path / "mappings",
+    )
+
+
+@pytest.mark.parametrize(
+    ("file_format", "reader_options"),
+    [
+        ("CSV", {"header_row": 2, "encoding": "utf-8", "delimiter": ";"}),
+        ("XLSX", {"header_row": 2, "sheet_name": "Transactions"}),
+        ("JSON", {"record_path": "data.transactions", "encoding": "utf-8"}),
+        ("JSONL", {"encoding": "utf-8"}),
+        ("PARQUET", {"columns": ["transaction_id", "amount"]}),
+    ],
+)
+def test_registry_accepts_valid_format_reader_options(
+    tmp_path,
+    file_format,
+    reader_options,
+):
+    registry = create_registry_with_reader_options(
+        tmp_path,
+        [file_format],
+        reader_options,
+    )
+
+    assert registry.get_source("TEST_SOURCE")["ingestion"]["reader_options"] == (
+        reader_options
+    )
+
+
+def test_registry_accepts_shared_options_for_multiple_formats(tmp_path):
+    registry = create_registry_with_reader_options(
+        tmp_path,
+        ["CSV", "JSON"],
+        {"encoding": "utf-8"},
+    )
+
+    assert registry.get_source("TEST_SOURCE")["enabled"] is True
+
+
+def test_registry_rejects_format_specific_option_not_shared_by_all_formats(
+    tmp_path,
+):
+    with pytest.raises(
+        MappingRegistryError,
+        match="Options must be supported by every registered file format",
+    ):
+        create_registry_with_reader_options(
+            tmp_path,
+            ["CSV", "JSON"],
+            {"delimiter": ";"},
+        )
+
+
+def test_registry_rejects_unknown_reader_option(tmp_path):
+    with pytest.raises(
+        MappingRegistryError,
+        match="Unsupported reader options",
+    ):
+        create_registry_with_reader_options(
+            tmp_path,
+            ["CSV"],
+            {"unknown_option": "value"},
+        )
+
+
+@pytest.mark.parametrize(
+    "reader_options",
+    [
+        {"header_row": 0},
+        {"header_row": -1},
+        {"header_row": True},
+        {"encoding": ""},
+        {"encoding": "not-a-real-encoding"},
+        {"delimiter": ""},
+        {"delimiter": "||"},
+        {"sheet_name": ""},
+        {"record_path": ""},
+        {"columns": []},
+        {"columns": ["amount", "amount"]},
+        {"columns": ["amount", 123]},
+    ],
+)
+def test_registry_rejects_invalid_reader_option_values(
+    tmp_path,
+    reader_options,
+):
+    option = next(iter(reader_options))
+
+    format_by_option = {
+        "header_row": "CSV",
+        "encoding": "CSV",
+        "delimiter": "CSV",
+        "sheet_name": "XLSX",
+        "record_path": "JSON",
+        "columns": "PARQUET",
+    }
+
+    with pytest.raises(MappingRegistryError):
+        create_registry_with_reader_options(
+            tmp_path,
+            [format_by_option[option]],
+            reader_options,
+        )
+
+
+def test_registry_rejects_adapter_on_api_source(tmp_path):
+    sources_path = tmp_path / "sources.yaml"
+
+    config = {
+        "sources": {
+            "TEST_API": {
+                "source_type": "API",
+                "source_identifier": "test_api",
+                "description": "Test API source",
+                "enabled": True,
+                "supported_formats": ["JSON"],
+                "default_mapping": {
+                    "mapping_id": "test_mapping_v1",
+                    "mapping_version": "1.0",
+                },
+                "ingestion": {
+                    "adapter": "test_adapter",
+                },
+            }
+        }
+    }
+
+    with sources_path.open("w", encoding="utf-8") as file:
+        yaml.safe_dump(config, file)
+
+    with pytest.raises(
+        MappingRegistryError,
+        match="only valid for FILE sources",
+    ):
+        MappingRegistry(
+            sources_path=sources_path,
+            mappings_dir=tmp_path / "mappings",
         )

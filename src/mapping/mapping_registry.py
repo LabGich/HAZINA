@@ -276,11 +276,6 @@ class MappingRegistry:
                     f"column names for {source_name}."
                 )
 
-        if not isinstance(encoding, str) or not encoding.strip():
-            raise MappingRegistryError(
-                f"encoding must be a non-empty string for {source_name}."
-            )
-
 
     def _load_sources(self) -> dict[str, Any]:
         config = self._load_yaml(self.sources_path)
