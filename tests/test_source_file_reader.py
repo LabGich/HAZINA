@@ -1,4 +1,5 @@
-#unified file ingestion test
+
+# Unified file ingestion tests
 
 from pathlib import Path
 
@@ -20,28 +21,31 @@ def reader():
 
 
 @pytest.mark.parametrize(
-    "file_name",
+    ("source_name", "file_name"),
     [
-        "equity_statement_sample.csv",
-        "equity_statement_sample.json",
-        "kcb_statement_sample.csv",
-        "kcb_statement_sample.json",
-        "coop_statement_sample.csv",
-        "coop_statement_sample.json",
-        "ncba_statement_sample.csv",
-        "ncba_statement_sample.json",
+        ("EQUITY", "equity_statement_sample.csv"),
+        ("EQUITY", "equity_statement_sample.json"),
+        ("KCB", "kcb_statement_sample.csv"),
+        ("KCB", "kcb_statement_sample.json"),
+        ("COOP", "coop_statement_sample.csv"),
+        ("COOP", "coop_statement_sample.json"),
+        ("NCBA", "ncba_statement_sample.csv"),
+        ("NCBA", "ncba_statement_sample.json"),
     ],
 )
-def test_bank_provider_samples(reader, file_name):
-    result = reader.read("BANK", SAMPLE_DIR / file_name)
+def test_bank_provider_samples(reader, source_name, file_name):
+    result = reader.read(source_name, SAMPLE_DIR / file_name)
 
-    assert result["source_name"] == "BANK"
+    assert result["source_name"] == source_name
     assert result["source_type"] == "FILE"
     assert result["file_name"] == file_name
     assert result["records_received"] == 5
     assert result["records_returned"] == 5
     assert len(result["records"]) == 5
-    assert all(isinstance(record, dict) for record in result["records"])
+    assert all(
+        isinstance(record, dict)
+        for record in result["records"]
+    )
     assert result["metadata"] == {}
 
 
@@ -65,7 +69,10 @@ def test_explore_my_data_supported_formats(reader, file_name):
     assert result["records_received"] == 1000
     assert result["records_returned"] == 1000
     assert len(result["records"]) == 1000
-    assert all(isinstance(record, dict) for record in result["records"])
+    assert all(
+        isinstance(record, dict)
+        for record in result["records"]
+    )
 
 
 def test_utilly_adapter_preserves_statement_metadata(reader):
@@ -112,7 +119,7 @@ def test_missing_file_is_rejected(reader, tmp_path):
         SourceFileReaderError,
         match="Source file not found",
     ):
-        reader.read("BANK", missing_file)
+        reader.read("EQUITY", missing_file)
 
 
 def test_unsupported_file_format_is_rejected(reader, tmp_path):
@@ -126,7 +133,7 @@ def test_unsupported_file_format_is_rejected(reader, tmp_path):
         SourceFileReaderError,
         match="does not support TXT files",
     ):
-        reader.read("BANK", unsupported_file)
+        reader.read("EQUITY", unsupported_file)
 
 
 def test_empty_source_file_is_rejected(reader, tmp_path):
@@ -140,13 +147,13 @@ def test_empty_source_file_is_rejected(reader, tmp_path):
         SourceFileReaderError,
         match="No records found",
     ):
-        reader.read("BANK", empty_file)
+        reader.read("EQUITY", empty_file)
 
 
 def test_source_name_is_normalized(reader):
     result = reader.read(
-        "bank",
+        "equity",
         SAMPLE_DIR / "equity_statement_sample.csv",
     )
 
-    assert result["source_name"] == "BANK"
+    assert result["source_name"] == "EQUITY"

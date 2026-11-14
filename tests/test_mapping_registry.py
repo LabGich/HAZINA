@@ -17,7 +17,10 @@ def registry():
 
 def test_registry_loads_all_registered_sources(registry):
     assert set(registry.sources) == {
-        "BANK",
+        "EQUITY",
+        "KCB",
+        "COOP",
+        "NCBA",
         "MPESA",
         "STRIPE",
         "PLAID",
@@ -28,7 +31,7 @@ def test_registry_loads_all_registered_sources(registry):
 
 
 def test_get_source_is_case_insensitive(registry):
-    source = registry.get_source("bank")
+    source = registry.get_source("equity")
 
     assert source["source_type"] == "FILE"
     assert source["enabled"] is True
@@ -48,14 +51,14 @@ def test_disabled_source_raises_error(tmp_path):
     sources_path.write_text(
         yaml.safe_dump({
             "sources": {
-                "BANK": {
+                "EQUITY": {
                     "source_type": "FILE",
-                    "source_identifier": "bank_statement",
-                    "description": "Test bank statement source",
+                    "source_identifier": "equity_bank_statement",
+                    "description": "Test Equity statement source",
                     "enabled": False,
                     "supported_formats": ["CSV"],
                     "default_mapping": {
-                        "mapping_id": "bank_csv_v1",
+                        "mapping_id": "equity_csv_v1",
                         "mapping_version": "1.0",
                     }
                 }
@@ -73,24 +76,37 @@ def test_disabled_source_raises_error(tmp_path):
         MappingRegistryError,
         match="Source is disabled",
     ):
-        registry.get_source("BANK")
+        registry.get_source("EQUITY")
 
 
-def test_default_bank_mapping_resolves(registry):
-    mapping = registry.resolve_mapping("BANK")
+@pytest.mark.parametrize(
+    ("source_name", "mapping_id"),
+    [
+        ("EQUITY", "equity_csv_v1"),
+        ("KCB", "kcb_csv_v1"),
+        ("COOP", "coop_csv_v1"),
+        ("NCBA", "ncba_csv_v1"),
+    ],
+)
+def test_default_bank_mapping_resolves(
+    registry,
+    source_name,
+    mapping_id,
+):
+    mapping = registry.resolve_mapping(source_name)
 
-    assert mapping["mapping"]["mapping_id"] == "bank_csv_v1"
+    assert mapping["mapping"]["mapping_id"] == mapping_id
     assert mapping["mapping"]["mapping_version"] == "1.0"
 
 
 def test_explicit_mapping_resolves(registry):
     mapping = registry.resolve_mapping(
-        source_name="BANK",
-        mapping_id="bank_csv_v1",
+        source_name="EQUITY",
+        mapping_id="equity_csv_v1",
         mapping_version="1.0",
     )
 
-    assert mapping["mapping"]["mapping_id"] == "bank_csv_v1"
+    assert mapping["mapping"]["mapping_id"] == "equity_csv_v1"
 
 
 def test_explicit_mapping_requires_id_and_version(registry):
@@ -99,8 +115,8 @@ def test_explicit_mapping_requires_id_and_version(registry):
         match="requires both mapping_id and mapping_version",
     ):
         registry.resolve_mapping(
-            source_name="BANK",
-            mapping_id="bank_csv_v1",
+            source_name="EQUITY",
+            mapping_id="equity_csv_v1",
         )
 
 
@@ -110,8 +126,8 @@ def test_unsupported_mapping_version_raises_error(registry):
         match="Unsupported mapping version",
     ):
         registry.resolve_mapping(
-            source_name="BANK",
-            mapping_id="bank_csv_v1",
+            source_name="EQUITY",
+            mapping_id="equity_csv_v1",
             mapping_version="99.0",
         )
 
@@ -123,7 +139,7 @@ def test_mapping_from_wrong_source_raises_error(registry):
     ):
         registry.resolve_mapping(
             source_name="MPESA",
-            mapping_id="bank_csv_v1",
+            mapping_id="equity_csv_v1",
             mapping_version="1.0",
         )
 
@@ -134,13 +150,13 @@ def test_missing_mapping_file_raises_error(registry):
         match="Configuration file not found",
     ):
         registry.resolve_mapping(
-            source_name="BANK",
+            source_name="EQUITY",
             mapping_id="missing_mapping_v1",
             mapping_version="1.0",
         )
 
 
-def create_registry_with_modified_bank_mapping(
+def create_registry_with_modified_provider_mapping(
     tmp_path,
     modify_config,
 ):
@@ -150,7 +166,7 @@ def create_registry_with_modified_bank_mapping(
         project_root
         / "config"
         / "mappings"
-        / "bank_csv_v1.yaml"
+        / "equity_csv_v1.yaml"
     )
 
     with original_mapping_path.open("r", encoding="utf-8") as file:
@@ -161,7 +177,7 @@ def create_registry_with_modified_bank_mapping(
     mappings_dir = tmp_path / "mappings"
     mappings_dir.mkdir()
 
-    custom_mapping_path = mappings_dir / "bank_csv_v1.yaml"
+    custom_mapping_path = mappings_dir / "equity_csv_v1.yaml"
 
     with custom_mapping_path.open("w", encoding="utf-8") as file:
         yaml.safe_dump(config, file, sort_keys=False)
@@ -177,7 +193,7 @@ def create_registry_with_modified_bank_mapping(
 
 
 def test_registry_rejects_unsupported_canonical_field(tmp_path):
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         lambda config: config["field_mappings"].update({
             "unknown_field": "some_source_field"
@@ -188,14 +204,14 @@ def test_registry_rejects_unsupported_canonical_field(tmp_path):
         MappingRegistryError,
         match="Unsupported canonical field",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
-def test_registry_rejects_unmapped_required_source_field(tmp_path):
+def test_registry_rejects_missing_required_canonical_mapping(tmp_path):
     def modify(config):
-        config["field_mappings"].pop("amount")
+        config["field_mappings"].pop("transaction_date")
 
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         modify,
     )
@@ -204,14 +220,16 @@ def test_registry_rejects_unmapped_required_source_field(tmp_path):
         MappingRegistryError,
         match="Missing required canonical field mappings",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
 def test_registry_rejects_unknown_transformation(tmp_path):
     def modify(config):
-        config["transformations"]["amount"] = "invented_transformation"
+        config["transformations"]["transaction_type"] = (
+            "invented_transformation"
+        )
 
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         modify,
     )
@@ -220,14 +238,14 @@ def test_registry_rejects_unknown_transformation(tmp_path):
         MappingRegistryError,
         match="Unsupported transformation",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
 def test_registry_rejects_invalid_source_timezone(tmp_path):
     def modify(config):
         config["mapping"]["source_timezone"] = "Invalid/Timezone"
 
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         modify,
     )
@@ -236,14 +254,14 @@ def test_registry_rejects_invalid_source_timezone(tmp_path):
         MappingRegistryError,
         match="Unknown source timezone",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
 def test_registry_rejects_required_source_field_not_mapped(tmp_path):
     def modify(config):
         config["required_fields"].append("missing_source_column")
 
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         modify,
     )
@@ -252,7 +270,7 @@ def test_registry_rejects_required_source_field_not_mapped(tmp_path):
         MappingRegistryError,
         match="Required source fields are not mapped",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
 def test_registry_rejects_inconsistent_signed_amount_configuration(
@@ -260,8 +278,11 @@ def test_registry_rejects_inconsistent_signed_amount_configuration(
 ):
     def modify(config):
         config["mapping"]["amount_handling"] = "signed_amount"
+        config.pop("amount_fields")
+        config["field_mappings"]["amount"] = "Amount"
+        config["transformations"]["amount"] = "normalize_amount"
 
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         modify,
     )
@@ -270,7 +291,7 @@ def test_registry_rejects_inconsistent_signed_amount_configuration(
         MappingRegistryError,
         match="signed_amount requires normalize_signed_amount",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
 def test_registry_rejects_transformation_for_unmapped_field(tmp_path):
@@ -279,7 +300,7 @@ def test_registry_rejects_transformation_for_unmapped_field(tmp_path):
             "normalize_optional"
         )
 
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         modify,
     )
@@ -288,16 +309,16 @@ def test_registry_rejects_transformation_for_unmapped_field(tmp_path):
         MappingRegistryError,
         match="Transformation references an unmapped field",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
 def test_registry_rejects_value_mapping_for_unmapped_field(tmp_path):
     def modify(config):
-        config["value_mappings"]["unmapped_field"] = {
+        config.setdefault("value_mappings", {})["unmapped_field"] = {
             "A": "B"
         }
 
-    registry = create_registry_with_modified_bank_mapping(
+    registry = create_registry_with_modified_provider_mapping(
         tmp_path,
         modify,
     )
@@ -306,7 +327,7 @@ def test_registry_rejects_value_mapping_for_unmapped_field(tmp_path):
         MappingRegistryError,
         match="Value mapping references an unmapped field",
     ):
-        registry.resolve_mapping("BANK")
+        registry.resolve_mapping("EQUITY")
 
 
 def test_registry_rejects_mapping_path_traversal(registry):
@@ -315,10 +336,11 @@ def test_registry_rejects_mapping_path_traversal(registry):
         match="Invalid mapping ID",
     ):
         registry.resolve_mapping(
-            source_name="BANK",
-            mapping_id="../bank_csv_v1",
+            source_name="EQUITY",
+            mapping_id="../equity_csv_v1",
             mapping_version="1.0",
         )
+
 
 def create_registry_with_reader_options(
     tmp_path,

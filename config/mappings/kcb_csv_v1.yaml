@@ -1,8 +1,7 @@
-
 mapping:
   mapping_id: kcb_csv_v1
   mapping_version: "1.0"
-  source_name: BANK
+  source_name: KCB
   source_type: FILE
   description: KCB Bank statement CSV mapping
   source_timezone: Africa/Nairobi
