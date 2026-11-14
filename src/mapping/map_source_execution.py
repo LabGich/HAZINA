@@ -418,7 +418,16 @@ def map_source_execution(
                     """
                     UPDATE ops.source_executions
                     SET records_mapped = records_mapped + %s,
-                        records_rejected = records_rejected + %s,
+                        records_rejected = (
+                            SELECT COUNT(DISTINCT me.raw_id)
+                            FROM ops.mapping_errors me
+                            WHERE me.source_execution_id = %s
+                                AND NOT EXISTS (
+                                    SELECT 1
+                                    FROM staging.transactions s
+                                    WHERE s.raw_id = me.raw_id
+                                )
+                        ),
                         mapping_id = COALESCE(mapping_id, %s),
                         mapping_version = COALESCE(mapping_version, %s)
                     WHERE source_execution_id = %s
@@ -426,7 +435,7 @@ def map_source_execution(
                     """,
                     (
                         records_mapped,
-                        records_rejected,
+                        source_execution_id,
                         mapping_id,
                         mapping_version,
                         source_execution_id,
