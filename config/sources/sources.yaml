@@ -82,5 +82,5 @@ sources:
     ingestion:
       adapter: utilly_statement
       reader_options:
-        header_row: 3
+        header_row: 4
         encoding: utf-8-sig
