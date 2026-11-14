@@ -78,3 +78,8 @@ sources:
     default_mapping:
       mapping_id: utilly_bank_v1
       mapping_version: "1.0"
+    ingestion:
+      adapter: utilly_statement
+      reader_options:
+        header_row: 3
+        encoding: utf-8-sig
