@@ -148,18 +148,22 @@ class MappingRegistry:
                 f"ingestion must be a mapping for {source_name}."
             )
 
+        #make adapter optional for shared readers
+        #reserves validation whenever an adapter is specified
+        # while allowing shared readers to work with reader options alone
         adapter = ingestion.get("adapter")
 
-        if (
-            not isinstance(adapter, str)
-            or not re.fullmatch(
-                r"[a-z][a-z0-9_]*",
-                adapter,
-            )
-        ):
-            raise MappingRegistryError(
-                f"Invalid ingestion adapter for {source_name}."
-            )
+        if adapter is not None:
+            if (
+                not isinstance(adapter, str)
+                or not re.fullmatch(
+                    r"[a-z][a-z0-9_]*",
+                    adapter,
+                )
+            ):
+                raise MappingRegistryError(
+                    f"Invalid ingestion adapter for {source_name}."
+                )
 
         reader_options = ingestion.get("reader_options", {})
 
