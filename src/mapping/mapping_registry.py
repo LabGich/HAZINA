@@ -1,3 +1,4 @@
+# Mapping registry responsible for YAML configuration
 
 from pathlib import Path
 from typing import Any
