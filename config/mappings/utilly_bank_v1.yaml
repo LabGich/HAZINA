@@ -6,7 +6,7 @@ mapping:
   source_type: FILE
   description: Utilly fictional bank statement CSV mapping
   source_timezone: America/Chicago
-  date_format: "%m/%d/%Y"
+  date_format: "%Y-%m-%dT%H:%M:%S"
   amount_handling: separate_debit_credit
 
 required_fields:
