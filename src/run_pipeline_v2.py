@@ -166,11 +166,30 @@ def run_pipeline_v2(files):
             f"{run_id} could not be finalized: {exc}"
         ) from exc
 
+    # 7. Generate the PDF report after the parent is finalized.
+    # Reporting failures must never change the pipeline outcome.
+    report_path = None
+    report_error = None
+
+    try:
+        from src.monitoring.pipeline_status import (
+            save_pipeline_v2_run_report,
+        )
+
+        report_path = str(
+            save_pipeline_v2_run_report(run_id=run_id)
+        )
+
+    except Exception as exc:
+        report_error = f"{type(exc).__name__}: {exc}"
+
     return {
         "run_id": run_id,
         "run_status": parent_result["run_status"],
         "pipeline": parent_result,
         "source_executions": execution_results,
+        "report_path": report_path,
+        "report_error": report_error
     }
 
 
