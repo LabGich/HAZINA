@@ -83,6 +83,8 @@ class PipelineService:
                 stored_name = f"{uuid.uuid4().hex}{Path(original_name).suffix.lower()}"
                 destination = UPLOAD_DIRECTORY / stored_name
 
+                saved_paths.append(destination)
+
                 file_size = 0
 
                 with destination.open("wb") as output:
@@ -101,8 +103,6 @@ class PipelineService:
                             )
 
                         output.write(chunk)
-
-                saved_paths.append(destination)
 
                 file_configs.append({
                     "source_name": source_name,
