@@ -191,5 +191,3 @@ def run_pipeline_v2(files):
         "report_path": report_path,
         "report_error": report_error
     }
-
-
