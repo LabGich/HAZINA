@@ -115,7 +115,7 @@ def create_pipeline_run(files, source_registry=None):
         normalized_file_format = file_format.lstrip(".").lower()
 
         normalized_supported_formats = [
-            str(supported_formats).strip().lower().lstrip(".")
+            str(supported_format).strip().lower().lstrip(".")
             for supported_format in supported_formats
         ]
 
