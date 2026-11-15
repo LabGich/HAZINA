@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from src.api.services.source_service import SourceService
+from src.api.schemas.source_schema import SourceListResponse
 
 from src.mapping.mapping_registry import (
     MappingRegistry,
@@ -10,7 +11,7 @@ from src.mapping.mapping_registry import (
 router = APIRouter()
 
 
-@router.get("/sources", tags=["Sources"])
+@router.get("/sources", tags=["Sources"], response_model=SourceListResponse)
 def list_sources():
     try:
       service = SourceService()
