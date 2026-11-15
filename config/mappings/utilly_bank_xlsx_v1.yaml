@@ -1,10 +1,10 @@
 
 mapping:
-  mapping_id: utilly_bank_v1
+  mapping_id: utilly_bank_xlsx_v1
   mapping_version: "1.0"
   source_name: UTILLY
   source_type: FILE
-  description: Utilly fictional bank statement CSV mapping
+  description: Utilly fictional bank statement XLSX mapping
   source_timezone: America/Chicago
   date_format: "%Y-%m-%dT%H:%M:%S"
   amount_handling: separate_debit_credit

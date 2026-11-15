@@ -114,7 +114,7 @@ sources:
       - CSV
       - XLSX
     default_mapping:
-      mapping_id: utilly_bank_v1
+      mapping_id: utilly_bank_csv_v1 #csv default, retain explicit mapping selection for xlsx selections
       mapping_version: "1.0"
     ingestion:
       adapter: utilly_statement
