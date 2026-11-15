@@ -13,16 +13,16 @@ class PipelineFileMetadata(BaseModel):
 class SourceExecutionResponse(BaseModel):
     source_execution_id: int
     source_name: str
-    file_name: str
-    mapping_id: str
-    mapping_version: str
+    file_path: str
     execution_status: str
+    stages: dict
     error: dict | None = None
 
 
 class PipelineRunResponse(BaseModel):
     run_id: int
     run_status: str
+    pipeline: dict
     source_executions: list[SourceExecutionResponse]
     report_path: str | None = None
     report_error: str | None = None

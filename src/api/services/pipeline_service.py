@@ -40,6 +40,8 @@ class PipelineService:
         saved_paths = []
         file_configs = []
 
+        pipeline_started = False
+
         try:
             for item in uploads:
                 upload = item["file"]
@@ -109,13 +111,15 @@ class PipelineService:
                     "mapping_version": mapping_version,
                 })
 
+            pipeline_started = True
             result = run_pipeline_v2(file_configs)
 
             return result
 
         except Exception:
-            for path in saved_paths:
-                path.unlink(missing_ok=True)
+            if not pipeline_started:
+                for path in saved_paths:
+                    path.unlink(missing_ok=True)
 
             raise
 
