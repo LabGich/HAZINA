@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.api.routers import health, database
+from src.api.routers import health, database, sources, mappings
 
 app = FastAPI(
     title="Hazina API",
@@ -9,3 +9,5 @@ app = FastAPI(
 
 app.include_router(health.router)
 app.include_router(database.router)
+app.include_router(sources.router)
+app.include_router(mappings.router)

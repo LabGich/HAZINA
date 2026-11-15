@@ -1,0 +1,58 @@
+from src.mapping.mapping_registry import (
+    MappingRegistry,
+    MappingRegistryError,
+)
+
+
+class MappingService:
+    """Application service for mapping discovery."""
+
+    def __init__(self, registry: MappingRegistry | None = None):
+        self.registry = registry or MappingRegistry()
+
+    def list_mappings(self, source_name: str) -> dict:
+        """Return the configured default mapping for a source."""
+
+        source_name = source_name.strip().upper()
+        source = self.registry.get_source(source_name)
+
+        if source.get("source_type") != "FILE":
+            return {
+                "source_name": source_name,
+                "count": 0,
+                "mappings": [],
+            }
+
+        default_mapping = source.get("default_mapping") or {}
+
+        mapping_id = default_mapping.get("mapping_id")
+        mapping_version = default_mapping.get("mapping_version")
+
+        mappings = []
+
+        if mapping_id and mapping_version:
+            try:
+                config = self.registry.resolve_mapping(
+                    source_name=source_name,
+                    mapping_id=mapping_id,
+                    mapping_version=mapping_version,
+                )
+
+                metadata = config["mapping"]
+
+                mappings.append({
+                    "mapping_id": metadata["mapping_id"],
+                    "mapping_version": metadata["mapping_version"],
+                    "description": metadata.get("description"),
+                    "is_default": True,
+                })
+
+            except MappingRegistryError:
+                # An unavailable or invalid mapping must not be advertised.
+                pass
+
+        return {
+            "source_name": source_name,
+            "count": len(mappings),
+            "mappings": mappings,
+        }
