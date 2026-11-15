@@ -1,13 +1,18 @@
-# This adapter does not perform transaction mapping or validation
+# This adapter does not perform transaction mapping or validation.
 # Its sole responsibility is converting the Utilly statement layout
-# into clean source records and metadata
+# into clean source records and metadata.
+
 import csv
 import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from src.ingestion.source_readers import CSVReader, SourceReaderError
+from src.ingestion.source_readers import (
+    CSVReader,
+    XLSXReader,
+    SourceReaderError,
+)
 
 
 class SourceAdapterError(ValueError):
@@ -15,7 +20,7 @@ class SourceAdapterError(ValueError):
 
 
 class UtillyStatementAdapter:
-    """Preprocesses Utilly bank statement CSV files."""
+    """Preprocesses Utilly bank statement CSV and XLSX files."""
 
     ACCOUNT_PATTERN = re.compile(
         r"\b(?:X{2,}|\*{2,})?\d{4,}\b",
@@ -42,6 +47,110 @@ class UtillyStatementAdapter:
     }
 
     @classmethod
+    def _read_preamble(
+        cls,
+        path: Path,
+        options: dict[str, Any],
+    ) -> tuple[str, str]:
+        """Read account and statement-period information."""
+
+        suffix = path.suffix.lower()
+
+        try:
+            if suffix == ".csv":
+                encoding = options.get("encoding", "utf-8-sig")
+
+                with path.open(
+                    "r",
+                    encoding=encoding,
+                    newline="",
+                ) as file:
+                    reader = csv.reader(file)
+                    next(reader, None)
+                    period_line = next(reader, None)
+
+                if not period_line:
+                    raise SourceAdapterError(
+                        "Utilly statement preamble is incomplete."
+                    )
+
+                account_text = " ".join(period_line)
+                period_text = account_text
+
+            elif suffix == ".xlsx":
+                from openpyxl import load_workbook
+
+                workbook = load_workbook(
+                    path,
+                    read_only=True,
+                    data_only=True,
+                )
+
+                try:
+                    sheet_name = options.get("sheet_name")
+
+                    if sheet_name:
+                        if sheet_name not in workbook.sheetnames:
+                            raise SourceAdapterError(
+                                f"Worksheet not found: {sheet_name}"
+                            )
+                        worksheet = workbook[sheet_name]
+                    else:
+                        worksheet = workbook.active
+
+                    first_rows = list(
+                        worksheet.iter_rows(
+                            min_row=1,
+                            max_row=2,
+                            values_only=True,
+                        )
+                    )
+
+                finally:
+                    workbook.close()
+
+                if len(first_rows) < 2:
+                    raise SourceAdapterError(
+                        "Utilly statement preamble is incomplete."
+                    )
+
+                period_line = first_rows[1]
+                account_text = " ".join(
+                    str(value)
+                    for value in period_line
+                    if value is not None
+                )
+                period_text = account_text
+
+            else:
+                raise SourceAdapterError(
+                    f"Unsupported Utilly file format: {suffix}"
+                )
+
+        except SourceAdapterError:
+            raise
+        except (OSError, UnicodeError, csv.Error) as exc:
+            raise SourceAdapterError(
+                f"Unable to read Utilly statement preamble: {exc}"
+            ) from exc
+
+        account_match = cls.ACCOUNT_PATTERN.search(account_text)
+
+        if not account_match:
+            raise SourceAdapterError(
+                "Could not extract account identifier from Utilly statement."
+            )
+
+        period_match = cls.PERIOD_PATTERN.search(period_text)
+
+        if not period_match:
+            raise SourceAdapterError(
+                "Could not extract statement period from Utilly statement."
+            )
+
+        return account_match.group(0), period_match.group(0)
+
+    @classmethod
     def read(
         cls,
         file_path: str | Path,
@@ -52,52 +161,9 @@ class UtillyStatementAdapter:
         path = Path(file_path)
         options = reader_options or {}
 
-        encoding = options.get("encoding", "utf-8")
+        account_id, period_text = cls._read_preamble(path, options)
 
-        try:
-            with path.open(
-                "r",
-                encoding=encoding,
-                newline="",
-            ) as file:
-                preamble_reader = csv.reader(file)
-
-                account_line = next(preamble_reader, None)
-                period_line = next(preamble_reader, None)
-
-        except (OSError, UnicodeError, csv.Error) as exc:
-            raise SourceAdapterError(
-                f"Unable to read Utilly statement preamble: {exc}"
-            ) from exc
-
-        if not account_line or not period_line:
-            raise SourceAdapterError(
-                "Utilly statement preamble is incomplete."
-            )
-
-        #The first line is a disclaimer. Account details are on line two
-        account_text = " ".join(period_line)
-        account_match = cls.ACCOUNT_PATTERN.search(account_text)
-
-        if not account_match:
-            raise SourceAdapterError(
-                "Could not extract account identifier from Utilly statement."
-            )
-
-        account_id = account_match.group(0)
-
-        if not period_line:
-            raise SourceAdapterError(
-                "Utilly statement period information is missing."
-            )
-
-        period_text = " ".join(period_line)
-        period_match = cls.PERIOD_PATTERN.search(period_text)
-
-        if not period_match:
-            raise SourceAdapterError(
-                "Could not extract statement period from Utilly statement."
-            )
+        period_match = cls.PERIOD_PATTERN.fullmatch(period_text)
 
         try:
             period_start = datetime.strptime(
@@ -110,7 +176,7 @@ class UtillyStatementAdapter:
                 "%m/%d/%Y",
             ).date()
 
-        except ValueError as exc:
+        except (ValueError, AttributeError) as exc:
             raise SourceAdapterError(
                 "Utilly statement contains an invalid statement period."
             ) from exc
@@ -120,13 +186,27 @@ class UtillyStatementAdapter:
                 "Utilly statement end date precedes its start date."
             )
 
-        options = {
+        reader_options = {
             **options,
             "header_row": options.get("header_row", 4),
         }
 
+        suffix = path.suffix.lower()
+
         try:
-            records = list(CSVReader.read(path, options))
+            if suffix == ".csv":
+                records = list(
+                    CSVReader.read(path, reader_options)
+                )
+            elif suffix == ".xlsx":
+                records = list(
+                    XLSXReader.read(path, reader_options)
+                )
+            else:
+                raise SourceAdapterError(
+                    f"Unsupported Utilly file format: {suffix}"
+                )
+
         except SourceReaderError:
             raise
 
@@ -136,7 +216,6 @@ class UtillyStatementAdapter:
             )
 
         actual_columns = set(records[0])
-
         missing_columns = cls.REQUIRED_COLUMNS - actual_columns
 
         if missing_columns:
@@ -148,7 +227,9 @@ class UtillyStatementAdapter:
         transactions = []
 
         for record in records:
-            description = record["Description"].strip().upper()
+            description = str(
+                record.get("Description") or ""
+            ).strip().upper()
 
             if description in cls.NON_TRANSACTION_DESCRIPTIONS:
                 continue

@@ -112,6 +112,7 @@ sources:
     enabled: true
     supported_formats:
       - CSV
+      - XLSX
     default_mapping:
       mapping_id: utilly_bank_v1
       mapping_version: "1.0"
@@ -119,4 +120,3 @@ sources:
       adapter: utilly_statement
       reader_options:
         header_row: 4
-        encoding: utf-8-sig
