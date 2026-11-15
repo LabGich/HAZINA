@@ -1,6 +1,5 @@
 from xml.sax.saxutils import escape
 from reportlab.platypus import Table, TableStyle, KeepTogether
-from reportlab.lib.pdfencrypt import StandardEncryption
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -14,6 +13,7 @@ from reportlab.platypus import (
 from contextlib import redirect_stdout
 from io import StringIO
 from pathlib import Path
+from src.monitoring.pdf_security import get_pdf_encryption
 
 # Failure handling for pipeline status monitoring
 # when a Psycopg connection transaction fails, its changes are rolled back
@@ -244,15 +244,6 @@ def save_pipeline_run_report(run_id, reports_directory=None):
         bottomMargin=20 * mm,
         title=f"Hazina Pipeline Run {run_id} Report",
         author="Hazina Financial Transactions Pipeline",
-        encrypt=StandardEncryption(
-            userPassword="",
-            ownerPassword="hazina_report_owner  ",
-            canPrint=1,
-            canModify=0,
-            canCopy=0,
-            canAnnotate=0,
-            strength=128,
-        ),
     )
 
     styles = getSampleStyleSheet()
@@ -627,6 +618,8 @@ def save_pipeline_v2_run_report(run_id, reports_directory=None):
         title=f"Hazina V2 Pipeline Run {run_id} Report",
         author="Hazina Financial Transactions Pipeline",
     )
+
+    document.encrypt = get_pdf_encryption(require_open_password=True)
 
     styles = getSampleStyleSheet()
 
