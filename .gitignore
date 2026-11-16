@@ -55,3 +55,23 @@ reports/*
 
 # Uploaded fin trans
 data/uploads/
+
+# Hazina Pipeline generated files
+hazina_pipeline/logs/*
+!hazina_pipeline/logs/.gitkeep
+
+hazina_pipeline/reports/*
+hazina_pipeline/data/incoming/*
+hazina_pipeline/data/processed/*
+hazina_pipeline/data/archive/*
+hazina_pipeline/data/uploads/
+
+# Hazina Server generated files
+hazina_server/logs/*
+!hazina_server/logs/.gitkeep
+
+hazina_server/reports/*
+hazina_server/data/uploads/
+# Python build artifacts
+**/build/
+**/*.egg-info/
