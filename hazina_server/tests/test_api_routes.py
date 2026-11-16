@@ -174,3 +174,62 @@ def test_get_pipeline_run_details_rejects_invalid_id():
     response = client.get("/pipeline-runs/0")
 
     assert response.status_code == 400
+
+def test_download_pipeline_run_report(monkeypatch, tmp_path):
+    report_path = tmp_path / "pipeline_run_10_report.pdf"
+    report_path.write_bytes(b"%PDF-test-content")
+
+    monkeypatch.setattr(
+        pipeline.PipelineService,
+        "get_run_report_path",
+        staticmethod(lambda run_id: report_path),
+    )
+
+    response = client.get("/pipeline-runs/10/report")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    assert 'filename="pipeline_run_10_report.pdf"' in response.headers[
+        "content-disposition"
+    ]
+    assert response.content == b"%PDF-test-content"
+
+
+def test_download_pipeline_run_report_not_found(monkeypatch):
+    def raise_not_found(run_id):
+        raise ValueError(f"Pipeline run {run_id} was not found.")
+
+    monkeypatch.setattr(
+        pipeline.PipelineService,
+        "get_run_report_path",
+        staticmethod(raise_not_found),
+    )
+
+    response = client.get("/pipeline-runs/999999/report")
+
+    assert response.status_code == 404
+    assert "was not found" in response.json()["detail"]
+
+
+def test_download_pipeline_run_report_pdf_missing(monkeypatch):
+    def raise_missing_report(run_id):
+        raise ValueError(
+            f"PDF report for pipeline run {run_id} was not found."
+        )
+
+    monkeypatch.setattr(
+        pipeline.PipelineService,
+        "get_run_report_path",
+        staticmethod(raise_missing_report),
+    )
+
+    response = client.get("/pipeline-runs/10/report")
+
+    assert response.status_code == 404
+    assert "PDF report" in response.json()["detail"]
+
+
+def test_download_pipeline_run_report_rejects_invalid_id():
+    response = client.get("/pipeline-runs/0/report")
+
+    assert response.status_code == 400

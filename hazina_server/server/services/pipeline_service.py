@@ -12,11 +12,15 @@ from fastapi import UploadFile
 
 from hazina_pipeline.mapping.mapping_registry import MappingRegistry
 from hazina_pipeline.run_pipeline_v2 import run_pipeline_v2
+from hazina_pipeline.monitoring import pipeline_status
 from hazina_pipeline.monitoring.pipeline_status import get_pipeline_v2_runs, get_pipeline_v2_report_data
 
+REPORT_DIRECTORY = (
+    Path(pipeline_status.__file__).resolve().parents[2]/"reports"
+)
 
-PROJECT_ROOT = Path(__file__).resolve().parents[3]
-UPLOAD_DIRECTORY = PROJECT_ROOT / "data" / "uploads"
+SERVER_ROOT = Path(__file__).resolve().parents[2]
+UPLOAD_DIRECTORY = SERVER_ROOT / "data" / "uploads"
 
 MAX_FILE_SIZE = 10 * 1024 * 1024
 CHUNK_SIZE = 1024 * 1024
@@ -148,3 +152,23 @@ class PipelineService:
             "run_id": run_id,
             "report": report,
         }
+
+    @staticmethod
+    def get_run_report_path(run_id):
+        """Return the generated PDF report path for a V2 pipeline run."""
+        if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
+            raise ValueError("run_id must be a positive integer.")
+
+        report = get_pipeline_v2_report_data(run_id)
+
+        if report["pipeline"] is None:
+            raise ValueError(f"Pipeline run {run_id} was not found.")
+
+        report_path = REPORT_DIRECTORY / f"pipeline_run_{run_id}_report.pdf"
+
+        if not report_path.is_file():
+            raise ValueError(
+                f"PDF report for pipeline run {run_id} was not found."
+            )
+
+        return report_path

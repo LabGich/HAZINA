@@ -7,6 +7,7 @@
 # Each list must contain the same number of entries, in matching order
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile, Query
+from fastapi.responses import FileResponse
 
 from server.schemas.pipeline_schema import (
     PipelineFileMetadata,
@@ -93,6 +94,28 @@ def list_pipeline_runs(
 def get_pipeline_run_details(run_id: int):
     try:
         return PipelineService.get_run_details(run_id)
+    except ValueError as exc:
+        status_code = 404 if "was not found" in str(exc) else 400
+        raise HTTPException(
+            status_code=status_code,
+            detail=str(exc),
+        ) from exc
+
+@router.get(
+    "/pipeline-runs/{run_id}/report",
+    tags=["Pipeline"],
+    response_class=FileResponse,
+)
+def download_pipeline_run_report(run_id: int):
+    try:
+        report_path = PipelineService.get_run_report_path(run_id)
+
+        return FileResponse(
+            path=report_path,
+            media_type="application/pdf",
+            filename=f"pipeline_run_{run_id}_report.pdf",
+        )
+
     except ValueError as exc:
         status_code = 404 if "was not found" in str(exc) else 400
         raise HTTPException(
