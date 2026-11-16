@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
 from src.api.main import app
-from src.api.routers import sources, mappings
+from src.api.routers import sources, mappings, pipeline
 from src.api.services.source_service import SourceService
 from src.api.services.mapping_service import MappingService
 
@@ -130,3 +130,47 @@ def test_list_pipeline_runs_validates_pagination():
 
     response = client.get("/pipeline-runs?limit=20&offset=-1")
     assert response.status_code == 422
+
+def test_get_pipeline_run_details(monkeypatch):
+    expected = {
+        "run_id": 10,
+        "report": {
+            "pipeline": {"run_id": 10, "run_status": "SUCCESS"},
+            "source_executions": [],
+            "mapping_errors": [],
+            "validation_errors": [],
+        },
+    }
+
+    monkeypatch.setattr(
+        pipeline.PipelineService,
+        "get_run_details",
+        staticmethod(lambda run_id: expected),
+    )
+
+    response = client.get("/pipeline-runs/10")
+
+    assert response.status_code == 200
+    assert response.json() == expected
+
+
+def test_get_pipeline_run_details_not_found(monkeypatch):
+    def raise_not_found(run_id):
+        raise ValueError(f"Pipeline run {run_id} was not found.")
+
+    monkeypatch.setattr(
+        pipeline.PipelineService,
+        "get_run_details",
+        staticmethod(raise_not_found),
+    )
+
+    response = client.get("/pipeline-runs/999999")
+
+    assert response.status_code == 404
+    assert "was not found" in response.json()["detail"]
+
+
+def test_get_pipeline_run_details_rejects_invalid_id():
+    response = client.get("/pipeline-runs/0")
+
+    assert response.status_code == 400

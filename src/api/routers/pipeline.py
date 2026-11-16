@@ -15,7 +15,7 @@ from src.api.schemas.pipeline_schema import (
 from src.api.services.pipeline_service import PipelineService
 from src.mapping.mapping_registry import MappingRegistryError
 from src.run_pipeline_v2 import PipelineV2ExecutionError
-from src.api.schemas.pipeline_schema import PipelineRunListResponse
+from src.api.schemas.pipeline_schema import PipelineRunListResponse, PipelineRunDetailEnvelope
 
 
 router = APIRouter()
@@ -85,3 +85,17 @@ def list_pipeline_runs(
     offset: int = Query(default=0, ge=0),
 ):
     return PipelineService.list_runs(limit=limit, offset=offset)
+
+@router.get(
+    "/pipeline-runs/{run_id}",
+    response_model=PipelineRunDetailEnvelope,
+)
+def get_pipeline_run_details(run_id: int):
+    try:
+        return PipelineService.get_run_details(run_id)
+    except ValueError as exc:
+        status_code = 404 if "was not found" in str(exc) else 400
+        raise HTTPException(
+            status_code=status_code,
+            detail=str(exc),
+        ) from exc

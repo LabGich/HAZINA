@@ -47,3 +47,14 @@ class PipelineRunListResponse(BaseModel):
     total: int
     limit: int
     offset: int
+
+class PipelineRunDetailResponse(BaseModel):
+    pipeline: dict
+    source_executions: list[dict]
+    mapping_errors: list[dict]
+    validation_errors: list[dict]
+
+
+class PipelineRunDetailEnvelope(BaseModel):
+    run_id: int
+    report: PipelineRunDetailResponse

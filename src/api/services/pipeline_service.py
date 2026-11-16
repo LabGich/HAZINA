@@ -12,7 +12,7 @@ from fastapi import UploadFile
 
 from src.mapping.mapping_registry import MappingRegistry
 from src.run_pipeline_v2 import run_pipeline_v2
-from src.monitoring.pipeline_status import get_pipeline_v2_runs
+from src.monitoring.pipeline_status import get_pipeline_v2_runs, get_pipeline_v2_report_data
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -132,3 +132,19 @@ class PipelineService:
     def list_runs(limit=20, offset=0):
         """Return a paginated list of V2 pipeline runs."""
         return get_pipeline_v2_runs(limit=limit, offset=offset)
+
+    @staticmethod
+    def get_run_details(run_id):
+        """Return detailed monitoring data for a V2 pipeline run."""
+        if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
+            raise ValueError("run_id must be a positive integer.")
+
+        report = get_pipeline_v2_report_data(run_id)
+
+        if report["pipeline"] is None:
+            raise ValueError(f"Pipeline run {run_id} was not found.")
+
+        return {
+            "run_id": run_id,
+            "report": report,
+        }
