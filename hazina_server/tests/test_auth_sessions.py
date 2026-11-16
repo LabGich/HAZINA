@@ -201,3 +201,39 @@ def test_rotation_rejects_naive_expiration():
             new_token_jti=str(uuid.uuid4()),
             new_expires_at=datetime.now() + timedelta(days=7),
         )
+
+# Session revocation integrity test
+# if creating the replacement session fails, the original session remains active
+
+def test_failed_rotation_preserves_old_session(active_membership):
+    user = active_membership["user"]
+    organization = active_membership["organization"]
+
+    old_jti = str(uuid.uuid4())
+    duplicate_jti = str(uuid.uuid4())
+
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+
+    AuthService.create_refresh_session(
+        user_id=user["user_id"],
+        organization_id=organization["organization_id"],
+        token_jti=old_jti,
+        expires_at=expires_at,
+    )
+
+    AuthService.create_refresh_session(
+        user_id=user["user_id"],
+        organization_id=organization["organization_id"],
+        token_jti=duplicate_jti,
+        expires_at=expires_at,
+    )
+
+    with pytest.raises(Exception):
+        AuthService.rotate_refresh_session(
+            old_token_jti=old_jti,
+            new_token_jti=duplicate_jti,
+            new_expires_at=expires_at,
+        )
+
+    assert AuthService.get_active_refresh_session(old_jti) is not None
+    assert AuthService.get_active_refresh_session(duplicate_jti) is not None
