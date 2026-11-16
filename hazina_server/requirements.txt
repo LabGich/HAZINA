@@ -3,3 +3,5 @@ uvicorn==0.54.0
 pydantic==2.14.3
 psycopg[binary]==3.3.8
 python-multipart==0.0.33
+pwdlib[argon2]==0.3.0
+PyJWT==2.10.1
