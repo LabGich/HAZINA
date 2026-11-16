@@ -171,3 +171,28 @@ class AuthenticationService:
             "token_type": "bearer",
             "access_token_expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         }
+
+
+    @staticmethod
+    def logout(refresh_token: str) -> dict:
+        if not isinstance(refresh_token, str) or not refresh_token:
+            raise ValueError("A valid refresh token is required.")
+
+        payload = decode_token(
+            refresh_token,
+            expected_type="refresh",
+        )
+
+        token_jti = payload.get("jti")
+
+        if not token_jti:
+            raise ValueError("Invalid refresh token.")
+
+        revoked = AuthService.revoke_refresh_session(token_jti)
+
+        if not revoked:
+            raise ValueError(
+                "Refresh token is invalid, expired, or already revoked."
+            )
+
+        return {"message": "Successfully logged out."}
