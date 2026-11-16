@@ -408,6 +408,7 @@ class AuthService:
             "created_at": row[6],
         }
 
+    
     @staticmethod
     def get_active_refresh_session(token_jti: str) -> dict | None:
         try:
@@ -425,9 +426,12 @@ class AuthService:
                         rt.organization_id,
                         rt.token_jti,
                         rt.expires_at,
-                        rt.created_at
+                        rt.created_at,
+                        u.email,
+                        o.slug
                     FROM auth.refresh_tokens rt
-                    JOIN auth.users u ON u.user_id = rt.user_id
+                    JOIN auth.users u
+                        ON u.user_id = rt.user_id
                     JOIN auth.organizations o
                         ON o.organization_id = rt.organization_id
                     JOIN auth.organization_memberships m
@@ -454,7 +458,10 @@ class AuthService:
             "token_jti": str(row[3]),
             "expires_at": row[4],
             "created_at": row[5],
+            "email": row[6],
+            "organization_slug": row[7],
         }
+
 
     @staticmethod
     def revoke_refresh_session(token_jti: str) -> bool:

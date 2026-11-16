@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from server.auth.password import verify_password
 from server.auth.token import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
+    REFRESH_TOKEN_EXPIRE_DAYS,
     create_access_token,
     create_refresh_token,
     decode_token,
@@ -97,4 +98,76 @@ class AuthenticationService:
             "token_type": "bearer",
             "access_token_expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
             "user": user_response,
+        }
+
+
+    @staticmethod
+    def refresh(refresh_token: str) -> dict:
+        if not isinstance(refresh_token, str) or not refresh_token:
+            raise ValueError("A valid refresh token is required.")
+
+        payload = decode_token(
+            refresh_token,
+            expected_type="refresh",
+        )
+
+        try:
+            user_id = int(payload["sub"])
+            organization_id = int(payload["organization_id"])
+            old_jti = payload["jti"]
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("Invalid refresh token.") from exc
+
+        session = AuthService.get_active_refresh_session(old_jti)
+
+        if session is None:
+            raise ValueError("Refresh token is invalid, expired, or revoked.")
+
+        if (
+            session["user_id"] != user_id
+            or session["organization_id"] != organization_id
+        ):
+            raise ValueError("Refresh token session does not match.")
+
+        membership = AuthService.get_active_user_membership(
+            email=session["email"],
+            organization_slug=session["organization_slug"],
+        )
+
+        if membership is None:
+            raise ValueError("User membership is no longer active.")
+
+        new_refresh_token = create_refresh_token(
+            user_id=user_id,
+            organization_id=organization_id,
+        )
+
+        new_payload = decode_token(
+            new_refresh_token,
+            expected_type="refresh",
+        )
+
+        new_expires_at = datetime.fromtimestamp(
+            new_payload["exp"],
+            tz=timezone.utc,
+        )
+
+        # Rotate the database session atomically.
+        AuthService.rotate_refresh_session(
+            old_token_jti=old_jti,
+            new_token_jti=new_payload["jti"],
+            new_expires_at=new_expires_at,
+        )
+
+        new_access_token = create_access_token(
+            user_id=user_id,
+            organization_id=organization_id,
+            role=membership["role_code"],
+        )
+
+        return {
+            "access_token": new_access_token,
+            "refresh_token": new_refresh_token,
+            "token_type": "bearer",
+            "access_token_expires_in": ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         }
