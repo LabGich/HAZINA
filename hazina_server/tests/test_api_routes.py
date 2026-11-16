@@ -6,8 +6,16 @@ from server.services.source_service import SourceService
 from server.services.mapping_service import MappingService
 
 
-client = TestClient(app)
+from server.auth.dependencies import get_current_auth_context
 
+
+app.dependency_overrides[get_current_auth_context] = lambda: {
+    "user_id": 1,
+    "organization_id": 1,
+    "role_code": "ADMIN",
+}
+
+client = TestClient(app)
 
 def test_health_endpoint():
     response = client.get("/health")

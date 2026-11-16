@@ -1,22 +1,34 @@
-# This endpoint accepts multiple files, with corresponding source and mapping details for each file
-# We'll use parallel multipart fields:
+
+# This endpoint accepts multiple files, with corresponding source and mapping details for each file.
+# Parallel multipart fields:
 # - files
 # - source_names
 # - mapping_ids
 # - mapping_versions
-# Each list must contain the same number of entries, in matching order
+# Each list must contain the same number of entries, in matching order.
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile, Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    Form,
+    HTTPException,
+    Query,
+)
+from fastapi import UploadFile
 from fastapi.responses import FileResponse
 
+from hazina_pipeline.mapping.mapping_registry import MappingRegistryError
+from hazina_pipeline.run_pipeline_v2 import PipelineV2ExecutionError
+
+from server.auth.dependencies import require_roles
 from server.schemas.pipeline_schema import (
     PipelineFileMetadata,
     PipelineRunResponse,
+    PipelineRunListResponse,
+    PipelineRunDetailEnvelope,
 )
 from server.services.pipeline_service import PipelineService
-from hazina_pipeline.mapping.mapping_registry import MappingRegistryError
-from hazina_pipeline.run_pipeline_v2 import PipelineV2ExecutionError
-from server.schemas.pipeline_schema import PipelineRunListResponse, PipelineRunDetailEnvelope
 
 
 router = APIRouter()
@@ -32,6 +44,9 @@ async def submit_pipeline_files(
     source_names: list[str] = Form(...),
     mapping_ids: list[str] = Form(...),
     mapping_versions: list[str] = Form(...),
+    auth_context: dict = Depends(
+        require_roles("ADMIN", "OPERATOR")
+    ),
 ):
     if not (
         len(files)
@@ -77,6 +92,7 @@ async def submit_pipeline_files(
             detail="The pipeline could not complete safely.",
         ) from exc
 
+
 @router.get(
     "/pipeline-runs",
     response_model=PipelineRunListResponse,
@@ -84,14 +100,23 @@ async def submit_pipeline_files(
 def list_pipeline_runs(
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
+    auth_context: dict = Depends(
+        require_roles("ADMIN", "OPERATOR", "VIEWER")
+    ),
 ):
     return PipelineService.list_runs(limit=limit, offset=offset)
+
 
 @router.get(
     "/pipeline-runs/{run_id}",
     response_model=PipelineRunDetailEnvelope,
 )
-def get_pipeline_run_details(run_id: int):
+def get_pipeline_run_details(
+    run_id: int,
+    auth_context: dict = Depends(
+        require_roles("ADMIN", "OPERATOR", "VIEWER")
+    ),
+):
     try:
         return PipelineService.get_run_details(run_id)
     except ValueError as exc:
@@ -101,12 +126,18 @@ def get_pipeline_run_details(run_id: int):
             detail=str(exc),
         ) from exc
 
+
 @router.get(
     "/pipeline-runs/{run_id}/report",
     tags=["Pipeline"],
     response_class=FileResponse,
 )
-def download_pipeline_run_report(run_id: int):
+def download_pipeline_run_report(
+    run_id: int,
+    auth_context: dict = Depends(
+        require_roles("ADMIN", "OPERATOR", "VIEWER")
+    ),
+):
     try:
         report_path = PipelineService.get_run_report_path(run_id)
 
