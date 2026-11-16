@@ -1,5 +1,8 @@
 from hazina_pipeline.database.connection import get_database_connection
 
+from datetime import datetime, timezone
+from uuid import UUID
+
 
 class AuthService:
     """Database operations for Hazina authentication."""
@@ -264,3 +267,148 @@ class AuthService:
             }
             for row in rows
         ]
+
+
+    @staticmethod
+    def create_refresh_session(
+        user_id: int,
+        organization_id: int,
+        token_jti: str,
+        expires_at: datetime,
+    ) -> dict:
+        if not isinstance(token_jti, str):
+            raise ValueError("A valid token_jti is required.")
+
+        try:
+            token_jti = str(UUID(token_jti))
+        except ValueError as exc:
+            raise ValueError("A valid token_jti is required.") from exc
+
+        if expires_at.tzinfo is None or expires_at.utcoffset() is None:
+            raise ValueError("expires_at must include a timezone.")
+
+        if expires_at <= datetime.now(timezone.utc):
+            raise ValueError("Refresh token expiration must be in the future.")
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    INSERT INTO auth.refresh_tokens (
+                        user_id,
+                        organization_id,
+                        token_jti,
+                        expires_at
+                    )
+                    SELECT %s, %s, %s, %s
+                    WHERE EXISTS (
+                        SELECT 1
+                        FROM auth.organization_memberships m
+                        JOIN auth.users u ON u.user_id = m.user_id
+                        JOIN auth.organizations o
+                            ON o.organization_id = m.organization_id
+                        WHERE m.user_id = %s
+                          AND m.organization_id = %s
+                          AND m.is_active = TRUE
+                          AND u.is_active = TRUE
+                          AND o.is_active = TRUE
+                    )
+                    RETURNING refresh_token_id, user_id, organization_id,
+                              token_jti, expires_at, revoked_at, created_at;
+                    """,
+                    (
+                        user_id,
+                        organization_id,
+                        token_jti,
+                        expires_at,
+                        user_id,
+                        organization_id,
+                    ),
+                )
+                row = cursor.fetchone()
+
+                if row is None:
+                    raise ValueError(
+                        "No active organization membership exists for this user."
+                    )
+
+        return {
+            "refresh_token_id": row[0],
+            "user_id": row[1],
+            "organization_id": row[2],
+            "token_jti": str(row[3]),
+            "expires_at": row[4],
+            "revoked_at": row[5],
+            "created_at": row[6],
+        }
+
+    @staticmethod
+    def get_active_refresh_session(token_jti: str) -> dict | None:
+        try:
+            token_jti = str(UUID(token_jti))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("A valid token_jti is required.") from exc
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        rt.refresh_token_id,
+                        rt.user_id,
+                        rt.organization_id,
+                        rt.token_jti,
+                        rt.expires_at,
+                        rt.created_at
+                    FROM auth.refresh_tokens rt
+                    JOIN auth.users u ON u.user_id = rt.user_id
+                    JOIN auth.organizations o
+                        ON o.organization_id = rt.organization_id
+                    JOIN auth.organization_memberships m
+                        ON m.user_id = rt.user_id
+                       AND m.organization_id = rt.organization_id
+                    WHERE rt.token_jti = %s
+                      AND rt.revoked_at IS NULL
+                      AND rt.expires_at > CURRENT_TIMESTAMP
+                      AND u.is_active = TRUE
+                      AND o.is_active = TRUE
+                      AND m.is_active = TRUE;
+                    """,
+                    (token_jti,),
+                )
+                row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return {
+            "refresh_token_id": row[0],
+            "user_id": row[1],
+            "organization_id": row[2],
+            "token_jti": str(row[3]),
+            "expires_at": row[4],
+            "created_at": row[5],
+        }
+
+    @staticmethod
+    def revoke_refresh_session(token_jti: str) -> bool:
+        try:
+            token_jti = str(UUID(token_jti))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("A valid token_jti is required.") from exc
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    UPDATE auth.refresh_tokens
+                    SET revoked_at = CURRENT_TIMESTAMP
+                    WHERE token_jti = %s
+                      AND revoked_at IS NULL
+                    RETURNING refresh_token_id;
+                    """,
+                    (token_jti,),
+                )
+                row = cursor.fetchone()
+
+        return row is not None
