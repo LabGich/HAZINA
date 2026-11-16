@@ -126,6 +126,72 @@ class AuthService:
             "created_at": row[6],
         }
 
+
+    @staticmethod
+    def get_active_user_membership(
+        email: str,
+        organization_slug: str,
+    ) -> dict | None:
+        email = email.strip().lower()
+        organization_slug = organization_slug.strip().lower()
+
+        if not email or not organization_slug:
+            raise ValueError(
+                "Email and organization slug are required."
+            )
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        u.user_id,
+                        u.email,
+                        u.password_hash,
+                        u.full_name,
+                        u.is_active,
+                        u.email_verified,
+                        o.organization_id,
+                        o.name,
+                        o.slug,
+                        r.role_code,
+                        m.is_active,
+                        m.created_at
+                    FROM auth.users u
+                    JOIN auth.organization_memberships m
+                        ON m.user_id = u.user_id
+                    JOIN auth.organizations o
+                        ON o.organization_id = m.organization_id
+                    JOIN auth.roles r
+                        ON r.role_id = m.role_id
+                    WHERE u.email = %s
+                      AND o.slug = %s
+                      AND u.is_active = TRUE
+                      AND o.is_active = TRUE
+                      AND m.is_active = TRUE;
+                    """,
+                    (email, organization_slug),
+                )
+                row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return {
+            "user_id": row[0],
+            "email": row[1],
+            "password_hash": row[2],
+            "full_name": row[3],
+            "is_active": row[4],
+            "email_verified": row[5],
+            "organization_id": row[6],
+            "organization_name": row[7],
+            "organization_slug": row[8],
+            "role_code": row[9],
+            "membership_is_active": row[10],
+            "membership_created_at": row[11],
+        }
+
     
     @staticmethod
     def create_membership(
