@@ -6,7 +6,7 @@
 # - mapping_versions
 # Each list must contain the same number of entries, in matching order
 
-from fastapi import APIRouter, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, File, Form, HTTPException, UploadFile, Query
 
 from src.api.schemas.pipeline_schema import (
     PipelineFileMetadata,
@@ -15,6 +15,7 @@ from src.api.schemas.pipeline_schema import (
 from src.api.services.pipeline_service import PipelineService
 from src.mapping.mapping_registry import MappingRegistryError
 from src.run_pipeline_v2 import PipelineV2ExecutionError
+from src.api.schemas.pipeline_schema import PipelineRunListResponse
 
 
 router = APIRouter()
@@ -74,3 +75,13 @@ async def submit_pipeline_files(
             status_code=500,
             detail="The pipeline could not complete safely.",
         ) from exc
+
+@router.get(
+    "/pipeline-runs",
+    response_model=PipelineRunListResponse,
+)
+def list_pipeline_runs(
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+):
+    return PipelineService.list_runs(limit=limit, offset=offset)

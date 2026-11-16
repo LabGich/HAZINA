@@ -12,6 +12,7 @@ from fastapi import UploadFile
 
 from src.mapping.mapping_registry import MappingRegistry
 from src.run_pipeline_v2 import run_pipeline_v2
+from src.monitoring.pipeline_status import get_pipeline_v2_runs
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -126,3 +127,8 @@ class PipelineService:
         finally:
             for item in uploads:
                 await item["file"].close()
+
+    @staticmethod
+    def list_runs(limit=20, offset=0):
+        """Return a paginated list of V2 pipeline runs."""
+        return get_pipeline_v2_runs(limit=limit, offset=offset)
