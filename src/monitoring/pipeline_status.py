@@ -299,9 +299,9 @@ def save_pipeline_run_report(run_id, reports_directory=None):
 
     return report_path
 
-# =====================+
-# ==> ADD V2 REPORTING |
-# =====================+
+# ============================================================================+
+#                           ==> ADD V2 REPORTING                              |
+# ============================================================================+
 
 def get_pipeline_v2_report_data(run_id):
     """
@@ -896,3 +896,64 @@ def save_pipeline_v2_run_report(run_id, reports_directory=None):
     document.build(story)
 
     return report_path
+
+def get_pipeline_v2_runs(limit=20, offset=0):
+    """
+    Retrieve a paginated list of V2 pipeline runs,
+    ordered from newest to oldest.
+    """
+
+    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 100:
+        raise ValueError("limit must be an integer between 1 and 100.")
+
+    if isinstance(offset, bool) or not isinstance(offset, int) or offset < 0:
+        raise ValueError("offset must be a non-negative integer.")
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM ops.pipeline_runs
+                """
+            )
+
+            total = cursor.fetchone()[0]
+
+            cursor.execute(
+                """
+                SELECT
+                    run_id,
+                    source_file,
+                    started_at,
+                    completed_at,
+                    run_status,
+                    records_received,
+                    records_loaded,
+                    records_rejected,
+                    records_promoted,
+                    run_type,
+                    triggered_by
+                FROM ops.pipeline_runs
+                ORDER BY run_id DESC
+                LIMIT %s OFFSET %s
+                """,
+                (limit, offset),
+            )
+
+            columns = [
+                item.name for item in cursor.description
+            ]
+
+            runs = [
+                dict(zip(columns, row))
+                for row in cursor.fetchall()
+            ]
+
+    return {
+        "items": runs,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+    }

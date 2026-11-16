@@ -53,3 +53,5 @@ reports/*
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
+# Uploaded fin trans
+data/uploads/
