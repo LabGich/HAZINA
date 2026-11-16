@@ -196,3 +196,40 @@ class AuthenticationService:
             )
 
         return {"message": "Successfully logged out."}
+
+    @staticmethod
+    def get_current_user(user_id: int, organization_id: int) -> dict:
+        if (
+            isinstance(user_id, bool)
+            or not isinstance(user_id, int)
+            or user_id <= 0
+        ):
+            raise ValueError("A valid user_id is required.")
+
+        if (
+            isinstance(organization_id, bool)
+            or not isinstance(organization_id, int)
+            or organization_id <= 0
+        ):
+            raise ValueError("A valid organization_id is required.")
+
+        membership = AuthService.get_active_user_context(
+            user_id=user_id,
+            organization_id=organization_id,
+        )
+
+        if membership is None:
+            raise ValueError("User or organization membership is no longer active.")
+
+        memberships = AuthService.get_user_memberships(user_id)
+
+        return {
+            "user_id": membership["user_id"],
+            "email": membership["email"],
+            "full_name": membership["full_name"],
+            "organization_id": membership["organization_id"],
+            "organization_name": membership["organization_name"],
+            "organization_slug": membership["organization_slug"],
+            "role_code": membership["role_code"],
+            "memberships": memberships,
+        }

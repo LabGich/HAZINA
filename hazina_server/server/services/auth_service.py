@@ -334,6 +334,74 @@ class AuthService:
             for row in rows
         ]
 
+    @staticmethod
+    def get_active_user_context(
+        user_id: int,
+        organization_id: int,
+    ) -> dict | None:
+        if (
+            isinstance(user_id, bool)
+            or not isinstance(user_id, int)
+            or user_id <= 0
+        ):
+            raise ValueError("A valid user_id is required.")
+
+        if (
+            isinstance(organization_id, bool)
+            or not isinstance(organization_id, int)
+            or organization_id <= 0
+        ):
+            raise ValueError("A valid organization_id is required.")
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        u.user_id,
+                        u.email,
+                        u.full_name,
+                        u.is_active,
+                        u.email_verified,
+                        o.organization_id,
+                        o.name,
+                        o.slug,
+                        r.role_code,
+                        m.is_active,
+                        m.created_at
+                    FROM auth.users u
+                    JOIN auth.organization_memberships m
+                        ON m.user_id = u.user_id
+                    JOIN auth.organizations o
+                        ON o.organization_id = m.organization_id
+                    JOIN auth.roles r
+                        ON r.role_id = m.role_id
+                    WHERE u.user_id = %s
+                      AND o.organization_id = %s
+                      AND u.is_active = TRUE
+                      AND o.is_active = TRUE
+                      AND m.is_active = TRUE;
+                    """,
+                    (user_id, organization_id),
+                )
+                row = cursor.fetchone()
+
+        if row is None:
+            return None
+
+        return {
+            "user_id": row[0],
+            "email": row[1],
+            "full_name": row[2],
+            "is_active": row[3],
+            "email_verified": row[4],
+            "organization_id": row[5],
+            "organization_name": row[6],
+            "organization_slug": row[7],
+            "role_code": row[8],
+            "membership_is_active": row[9],
+            "membership_created_at": row[10],
+        }
 
     @staticmethod
     def create_refresh_session(
