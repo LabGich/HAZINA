@@ -118,3 +118,86 @@ def test_create_refresh_session_requires_active_membership(active_membership):
             token_jti=str(uuid.uuid4()),
             expires_at=datetime.now(timezone.utc) + timedelta(days=7),
         )
+
+
+def test_rotate_refresh_session(active_membership):
+    user = active_membership["user"]
+    organization = active_membership["organization"]
+
+    old_jti = str(uuid.uuid4())
+    new_jti = str(uuid.uuid4())
+
+    AuthService.create_refresh_session(
+        user_id=user["user_id"],
+        organization_id=organization["organization_id"],
+        token_jti=old_jti,
+        expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+    )
+
+    rotated = AuthService.rotate_refresh_session(
+        old_token_jti=old_jti,
+        new_token_jti=new_jti,
+        new_expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+    )
+
+    assert rotated["token_jti"] == new_jti
+    assert rotated["replaced_token_jti"] == old_jti
+
+    assert AuthService.get_active_refresh_session(old_jti) is None
+    assert AuthService.get_active_refresh_session(new_jti) is not None
+
+
+def test_cannot_rotate_same_refresh_token_twice(active_membership):
+    user = active_membership["user"]
+    organization = active_membership["organization"]
+
+    old_jti = str(uuid.uuid4())
+
+    AuthService.create_refresh_session(
+        user_id=user["user_id"],
+        organization_id=organization["organization_id"],
+        token_jti=old_jti,
+        expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+    )
+
+    AuthService.rotate_refresh_session(
+        old_token_jti=old_jti,
+        new_token_jti=str(uuid.uuid4()),
+        new_expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+    )
+
+    with pytest.raises(ValueError, match="invalid, expired, or revoked"):
+        AuthService.rotate_refresh_session(
+            old_token_jti=old_jti,
+            new_token_jti=str(uuid.uuid4()),
+            new_expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+        )
+
+
+def test_rotation_rejects_same_jti(active_membership):
+    token_jti = str(uuid.uuid4())
+
+    with pytest.raises(ValueError, match="new JTI"):
+        AuthService.rotate_refresh_session(
+            old_token_jti=token_jti,
+            new_token_jti=token_jti,
+            new_expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+        )
+
+
+def test_rotation_rejects_invalid_jti():
+    with pytest.raises(ValueError, match="Valid token JTIs"):
+        AuthService.rotate_refresh_session(
+            old_token_jti="invalid",
+            new_token_jti=str(uuid.uuid4()),
+            new_expires_at=datetime.now(timezone.utc) + timedelta(days=7),
+        )
+
+
+def test_rotation_rejects_naive_expiration():
+    with pytest.raises(ValueError, match="timezone"):
+        AuthService.rotate_refresh_session(
+            old_token_jti=str(uuid.uuid4()),
+            new_token_jti=str(uuid.uuid4()),
+            new_expires_at=datetime.now() + timedelta(days=7),
+        )

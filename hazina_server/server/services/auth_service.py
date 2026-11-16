@@ -412,3 +412,112 @@ class AuthService:
                 row = cursor.fetchone()
 
         return row is not None
+
+    # Add atomic refresh-token rotation:
+    # Concurrent requests using the same old token cannot both rotate it successfully.
+    # Expired, revoked, or inactive-user sessions cannot be rotated
+    # The old session records the replacement JTI
+    # The old and new session changes are committed together
+
+    @staticmethod
+    def rotate_refresh_session(
+        old_token_jti: str,
+        new_token_jti: str,
+        new_expires_at: datetime,
+    ) -> dict:
+        try:
+            old_token_jti = str(UUID(old_token_jti))
+            new_token_jti = str(UUID(new_token_jti))
+        except (ValueError, TypeError, AttributeError) as exc:
+            raise ValueError("Valid token JTIs are required.") from exc
+
+        if old_token_jti == new_token_jti:
+            raise ValueError("Replacement token must have a new JTI.")
+
+        if (
+            new_expires_at.tzinfo is None
+            or new_expires_at.utcoffset() is None
+        ):
+            raise ValueError("Expiration must include a timezone.")
+
+        if new_expires_at <= datetime.now(timezone.utc):
+            raise ValueError("Replacement token expiration must be in the future.")
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        rt.refresh_token_id,
+                        rt.user_id,
+                        rt.organization_id
+                    FROM auth.refresh_tokens rt
+                    JOIN auth.users u ON u.user_id = rt.user_id
+                    JOIN auth.organizations o
+                        ON o.organization_id = rt.organization_id
+                    JOIN auth.organization_memberships m
+                        ON m.user_id = rt.user_id
+                       AND m.organization_id = rt.organization_id
+                    WHERE rt.token_jti = %s
+                      AND rt.revoked_at IS NULL
+                      AND rt.expires_at > CURRENT_TIMESTAMP
+                      AND u.is_active = TRUE
+                      AND o.is_active = TRUE
+                      AND m.is_active = TRUE
+                    FOR UPDATE OF rt;
+                    """,
+                    (old_token_jti,),
+                )
+                old_session = cursor.fetchone()
+
+                if old_session is None:
+                    raise ValueError(
+                        "Refresh session is invalid, expired, or revoked."
+                    )
+
+                refresh_token_id, user_id, organization_id = old_session
+
+                cursor.execute(
+                    """
+                    UPDATE auth.refresh_tokens
+                    SET revoked_at = CURRENT_TIMESTAMP,
+                        replaced_by_jti = %s
+                    WHERE refresh_token_id = %s
+                      AND revoked_at IS NULL;
+                    """,
+                    (new_token_jti, refresh_token_id),
+                )
+
+                if cursor.rowcount != 1:
+                    raise ValueError("Refresh session could not be rotated.")
+
+                cursor.execute(
+                    """
+                    INSERT INTO auth.refresh_tokens (
+                        user_id,
+                        organization_id,
+                        token_jti,
+                        expires_at
+                    )
+                    VALUES (%s, %s, %s, %s)
+                    RETURNING refresh_token_id, user_id, organization_id,
+                              token_jti, expires_at, created_at;
+                    """,
+                    (
+                        user_id,
+                        organization_id,
+                        new_token_jti,
+                        new_expires_at,
+                    ),
+                )
+                new_session = cursor.fetchone()
+
+        return {
+            "refresh_token_id": new_session[0],
+            "user_id": new_session[1],
+            "organization_id": new_session[2],
+            "token_jti": str(new_session[3]),
+            "expires_at": new_session[4],
+            "created_at": new_session[5],
+            "replaced_token_jti": old_token_jti,
+        }
