@@ -334,6 +334,58 @@ class AuthService:
             for row in rows
         ]
 
+    
+    @staticmethod
+    def list_organization_users(organization_id: int) -> list[dict]:
+        if (
+            isinstance(organization_id, bool)
+            or not isinstance(organization_id, int)
+            or organization_id <= 0
+        ):
+            raise ValueError("A valid organization_id is required.")
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT
+                        u.user_id,
+                        u.email,
+                        u.full_name,
+                        u.is_active,
+                        u.email_verified,
+                        m.membership_id,
+                        m.is_active,
+                        r.role_code,
+                        m.created_at
+                    FROM auth.organization_memberships m
+                    JOIN auth.users u
+                        ON u.user_id = m.user_id
+                    JOIN auth.roles r
+                        ON r.role_id = m.role_id
+                    WHERE m.organization_id = %s
+                    ORDER BY u.full_name, u.user_id;
+                    """,
+                    (organization_id,),
+                )
+                rows = cursor.fetchall()
+
+        return [
+            {
+                "user_id": row[0],
+                "email": row[1],
+                "full_name": row[2],
+                "user_is_active": row[3],
+                "email_verified": row[4],
+                "membership_id": row[5],
+                "membership_is_active": row[6],
+                "role_code": row[7],
+                "membership_created_at": row[8],
+            }
+            for row in rows
+        ]
+
+
     @staticmethod
     def get_active_user_context(
         user_id: int,
