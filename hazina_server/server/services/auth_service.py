@@ -286,6 +286,138 @@ class AuthService:
             "role_code": role_code,
         }
 
+    # transactional user creation
+    @staticmethod
+    def create_user_with_membership(
+        email: str,
+        password_hash: str,
+        full_name: str,
+        organization_id: int,
+        role_code: str,
+    ) -> dict:
+        email = email.strip().lower() if isinstance(email, str) else ""
+        full_name = full_name.strip() if isinstance(full_name, str) else ""
+        role_code = role_code.strip().upper() if isinstance(role_code, str) else ""
+
+        if not email or not password_hash or not full_name:
+            raise ValueError(
+                "Email, password hash, and full name are required."
+            )
+
+        if (
+            isinstance(organization_id, bool)
+            or not isinstance(organization_id, int)
+            or organization_id <= 0
+        ):
+            raise ValueError("A valid organization_id is required.")
+
+        if not role_code:
+            raise ValueError("A role code is required.")
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT role_id
+                    FROM auth.roles
+                    WHERE role_code = %s;
+                    """,
+                    (role_code,),
+                )
+                role = cursor.fetchone()
+
+                if role is None:
+                    raise ValueError(f"Unknown role: {role_code}")
+
+                role_id = role[0]
+
+                cursor.execute(
+                    """
+                    SELECT organization_id
+                    FROM auth.organizations
+                    WHERE organization_id = %s
+                      AND is_active = TRUE;
+                    """,
+                    (organization_id,),
+                )
+
+                if cursor.fetchone() is None:
+                    raise ValueError(
+                        "Organization does not exist or is inactive."
+                    )
+
+                cursor.execute(
+                    """
+                    SELECT user_id, email, full_name, is_active,
+                           email_verified
+                    FROM auth.users
+                    WHERE email = %s
+                    FOR UPDATE;
+                    """,
+                    (email,),
+                )
+                user = cursor.fetchone()
+
+                if user is None:
+                    cursor.execute(
+                        """
+                        INSERT INTO auth.users (
+                            email, password_hash, full_name
+                        )
+                        VALUES (%s, %s, %s)
+                        RETURNING user_id, email, full_name, is_active,
+                                  email_verified;
+                        """,
+                        (email, password_hash, full_name),
+                    )
+                    user = cursor.fetchone()
+
+                elif not user[3]:
+                    raise ValueError("The existing user account is inactive.")
+
+                user_id = user[0]
+
+                cursor.execute(
+                    """
+                    SELECT membership_id
+                    FROM auth.organization_memberships
+                    WHERE organization_id = %s
+                      AND user_id = %s;
+                    """,
+                    (organization_id, user_id),
+                )
+
+                if cursor.fetchone() is not None:
+                    raise ValueError(
+                        "User already has a membership in this organization."
+                    )
+
+                cursor.execute(
+                    """
+                    INSERT INTO auth.organization_memberships (
+                        organization_id, user_id, role_id
+                    )
+                    VALUES (%s, %s, %s)
+                    RETURNING membership_id, is_active, created_at;
+                    """,
+                    (organization_id, user_id, role_id),
+                )
+                membership = cursor.fetchone()
+
+        return {
+            "user_id": user[0],
+            "email": user[1],
+            "full_name": user[2],
+            "user_is_active": user[3],
+            "email_verified": user[4],
+            "organization_id": organization_id,
+            "membership_id": membership[0],
+            "role_code": role_code,
+            "membership_is_active": membership[1],
+            "membership_created_at": membership[2],
+        }
+
+
     @staticmethod
     def get_user_memberships(user_id: int) -> list[dict]:
         if (
