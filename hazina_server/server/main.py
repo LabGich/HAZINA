@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from server.routers import health, database, sources, mappings
-from server.routers import pipeline, auth
+from server.routers import pipeline, auth, admin
+
 
 app = FastAPI(
     title="Hazina API",
@@ -14,3 +15,4 @@ app.include_router(sources.router)
 app.include_router(mappings.router)
 app.include_router(pipeline.router)
 app.include_router(auth.router)
+app.include_router(admin.router)
