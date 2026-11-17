@@ -303,7 +303,7 @@ def save_pipeline_run_report(run_id, reports_directory=None):
 #                           ==> ADD V2 REPORTING                              |
 # ============================================================================+
 
-def get_pipeline_v2_report_data(run_id):
+def get_pipeline_v2_report_data(run_id, organization_id=None):
     """
     Retrieve a complete V2 pipeline run report, including
     source executions and mapping/validation error summaries.
@@ -316,31 +316,49 @@ def get_pipeline_v2_report_data(run_id):
         with connection.cursor() as cursor:
 
             # Parent pipeline run
-            cursor.execute(
-                """
-                SELECT
-                    run_id,
-                    source_file,
-                    started_at,
-                    completed_at,
-                    run_status,
-                    records_received,
-                    records_loaded,
-                    records_rejected,
-                    records_skipped,
-                    records_updated,
-                    records_duplicated,
-                    records_unique_eligible,
-                    records_promoted,
-                    records_already_in_core,
-                    run_type,
-                    triggered_by,
-                    metadata
-                FROM ops.pipeline_runs
-                WHERE run_id = %s
-                """,
-                (run_id,),
-            )
+            if organization_id is None:
+                cursor.execute(
+                    """
+                    SELECT
+                        run_id,
+                        source_file,
+                        started_at,
+                        completed_at,
+                        run_status,
+                        records_received,
+                        records_loaded,
+                        records_rejected,
+                        records_promoted,
+                        run_type,
+                        triggered_by,
+                        metadata
+                    FROM ops.pipeline_runs
+                    WHERE run_id = %s
+                    """,
+                    (run_id,),
+                )
+            else:
+                cursor.execute(
+                    """
+                    SELECT
+                        run_id,
+                        source_file,
+                        started_at,
+                        completed_at,
+                        run_status,
+                        records_received,
+                        records_loaded,
+                        records_rejected,
+                        records_promoted,
+                        run_type,
+                        triggered_by,
+                        metadata
+                    FROM ops.pipeline_runs
+                    WHERE run_id = %s
+                        AND organization_id = %s
+                    """,
+                    (run_id, organization_id),
+                )
 
             row = cursor.fetchone()
 
@@ -465,8 +483,10 @@ def print_pipeline_v2_run_report(run_id):
     """
     Print a human-readable V2 pipeline run report.
     """
-
-    data = get_pipeline_v2_report_data(run_id)
+    data = get_pipeline_v2_report_data(
+        run_id,
+        organization_id=organization_id,
+    )
 
     pipeline = data["pipeline"]
     executions = data["source_executions"]
@@ -569,7 +589,7 @@ def print_pipeline_v2_run_report(run_id):
     print("=" * 75)
 
 
-def save_pipeline_v2_run_report(run_id, reports_directory=None):
+def save_pipeline_v2_run_report(run_id, reports_directory=None, organization_id=None):
     """
     Generate a PDF report for a finalized V2 pipeline run.
 
@@ -580,7 +600,10 @@ def save_pipeline_v2_run_report(run_id, reports_directory=None):
     if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
         raise ValueError("run_id must be a positive integer.")
 
-    data = get_pipeline_v2_report_data(run_id)
+    data = get_pipeline_v2_report_data(
+        run_id,
+        organization_id=organization_id,
+    )
 
     pipeline = data["pipeline"]
 
@@ -897,7 +920,7 @@ def save_pipeline_v2_run_report(run_id, reports_directory=None):
 
     return report_path
 
-def get_pipeline_v2_runs(limit=20, offset=0):
+def get_pipeline_v2_runs(limit=20, offset=0, organization_id=None):
     """
     Retrieve a paginated list of V2 pipeline runs,
     ordered from newest to oldest.
@@ -912,35 +935,63 @@ def get_pipeline_v2_runs(limit=20, offset=0):
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
-            cursor.execute(
-                """
-                SELECT COUNT(*)
-                FROM ops.pipeline_runs
-                """
-            )
+            if organization_id is None:
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM ops.pipeline_runs
+                """)
+            else:
+                cursor.execute("""
+                    SELECT COUNT(*)
+                    FROM ops.pipeline_runs
+                    WHERE organization_id = %s
+                """, (organization_id,))
 
             total = cursor.fetchone()[0]
 
-            cursor.execute(
-                """
-                SELECT
-                    run_id,
-                    source_file,
-                    started_at,
-                    completed_at,
-                    run_status,
-                    records_received,
-                    records_loaded,
-                    records_rejected,
-                    records_promoted,
-                    run_type,
-                    triggered_by
-                FROM ops.pipeline_runs
-                ORDER BY run_id DESC
-                LIMIT %s OFFSET %s
-                """,
-                (limit, offset),
-            )
+            if organization_id is None:
+                cursor.execute(
+                    """
+                    SELECT
+                        run_id,
+                        source_file,
+                        started_at,
+                        completed_at,
+                        run_status,
+                        records_received,
+                        records_loaded,
+                        records_rejected,
+                        records_promoted,
+                        run_type,
+                        triggered_by
+                    FROM ops.pipeline_runs
+                    ORDER BY run_id DESC
+                    LIMIT %s OFFSET %s
+                    """,
+                    (limit, offset),
+                )
+            else:
+                cursor.execute(
+                    """
+                    SELECT
+                        run_id,
+                        source_file,
+                        started_at,
+                        completed_at,
+                        run_status,
+                        records_received,
+                        records_loaded,
+                        records_rejected,
+                        records_promoted,
+                        run_type,
+                        triggered_by
+                    FROM ops.pipeline_runs
+                    WHERE organization_id = %s
+                    ORDER BY run_id DESC
+                    LIMIT %s OFFSET %s
+                    """,
+                    (organization_id, limit, offset),
+                )
 
             columns = [
                 item.name for item in cursor.description

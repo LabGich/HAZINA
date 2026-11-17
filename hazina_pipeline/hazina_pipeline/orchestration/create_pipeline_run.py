@@ -23,7 +23,7 @@ class PipelineRunCreationError(RuntimeError):
     """Raised when a V2 pipeline run cannot be created."""
 
 
-def create_pipeline_run(files, source_registry=None):
+def create_pipeline_run(files, source_registry=None, organization_id=None):
     """
     Create one V2 pipeline run and one PENDING source execution per file.
 
@@ -35,6 +35,10 @@ def create_pipeline_run(files, source_registry=None):
         file_path
         mapping_id
         mapping_version
+
+    organization_id:
+        Optional organization that owns the pipeline run.
+        When omitted, the run remains unassigned.
     """
 
     if not isinstance(files, (list, tuple)) or not files:
@@ -191,14 +195,16 @@ def create_pipeline_run(files, source_registry=None):
                     run_status,
                     run_type,
                     triggered_by,
-                    metadata
+                    metadata,
+                    organization_id
                 )
-                VALUES (%s, 'RUNNING', 'FILE', 'MANUAL', %s::jsonb)
+                VALUES (%s, 'RUNNING', 'FILE', 'MANUAL', %s::jsonb, %s)
                 RETURNING run_id
                 """,
                 (
                     source_file,
                     json.dumps(run_metadata),
+                    organization_id,
                 ),
             )
 

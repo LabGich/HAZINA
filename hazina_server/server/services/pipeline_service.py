@@ -36,7 +36,7 @@ class PipelineService:
     def __init__(self, mapping_registry=None):
         self.mapping_registry = mapping_registry or MappingRegistry()
 
-    async def submit_files(self, uploads):
+    async def submit_files(self, uploads, organization_id=None):
         if not uploads:
             raise ValueError("At least one file is required.")
 
@@ -117,7 +117,7 @@ class PipelineService:
                 })
 
             pipeline_started = True
-            result = run_pipeline_v2(file_configs)
+            result = run_pipeline_v2(file_configs, organization_id=organization_id,)
 
             return result
 
@@ -132,18 +132,30 @@ class PipelineService:
             for item in uploads:
                 await item["file"].close()
 
-    @staticmethod
-    def list_runs(limit=20, offset=0):
+    def list_runs(limit=20, offset=0, organization_id=None):
         """Return a paginated list of V2 pipeline runs."""
-        return get_pipeline_v2_runs(limit=limit, offset=offset)
+        if organization_id is None:
+            return get_pipeline_v2_runs(limit=limit, offset=offset)
+
+        return get_pipeline_v2_runs(
+            limit=limit,
+            offset=offset,
+            organization_id=organization_id,
+        )
 
     @staticmethod
-    def get_run_details(run_id):
+    def get_run_details(run_id, organization_id=None):
         """Return detailed monitoring data for a V2 pipeline run."""
         if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
             raise ValueError("run_id must be a positive integer.")
 
-        report = get_pipeline_v2_report_data(run_id)
+        if organization_id is None:
+            report = get_pipeline_v2_report_data(run_id)
+        else:
+            report = get_pipeline_v2_report_data(
+                run_id,
+                organization_id=organization_id,
+            )
 
         if report["pipeline"] is None:
             raise ValueError(f"Pipeline run {run_id} was not found.")
@@ -154,12 +166,18 @@ class PipelineService:
         }
 
     @staticmethod
-    def get_run_report_path(run_id):
+    def get_run_report_path(run_id, organization_id=None):
         """Return the generated PDF report path for a V2 pipeline run."""
         if isinstance(run_id, bool) or not isinstance(run_id, int) or run_id <= 0:
             raise ValueError("run_id must be a positive integer.")
 
-        report = get_pipeline_v2_report_data(run_id)
+        if organization_id is None:
+            report = get_pipeline_v2_report_data(run_id)
+        else:
+            report = get_pipeline_v2_report_data(
+                run_id,
+                organization_id=organization_id,
+            )
 
         if report["pipeline"] is None:
             raise ValueError(f"Pipeline run {run_id} was not found.")

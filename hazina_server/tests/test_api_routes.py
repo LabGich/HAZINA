@@ -125,11 +125,16 @@ def test_list_pipeline_runs():
     with patch(
         "server.routers.pipeline.PipelineService.list_runs",
         return_value=mock_result,
-    ):
+    ) as mock_list:
         response = client.get("/pipeline-runs")
 
     assert response.status_code == 200
     assert response.json() == mock_result
+    mock_list.assert_called_once_with(
+        limit=20,
+        offset=0,
+        organization_id=1,
+    )
 
 
 def test_list_pipeline_runs_validates_pagination():
@@ -150,20 +155,27 @@ def test_get_pipeline_run_details(monkeypatch):
         },
     }
 
+    calls = []
+
+    def fake_get_run_details(run_id, organization_id=None):
+        calls.append((run_id, organization_id))
+        return expected
+
     monkeypatch.setattr(
         pipeline.PipelineService,
         "get_run_details",
-        staticmethod(lambda run_id: expected),
+        staticmethod(fake_get_run_details),
     )
 
     response = client.get("/pipeline-runs/10")
 
     assert response.status_code == 200
     assert response.json() == expected
+    assert calls == [(10, 1)]
 
 
 def test_get_pipeline_run_details_not_found(monkeypatch):
-    def raise_not_found(run_id):
+    def raise_not_found(run_id, organization_id=None):
         raise ValueError(f"Pipeline run {run_id} was not found.")
 
     monkeypatch.setattr(
@@ -187,10 +199,16 @@ def test_download_pipeline_run_report(monkeypatch, tmp_path):
     report_path = tmp_path / "pipeline_run_10_report.pdf"
     report_path.write_bytes(b"%PDF-test-content")
 
+    calls = []
+
+    def fake_get_report_path(run_id, organization_id=None):
+        calls.append((run_id, organization_id))
+        return report_path
+
     monkeypatch.setattr(
         pipeline.PipelineService,
         "get_run_report_path",
-        staticmethod(lambda run_id: report_path),
+        staticmethod(fake_get_report_path),
     )
 
     response = client.get("/pipeline-runs/10/report")
@@ -201,10 +219,11 @@ def test_download_pipeline_run_report(monkeypatch, tmp_path):
         "content-disposition"
     ]
     assert response.content == b"%PDF-test-content"
+    assert calls == [(10, 1)]
 
 
 def test_download_pipeline_run_report_not_found(monkeypatch):
-    def raise_not_found(run_id):
+    def raise_not_found(run_id, organization_id=None):
         raise ValueError(f"Pipeline run {run_id} was not found.")
 
     monkeypatch.setattr(
@@ -220,7 +239,7 @@ def test_download_pipeline_run_report_not_found(monkeypatch):
 
 
 def test_download_pipeline_run_report_pdf_missing(monkeypatch):
-    def raise_missing_report(run_id):
+    def raise_missing_report(run_id, organization_id=None):
         raise ValueError(
             f"PDF report for pipeline run {run_id} was not found."
         )

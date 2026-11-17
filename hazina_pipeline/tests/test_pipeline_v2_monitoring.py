@@ -66,3 +66,54 @@ def test_get_pipeline_v2_runs_rejects_invalid_pagination(
     with pytest.raises(ValueError):
         get_pipeline_v2_runs(limit=limit, offset=offset)
 
+def test_get_pipeline_v2_runs_filters_by_organization():
+    connection = MagicMock()
+    cursor = connection.cursor.return_value.__enter__.return_value
+
+    cursor.fetchone.return_value = (2,)
+    cursor.description = [
+        SimpleNamespace(name=name)
+        for name in (
+            "run_id",
+            "source_file",
+            "started_at",
+            "completed_at",
+            "run_status",
+            "records_received",
+            "records_loaded",
+            "records_rejected",
+            "records_promoted",
+            "run_type",
+            "triggered_by",
+        )
+    ]
+    cursor.fetchall.return_value = [
+        (3, "file3.csv", None, None, "SUCCESS", 10, 10, 0, 10, "FILE", "API"),
+    ]
+
+    with patch(
+        "hazina_pipeline.monitoring.pipeline_status.get_database_connection"
+    ) as mock_connection:
+        mock_connection.return_value.__enter__.return_value = connection
+
+        result = get_pipeline_v2_runs(
+            limit=10,
+            offset=0,
+            organization_id=512,
+        )
+
+    assert result["total"] == 2
+    assert len(result["items"]) == 1
+
+    execute_calls = cursor.execute.call_args_list
+
+    assert len(execute_calls) == 2
+
+    count_sql = " ".join(execute_calls[0].args[0].split())
+    list_sql = " ".join(execute_calls[1].args[0].split())
+
+    assert "WHERE organization_id = %s" in count_sql
+    assert execute_calls[0].args[1] == (512,)
+
+    assert "WHERE organization_id = %s" in list_sql
+    assert execute_calls[1].args[1] == (512, 10, 0)

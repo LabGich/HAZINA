@@ -9,8 +9,11 @@ from starlette.datastructures import UploadFile
 
 from server.services import pipeline_service
 from server.services.pipeline_service import PipelineService
+from server.auth.dependencies import get_current_auth_context
 
 from server.main import app
+
+
 
 client = TestClient(app)
 
@@ -77,17 +80,19 @@ def test_pipeline_service_saves_upload_and_calls_orchestrator(
 
     captured = {}
 
-    def fake_run_pipeline_v2(files):
-        captured["files"] = files
+def fake_run_pipeline_v2(files, organization_id=None):
+    captured["files"] = files
+    captured["organization_id"] = organization_id
 
-        return {
-            "run_id": 123,
-            "run_status": "SUCCESS",
-            "pipeline": {"run_id": 123},
-            "source_executions": [],
-            "report_path": None,
-            "report_error": None,
-        }
+    return {
+        "run_id": 123,
+        "run_status": "SUCCESS",
+        "pipeline": {"run_id": 123},
+        "source_executions": [],
+        "report_path": None,
+        "report_error": None,
+    }
+
 
     monkeypatch.setattr(
         pipeline_service,
@@ -118,7 +123,7 @@ def test_pipeline_service_saves_upload_and_calls_orchestrator(
     assert result["run_id"] == 123
     assert result["run_status"] == "SUCCESS"
 
-    assert len(captured["files"]) == 1
+    assert captured["organization_id"] is None
 
     file_config = captured["files"][0]
 

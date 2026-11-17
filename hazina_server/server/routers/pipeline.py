@@ -78,7 +78,10 @@ async def submit_pipeline_files(
             })
 
         service = PipelineService()
-        return await service.submit_files(uploads)
+        return await service.submit_files(
+            uploads,
+            organization_id=auth_context["organization_id"],
+        )
 
     except (ValueError, MappingRegistryError) as exc:
         raise HTTPException(
@@ -104,7 +107,11 @@ def list_pipeline_runs(
         require_roles("ADMIN", "OPERATOR", "VIEWER")
     ),
 ):
-    return PipelineService.list_runs(limit=limit, offset=offset)
+    return PipelineService.list_runs(
+    limit=limit,
+    offset=offset,
+    organization_id=auth_context["organization_id"],
+)
 
 
 @router.get(
@@ -118,7 +125,10 @@ def get_pipeline_run_details(
     ),
 ):
     try:
-        return PipelineService.get_run_details(run_id)
+        return PipelineService.get_run_details(
+            run_id,
+            organization_id=auth_context["organization_id"],
+        )
     except ValueError as exc:
         status_code = 404 if "was not found" in str(exc) else 400
         raise HTTPException(
@@ -139,7 +149,10 @@ def download_pipeline_run_report(
     ),
 ):
     try:
-        report_path = PipelineService.get_run_report_path(run_id)
+        report_path = PipelineService.get_run_report_path(
+            run_id,
+            organization_id=auth_context["organization_id"],
+        )
 
         return FileResponse(
             path=report_path,

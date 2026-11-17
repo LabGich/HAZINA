@@ -29,7 +29,7 @@ class PipelineV2ExecutionError(RuntimeError):
     """Raised when V2 orchestration cannot complete safely."""
 
 
-def run_pipeline_v2(files):
+def run_pipeline_v2(files, organization_id=None):
     """
     Run the complete V2 file-based financial transaction pipeline.
 
@@ -45,7 +45,7 @@ def run_pipeline_v2(files):
         raise ValueError("files must be a non-empty list or tuple")
 
     # Create the parent run and all child source executions.
-    pipeline = create_pipeline_run(files=files)
+    pipeline = create_pipeline_run(files=files, organization_id=organization_id)
 
     run_id = pipeline["run_id"]
     source_executions = pipeline["source_executions"]
@@ -177,7 +177,7 @@ def run_pipeline_v2(files):
         )
 
         report_path = str(
-            save_pipeline_v2_run_report(run_id=run_id)
+            save_pipeline_v2_run_report(run_id=run_id, organization_id=organization_id)
         )
 
     except Exception as exc:
