@@ -938,3 +938,104 @@ class AuthService:
             "created_at": new_session[5],
             "replaced_token_jti": old_token_jti,
         }
+
+    # one atomic bootstrap functionality to create inital org, initial user, and ADMIN
+    # will use the CLI
+    @staticmethod
+    def create_organization_with_admin(
+        organization_name: str,
+        organization_slug: str,
+        email: str,
+        password_hash: str,
+        full_name: str,
+    ) -> dict:
+        organization_name = (
+            organization_name.strip()
+            if isinstance(organization_name, str)
+            else ""
+        )
+        organization_slug = (
+            organization_slug.strip().lower()
+            if isinstance(organization_slug, str)
+            else ""
+        )
+        email = email.strip().lower() if isinstance(email, str) else ""
+        full_name = full_name.strip() if isinstance(full_name, str) else ""
+
+        if not organization_name or not organization_slug:
+            raise ValueError(
+                "Organization name and slug are required."
+            )
+
+        if not email or not password_hash or not full_name:
+            raise ValueError(
+                "Admin email, password hash, and full name are required."
+            )
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT role_id
+                    FROM auth.roles
+                    WHERE role_code = 'ADMIN';
+                    """
+                )
+                role = cursor.fetchone()
+
+                if role is None:
+                    raise ValueError("ADMIN role is not configured.")
+
+                cursor.execute(
+                    """
+                    INSERT INTO auth.organizations (name, slug)
+                    VALUES (%s, %s)
+                    RETURNING organization_id, name, slug, is_active,
+                              created_at;
+                    """,
+                    (organization_name, organization_slug),
+                )
+                organization = cursor.fetchone()
+
+                cursor.execute(
+                    """
+                    INSERT INTO auth.users (
+                        email, password_hash, full_name
+                    )
+                    VALUES (%s, %s, %s)
+                    RETURNING user_id, email, full_name, is_active,
+                              email_verified;
+                    """,
+                    (email, password_hash, full_name),
+                )
+                user = cursor.fetchone()
+
+                cursor.execute(
+                    """
+                    INSERT INTO auth.organization_memberships (
+                        organization_id,
+                        user_id,
+                        role_id
+                    )
+                    VALUES (%s, %s, %s)
+                    RETURNING membership_id, is_active, created_at;
+                    """,
+                    (organization[0], user[0], role[0]),
+                )
+                membership = cursor.fetchone()
+
+        return {
+            "organization_id": organization[0],
+            "organization_name": organization[1],
+            "organization_slug": organization[2],
+            "organization_is_active": organization[3],
+            "user_id": user[0],
+            "email": user[1],
+            "full_name": user[2],
+            "user_is_active": user[3],
+            "email_verified": user[4],
+            "membership_id": membership[0],
+            "membership_is_active": membership[1],
+            "membership_created_at": membership[2],
+            "role_code": "ADMIN",
+        }

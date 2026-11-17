@@ -248,3 +248,63 @@ def test_create_user_with_membership_rejects_inactive_user(
             organization_id=test_organization["organization_id"],
             role_code="VIEWER",
         )
+
+def test_create_organization_with_admin():
+    suffix = uuid.uuid4().hex[:12]
+    organization_name = "Bootstrap Test Organization"
+    organization_slug = f"bootstrap-org-{suffix}"
+    email = f"bootstrap-{suffix}@example.test"
+
+    result = AuthService.create_organization_with_admin(
+        organization_name=organization_name,
+        organization_slug=organization_slug,
+        email=email,
+        password_hash=hash_password("Bootstrap-Password-123!"),
+        full_name="Bootstrap Admin",
+    )
+
+    assert result["organization_name"] == organization_name
+    assert result["organization_slug"] == organization_slug
+    assert result["organization_is_active"] is True
+
+    assert result["email"] == email
+    assert result["full_name"] == "Bootstrap Admin"
+    assert result["user_is_active"] is True
+
+    assert result["membership_is_active"] is True
+    assert result["role_code"] == "ADMIN"
+
+    users = AuthService.list_organization_users(
+        result["organization_id"]
+    )
+
+    assert len(users) == 1
+    assert users[0]["user_id"] == result["user_id"]
+    assert users[0]["email"] == email
+    assert users[0]["role_code"] == "ADMIN"
+
+
+@pytest.mark.parametrize(
+    "overrides",
+    [
+        {"organization_name": ""},
+        {"organization_slug": ""},
+        {"email": ""},
+        {"password_hash": ""},
+        {"full_name": ""},
+    ],
+)
+def test_create_organization_with_admin_rejects_missing_fields(
+    overrides,
+):
+    arguments = {
+        "organization_name": "Test Organization",
+        "organization_slug": f"test-org-{uuid.uuid4().hex[:12]}",
+        "email": f"{uuid.uuid4().hex}@example.test",
+        "password_hash": "test-password-hash",
+        "full_name": "Test Admin",
+    }
+    arguments.update(overrides)
+
+    with pytest.raises(ValueError):
+        AuthService.create_organization_with_admin(**arguments)

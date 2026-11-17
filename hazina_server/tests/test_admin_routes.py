@@ -1,3 +1,4 @@
+import pytest
 
 from unittest.mock import patch
 
@@ -8,6 +9,16 @@ from server.main import app
 
 
 client = TestClient(app)
+
+# preserves existing overrides after every admin test, including tests that intentionally clear them to verify unauthenticated access
+@pytest.fixture(autouse=True)
+def preserve_dependency_overrides():
+    original_overrides = app.dependency_overrides.copy()
+
+    yield
+
+    app.dependency_overrides.clear()
+    app.dependency_overrides.update(original_overrides)
 
 
 SAMPLE_ADMIN = {
