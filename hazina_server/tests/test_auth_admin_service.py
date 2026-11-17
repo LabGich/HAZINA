@@ -54,3 +54,83 @@ def test_list_organization_users_returns_empty(test_organization):
 def test_list_organization_users_rejects_invalid_id(organization_id):
     with pytest.raises(ValueError):
         AuthService.list_organization_users(organization_id)
+
+
+def test_update_membership_role(test_organization, test_user):
+    AuthService.create_membership(
+        organization_id=test_organization["organization_id"],
+        user_id=test_user["user_id"],
+        role_code="VIEWER",
+    )
+
+    updated = AuthService.update_organization_membership(
+        organization_id=test_organization["organization_id"],
+        user_id=test_user["user_id"],
+        role_code="OPERATOR",
+    )
+
+    assert updated is not None
+    assert updated["role_code"] == "OPERATOR"
+    assert updated["is_active"] is True
+
+
+def test_deactivate_membership(test_organization, test_user):
+    AuthService.create_membership(
+        organization_id=test_organization["organization_id"],
+        user_id=test_user["user_id"],
+        role_code="OPERATOR",
+    )
+
+    updated = AuthService.update_organization_membership(
+        organization_id=test_organization["organization_id"],
+        user_id=test_user["user_id"],
+        is_active=False,
+    )
+
+    assert updated is not None
+    assert updated["is_active"] is False
+
+    # Deactivating membership must not deactivate the global account.
+    user = AuthService.get_user_by_email(test_user["email"])
+    assert user["is_active"] is True
+
+
+def test_update_membership_returns_none_for_unknown_user(
+    test_organization,
+):
+    updated = AuthService.update_organization_membership(
+        organization_id=test_organization["organization_id"],
+        user_id=999999999,
+        role_code="ADMIN",
+    )
+
+    assert updated is None
+
+
+def test_update_membership_rejects_unknown_role(
+    test_organization,
+    test_user,
+):
+    AuthService.create_membership(
+        organization_id=test_organization["organization_id"],
+        user_id=test_user["user_id"],
+        role_code="VIEWER",
+    )
+
+    with pytest.raises(ValueError, match="Unknown role"):
+        AuthService.update_organization_membership(
+            organization_id=test_organization["organization_id"],
+            user_id=test_user["user_id"],
+            role_code="SUPERADMIN",
+        )
+
+
+def test_update_membership_rejects_empty_update(
+    test_organization,
+    test_user,
+):
+    with pytest.raises(ValueError, match="At least one"):
+        AuthService.update_organization_membership(
+            organization_id=test_organization["organization_id"],
+            user_id=test_user["user_id"],
+        )

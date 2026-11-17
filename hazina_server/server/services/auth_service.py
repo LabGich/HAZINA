@@ -387,6 +387,98 @@ class AuthService:
 
 
     @staticmethod
+    def update_organization_membership(
+        organization_id: int,
+        user_id: int,
+        role_code: str | None = None,
+        is_active: bool | None = None,
+    ) -> dict | None:
+        if (
+            isinstance(organization_id, bool)
+            or not isinstance(organization_id, int)
+            or organization_id <= 0
+        ):
+            raise ValueError("A valid organization_id is required.")
+
+        if (
+            isinstance(user_id, bool)
+            or not isinstance(user_id, int)
+            or user_id <= 0
+        ):
+            raise ValueError("A valid user_id is required.")
+
+        if role_code is None and is_active is None:
+            raise ValueError("At least one membership field must be supplied.")
+
+        if role_code is not None:
+            if not isinstance(role_code, str) or not role_code.strip():
+                raise ValueError("A valid role_code is required.")
+            role_code = role_code.strip().upper()
+
+        if is_active is not None and not isinstance(is_active, bool):
+            raise ValueError("is_active must be a boolean.")
+
+        with get_database_connection() as connection:
+            with connection.cursor() as cursor:
+                role_id = None
+
+                if role_code is not None:
+                    cursor.execute(
+                        """
+                        SELECT role_id
+                        FROM auth.roles
+                        WHERE role_code = %s;
+                        """,
+                        (role_code,),
+                    )
+                    role = cursor.fetchone()
+
+                    if role is None:
+                        raise ValueError(f"Unknown role: {role_code}")
+
+                    role_id = role[0]
+
+                cursor.execute(
+                    """
+                    UPDATE auth.organization_memberships
+                    SET
+                        role_id = COALESCE(%s, role_id),
+                        is_active = COALESCE(%s, is_active),
+                        updated_at = CURRENT_TIMESTAMP
+                    WHERE organization_id = %s
+                      AND user_id = %s
+                    RETURNING membership_id, organization_id, user_id,
+                              role_id, is_active, created_at;
+                    """,
+                    (role_id, is_active, organization_id, user_id),
+                )
+                row = cursor.fetchone()
+
+                if row is None:
+                    return None
+
+                cursor.execute(
+                    """
+                    SELECT role_code
+                    FROM auth.roles
+                    WHERE role_id = %s;
+                    """,
+                    (row[3],),
+                )
+                updated_role = cursor.fetchone()[0]
+
+        return {
+            "membership_id": row[0],
+            "organization_id": row[1],
+            "user_id": row[2],
+            "role_id": row[3],
+            "is_active": row[4],
+            "created_at": row[5],
+            "role_code": updated_role,
+        }
+
+
+    @staticmethod
     def get_active_user_context(
         user_id: int,
         organization_id: int,
