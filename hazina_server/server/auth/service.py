@@ -230,12 +230,25 @@ class AuthenticationService:
         role_code: str | None = None,
         is_active: bool | None = None,
     ) -> dict | None:
-        return AuthService.update_organization_membership(
+        updated_membership = AuthService.update_organization_membership(
             organization_id=organization_id,
             user_id=user_id,
             role_code=role_code,
             is_active=is_active,
         )
+
+        if updated_membership is None:
+            return None
+
+        users = AuthService.list_organization_users(
+            organization_id=organization_id,
+        )
+
+        for user in users:
+            if user["user_id"] == user_id:
+                return user
+
+        return None
 
 
     @staticmethod

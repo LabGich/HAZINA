@@ -52,13 +52,17 @@ def main() -> int:
     except Exception as exc:
         # Do not print database details or credentials.
         print(
-            "\nBootstrap failed. The organization and admin were not created."
+            "\nBootstrap failed. The organization and admin were not created.\n" \
+            "Check server logs for details."
         )
-        print(
-            "Check whether the organization slug or email is already in use, "
-            "and verify database connectivity."
-        )
+        # print(
+        #     "Check whether the organization slug or email is already in use, "
+        #     "and verify database connectivity.\n"
+        #)
+        #print(f"Error type: {type(exc).__name__}\nError message: {exc}") -->comment to hide db internal exception details to user
+
         return 1
+
 
     print("\nBootstrap completed successfully.")
     print(f"Organization: {result['organization_name']}")
