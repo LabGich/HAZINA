@@ -47,3 +47,30 @@ class TokenResponse(BaseModel):
 
 class LoginResponse(TokenResponse):
     user: AuthUserResponse
+
+
+class AdminCreateUserRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=12)
+    full_name: str = Field(min_length=1, max_length=150)
+    role_code: str = Field(pattern="^(ADMIN|OPERATOR|VIEWER)$")
+
+
+class AdminUpdateMembershipRequest(BaseModel):
+    role_code: str | None = Field(
+        default=None,
+        pattern="^(ADMIN|OPERATOR|VIEWER)$",
+    )
+    is_active: bool | None = None
+
+
+class AdminUserResponse(BaseModel):
+    user_id: int
+    email: EmailStr
+    full_name: str
+    user_is_active: bool
+    email_verified: bool
+    membership_id: int
+    membership_is_active: bool
+    role_code: str
+    membership_created_at: datetime

@@ -197,6 +197,47 @@ class AuthenticationService:
 
         return {"message": "Successfully logged out."}
 
+
+    @staticmethod
+    def list_organization_users(organization_id: int) -> list[dict]:
+        return AuthService.list_organization_users(organization_id)
+
+    @staticmethod
+    def create_organization_user(
+        organization_id: int,
+        email: str,
+        password: str,
+        full_name: str,
+        role_code: str,
+    ) -> dict:
+        from server.auth.password import hash_password
+
+        if not isinstance(password, str) or len(password) < 12:
+            raise ValueError("Password must contain at least 12 characters.")
+
+        return AuthService.create_user_with_membership(
+            email=email,
+            password_hash=hash_password(password),
+            full_name=full_name,
+            organization_id=organization_id,
+            role_code=role_code,
+        )
+
+    @staticmethod
+    def update_organization_user(
+        organization_id: int,
+        user_id: int,
+        role_code: str | None = None,
+        is_active: bool | None = None,
+    ) -> dict | None:
+        return AuthService.update_organization_membership(
+            organization_id=organization_id,
+            user_id=user_id,
+            role_code=role_code,
+            is_active=is_active,
+        )
+
+
     @staticmethod
     def get_current_user(user_id: int, organization_id: int) -> dict:
         if (
