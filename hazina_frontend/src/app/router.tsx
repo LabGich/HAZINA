@@ -9,6 +9,7 @@ import LoginPage from '../pages/Login/LoginPage'
 import FeaturePlaceholderPage from '../pages/FeaturePlaceholderPage'
 import NotFoundPage from '../pages/NotFound/NotFoundPage'
 import PipelineRunsPage from '../pages/PipelineRuns/PipelineRunsPage'
+import PipelineRunDetailsPage from '../pages/PipelineRuns/PipelineRunDetailsPage'
 
 import ProtectedRoute from '../components/auth/ProtectedRoute'
 import PublicRoute from '../components/auth/PublicRoute'
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
           {
             path: 'pipeline-runs',
             element: <PipelineRunsPage />,
+          },
+          {
+            path: 'pipeline-runs/:runId',
+            element: <PipelineRunDetailsPage />,
           },
           {
             path: 'mappings',

@@ -1,5 +1,6 @@
 
 import { useCallback, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Activity,
   ChevronLeft,
@@ -179,8 +180,13 @@ function PipelineRunsPage() {
                       key={run.run_id}
                       className="border-t border-slate-100 transition hover:bg-slate-50/70"
                     >
-                      <td className="whitespace-nowrap px-6 py-4 font-semibold text-slate-700">
-                        #{run.run_id}
+                      <td className="whitespace-nowrap px-6 py-4 font-semibold">
+                        <Link
+                          to={`/pipeline-runs/${run.run_id}`}
+                          className="text-teal-700 hover:text-teal-900 hover:underline"
+                        >
+                          #{run.run_id}
+                        </Link>
                       </td>
 
                       <td className="max-w-56 truncate px-4 py-4 font-medium text-slate-700">
