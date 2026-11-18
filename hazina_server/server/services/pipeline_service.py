@@ -146,13 +146,13 @@ class PipelineService:
             organization_id=organization_id,
         )
 
-        @staticmethod
-        def get_dashboard_summary(organization_id):
-            """Return dashboard metrics for one organization."""
+    @staticmethod
+    def get_dashboard_summary(organization_id):
+        """Return dashboard metrics for one organization."""
 
-            return get_pipeline_v2_dashboard_summary(
-                organization_id=organization_id,
-            )
+        return get_pipeline_v2_dashboard_summary(
+            organization_id=organization_id,
+        )
 
     @staticmethod
     def get_run_details(run_id, organization_id=None):
