@@ -1,0 +1,13 @@
+.dashboard-stat-card {
+  min-width: 0;
+}
+
+@media (max-width: 639px) {
+  .dashboard-stat-card {
+    padding: 1rem;
+  }
+
+  .dashboard-stat-card > div + p {
+    margin-top: 0.75rem;
+  }
+}
