@@ -1,74 +1,47 @@
 import {
   Activity,
   ArrowDownToLine,
-  ArrowUpRight,
   Clock3,
   Database,
-  FileSpreadsheet,
   ShieldCheck,
-  Users,
   Zap,
-} from 'lucide-react'
-import { Link } from 'react-router-dom'
-import './DashboardPage.css'
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import StatCard from "./components/StatCard";
+import PipelineActivity from "./components/PipelineActivity";
+import QuickActions from "./components/QuickActions";
+import "./DashboardPage.css";
 
 const statistics = [
   {
-    label: 'Pipeline runs',
-    value: '—',
-    description: 'Total processing runs',
+    label: "Pipeline runs",
+    value: "—",
+    description: "Total processing runs",
     icon: Activity,
-    color: 'bg-blue-50 text-blue-600',
+    color: "bg-blue-50 text-blue-600",
   },
   {
-    label: 'Records processed',
-    value: '—',
-    description: 'Across all executions',
+    label: "Records processed",
+    value: "—",
+    description: "Across all executions",
     icon: Database,
-    color: 'bg-teal-50 text-teal-700',
+    color: "bg-teal-50 text-teal-700",
   },
   {
-    label: 'Successful runs',
-    value: '—',
-    description: 'Completed successfully',
+    label: "Successful runs",
+    value: "—",
+    description: "Completed successfully",
     icon: ShieldCheck,
-    color: 'bg-emerald-50 text-emerald-700',
+    color: "bg-emerald-50 text-emerald-700",
   },
   {
-    label: 'Pending executions',
-    value: '—',
-    description: 'Awaiting completion',
+    label: "Pending executions",
+    value: "—",
+    description: "Awaiting completion",
     icon: Clock3,
-    color: 'bg-orange-50 text-orange-700',
+    color: "bg-orange-50 text-orange-700",
   },
-]
-
-const quickActions = [
-  {
-    label: 'Upload a financial file',
-    description: 'Start a new pipeline run',
-    icon: ArrowDownToLine,
-    path: '/ingestion',
-  },
-  {
-    label: 'Review pipeline runs',
-    description: 'Monitor processing status',
-    icon: Activity,
-    path: '/pipeline-runs',
-  },
-  {
-    label: 'Manage mappings',
-    description: 'View available data mappings',
-    icon: FileSpreadsheet,
-    path: '/mappings',
-  },
-  {
-    label: 'Manage workspace users',
-    description: 'Control user access',
-    icon: Users,
-    path: '/users',
-  },
-]
+];
 
 function DashboardPage() {
   return (
@@ -98,93 +71,14 @@ function DashboardPage() {
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        {statistics.map(({ label, value, description, icon: Icon, color }) => (
-          <div
-            key={label}
-            className="dashboard-stat-card rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
-          >
-            <div className="flex items-start justify-between">
-              <p className="text-sm font-medium text-slate-500">{label}</p>
-              <div className={`rounded-lg p-2.5 ${color}`}>
-                <Icon size={19} />
-              </div>
-            </div>
-
-            <p className="mt-5 text-3xl font-bold text-slate-900">{value}</p>
-            <p className="mt-1 text-xs text-slate-400">{description}</p>
-          </div>
+        {statistics.map((statistic) => (
+          <StatCard key={statistic.label} {...statistic} />
         ))}
       </div>
 
       <div className="mt-7 grid gap-6 xl:grid-cols-3">
-        <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm xl:col-span-2">
-          <div className="mb-6 flex items-center justify-between">
-            <div>
-              <h3 className="font-bold text-slate-900">Pipeline activity</h3>
-              <p className="mt-1 text-xs text-slate-400">
-                Processing activity over time
-              </p>
-            </div>
-
-            <Link
-              to="/pipeline-runs"
-              className="flex items-center gap-1 text-xs font-semibold text-teal-700 hover:text-teal-900"
-            >
-              View runs <ArrowUpRight size={14} />
-            </Link>
-          </div>
-
-          <div className="flex min-h-64 flex-col items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50/70 px-6 text-center">
-            <div className="mb-3 rounded-full bg-white p-4 shadow-sm">
-              <Activity size={25} className="text-slate-400" />
-            </div>
-
-            <p className="text-sm font-semibold text-slate-700">
-              No activity to display yet
-            </p>
-
-            <p className="mt-1 max-w-sm text-xs leading-5 text-slate-400">
-              Once the dashboard is connected to your pipeline API,
-              processing activity and trends will appear here.
-            </p>
-          </div>
-        </section>
-
-        <section className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-6">
-            <h3 className="font-bold text-slate-900">Quick actions</h3>
-            <p className="mt-1 text-xs text-slate-400">
-              Common workspace tasks
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            {quickActions.map(
-              ({ label, description, icon: Icon, path }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  className="flex w-full items-center gap-3 rounded-lg border border-slate-100 p-3 text-left transition hover:border-teal-200 hover:bg-teal-50/50"
-                >
-                  <div className="rounded-lg bg-slate-100 p-2 text-slate-600">
-                    <Icon size={18} />
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs font-semibold text-slate-800">
-                      {label}
-                    </p>
-                    <p className="mt-1 text-[11px] text-slate-400">
-                      {description}
-                    </p>
-                  </div>
-
-                  <ArrowUpRight size={15} className="text-slate-400" />
-                </Link>
-              ),
-            )}
-          </div>
-        </section>
+        <PipelineActivity />
+        <QuickActions />
       </div>
 
       <div className="mt-6 rounded-xl bg-[#101c35] p-6 text-white sm:flex sm:items-center sm:justify-between">
@@ -194,12 +88,10 @@ function DashboardPage() {
           </div>
 
           <div>
-            <h3 className="font-semibold">
-              Your financial data, organized.
-            </h3>
+            <h3 className="font-semibold">Your financial data, organized.</h3>
             <p className="mt-1 max-w-xl text-xs leading-5 text-slate-400">
-              Hazina provides structured ingestion, validation,
-              deduplication and monitoring for your financial data.
+              Hazina provides structured ingestion, validation, deduplication
+              and monitoring for your financial data.
             </p>
           </div>
         </div>
@@ -210,7 +102,7 @@ function DashboardPage() {
         </span>
       </div>
     </>
-  )
+  );
 }
 
-export default DashboardPage
+export default DashboardPage;
