@@ -479,7 +479,8 @@ def get_pipeline_v2_report_data(run_id, organization_id=None):
     }
 
 
-def print_pipeline_v2_run_report(run_id):
+
+def print_pipeline_v2_run_report(run_id, organization_id=None):
     """
     Print a human-readable V2 pipeline run report.
     """
@@ -523,7 +524,6 @@ def print_pipeline_v2_run_report(run_id):
         print(f"{label:<28} {pipeline.get(key, 0)}")
 
     for execution in executions:
-
         metadata = execution.get("metadata") or {}
 
         file_name = metadata.get("file_name", "Unknown")
@@ -547,7 +547,10 @@ def print_pipeline_v2_run_report(run_id):
         for label, key in counters:
             print(f"{label:<28} {execution.get(key, 0)}")
 
-        print(f"{'Records mapped':<28} {execution.get('records_mapped', 0)}")
+        print(
+            f"{'Records mapped':<28} "
+            f"{execution.get('records_mapped', 0)}"
+        )
 
         if execution.get("error_code"):
             print("\nEXECUTION ERROR")
