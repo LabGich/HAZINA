@@ -1,11 +1,3 @@
-# This finalization/orchestration module:
-# Accepts run_id and source_execution_id
-# Locks and verifies the execution belongs to the run and is currently RUNNING
-# Determines the terminal status from the processing results
-# Sets completed_at
-# Preserves the counters already calculated by ingestion, mapping, validation, and deduplication
-# Does not finalize or modify the parent pipeline run
-
 
 from hazina_pipeline.database.connection import get_database_connection
 
@@ -34,17 +26,20 @@ def finalize_source_execution(run_id, source_execution_id):
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
-            # Lock the execution and verify its current state.
+            # Lock the execution and retrieve its parent run's ownership.
             cursor.execute(
                 """
                 SELECT
-                    execution_status,
-                    records_rejected,
-                    records_skipped
-                FROM ops.source_executions
-                WHERE run_id = %s
-                  AND source_execution_id = %s
-                FOR UPDATE
+                    se.execution_status,
+                    se.records_rejected,
+                    se.records_skipped,
+                    pr.organization_id
+                FROM ops.source_executions se
+                JOIN ops.pipeline_runs pr
+                    ON pr.run_id = se.run_id
+                WHERE se.run_id = %s
+                  AND se.source_execution_id = %s
+                FOR UPDATE OF se
                 """,
                 (run_id, source_execution_id),
             )
@@ -57,7 +52,12 @@ def finalize_source_execution(run_id, source_execution_id):
                     "to the specified pipeline run."
                 )
 
-            execution_status, records_rejected, records_skipped = execution
+            (
+                execution_status,
+                records_rejected,
+                records_skipped,
+                organization_id,
+            ) = execution
 
             if execution_status != "RUNNING":
                 raise SourceExecutionFinalizationError(
@@ -65,14 +65,15 @@ def finalize_source_execution(run_id, source_execution_id):
                     f"{execution_status}. Expected RUNNING."
                 )
 
-            # Do not finalize while any records still need validation
-            # or any valid records still need deduplication.
+            # Ensure pending records belong to the same organization
+            # as the parent pipeline run. NULL supports legacy runs.
             cursor.execute(
                 """
                 SELECT COUNT(*)
                 FROM staging.transactions
                 WHERE run_id = %s
                   AND source_execution_id = %s
+                  AND organization_id IS NOT DISTINCT FROM %s
                   AND (
                       validation_status = 'PENDING'
                       OR (
@@ -81,7 +82,7 @@ def finalize_source_execution(run_id, source_execution_id):
                       )
                   )
                 """,
-                (run_id, source_execution_id),
+                (run_id, source_execution_id, organization_id),
             )
 
             pending_records = cursor.fetchone()[0]
@@ -147,4 +148,3 @@ def finalize_source_execution(run_id, source_execution_id):
         "records_already_in_core": result[10],
         "completed_at": result[11],
     }
-
