@@ -13,6 +13,7 @@ from hazina_pipeline.ingestion.ingest_source_file import (
 SOURCE_NAME = "TEST_SOURCE"
 RUN_ID = 100
 SOURCE_EXECUTION_ID = 200
+ORGANIZATION_ID = 512
 
 
 def mock_database_connection():
@@ -43,8 +44,17 @@ def mock_reader(records=None):
     return reader
 
 
-def mock_execution(cursor, source_name=SOURCE_NAME, status="RUNNING"):
-    cursor.fetchone.return_value = (source_name, status)
+def mock_execution(
+    cursor,
+    source_name=SOURCE_NAME,
+    status="RUNNING",
+    organization_id=ORGANIZATION_ID,
+):
+    cursor.fetchone.return_value = (
+        source_name,
+        status,
+        organization_id,
+    )
 
 
 def test_ingest_source_file_persists_raw_records():
@@ -101,10 +111,11 @@ def test_ingest_source_file_persists_raw_records():
 
     assert first_parameters[0] == "TX001"
     assert first_parameters[9] == RUN_ID
-    assert first_parameters[10].obj == records[0]
-    assert first_parameters[11] == SOURCE_NAME
-    assert first_parameters[12] == "FILE"
-    assert first_parameters[17] == SOURCE_EXECUTION_ID
+    assert first_parameters[10] == ORGANIZATION_ID
+    assert first_parameters[11].obj == records[0]
+    assert first_parameters[12] == SOURCE_NAME
+    assert first_parameters[13] == "FILE"
+    assert first_parameters[18] == SOURCE_EXECUTION_ID
 
     connection_context.__exit__.assert_called_once_with(
         None,
@@ -151,6 +162,7 @@ def test_ingest_source_file_updates_execution_counters():
         5,
         3,
         SOURCE_EXECUTION_ID,
+        RUN_ID,
     )
 
     assert result["records_received"] == 5
@@ -260,6 +272,36 @@ def test_ingest_rejects_non_dictionary_records():
             )
 
 
+def test_ingest_supports_legacy_run_without_organization():
+    reader = mock_reader([{"transaction_id": "TX001"}])
+
+    connection_context, connection, cursor = (
+        mock_database_connection()
+    )
+    mock_execution(cursor, organization_id=None)
+
+    with patch(
+        "hazina_pipeline.ingestion.ingest_source_file.get_database_connection",
+        return_value=connection_context,
+    ):
+        ingest_source_file(
+            RUN_ID,
+            SOURCE_EXECUTION_ID,
+            SOURCE_NAME,
+            "test_statement.csv",
+            reader,
+        )
+
+    insert_calls = [
+        call
+        for call in cursor.execute.call_args_list
+        if "INSERT INTO raw.transactions" in call.args[0]
+    ]
+
+    assert len(insert_calls) == 1
+    assert insert_calls[0].args[1][10] is None
+
+
 def test_ingest_wraps_file_reader_errors():
     reader = MagicMock()
     reader.read.side_effect = ValueError("Unsupported file format")
@@ -291,5 +333,3 @@ def test_ingest_rejects_empty_source_file():
             "test_statement.csv",
             reader,
         )
-
-

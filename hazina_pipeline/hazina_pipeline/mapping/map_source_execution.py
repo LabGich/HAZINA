@@ -1,12 +1,12 @@
+
 # Retrieve raw records for one source execution
 # Map each record using the caller-supplied mapping
 # Generate missing Hazina transaction IDs
 # Preserve provider transaction IDs
 # Record failures in ops.mapping_errors
-# Stage successful canonical transactions
+# Stage successful canonical transactions with organization ownership
 # Update records_mapped and records_rejected
 # Leave validation, deduplication, promotion, and execution status to their own stages
-
 
 from typing import Any
 from uuid import uuid4
@@ -142,6 +142,7 @@ def map_source_execution(
             payment_method,
             status,
             run_id,
+            organization_id,
             raw_id,
             source_name,
             source_transaction_id,
@@ -160,7 +161,7 @@ def map_source_execution(
             %s, %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s, %s,
-            %s, %s, %s, %s
+            %s, %s, %s, %s, %s
         )
     """
 
@@ -169,16 +170,20 @@ def map_source_execution(
             with connection.cursor() as cursor:
 
                 # Verify and lock the source execution.
+                # Organization ownership comes from the parent run.
                 cursor.execute(
                     """
                     SELECT
                         sr.source_name,
                         se.execution_status,
                         se.mapping_id,
-                        se.mapping_version
+                        se.mapping_version,
+                        pr.organization_id
                     FROM ops.source_executions se
                     JOIN ops.source_registry sr
                         ON sr.source_id = se.source_id
+                    JOIN ops.pipeline_runs pr
+                        ON pr.run_id = se.run_id
                     WHERE se.source_execution_id = %s
                       AND se.run_id = %s
                     FOR UPDATE OF se
@@ -198,6 +203,7 @@ def map_source_execution(
                     execution_status,
                     registered_mapping_id,
                     registered_mapping_version,
+                    organization_id,
                 ) = execution
 
                 if registered_source.upper() != source_name:
@@ -236,18 +242,20 @@ def map_source_execution(
                         r.source_metadata
                     FROM raw.transactions r
                     WHERE r.run_id = %s
-                    AND r.source_execution_id = %s
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM staging.transactions s
-                        WHERE s.raw_id = r.raw_id
-                    )
+                      AND r.source_execution_id = %s
+                      AND r.organization_id IS NOT DISTINCT FROM %s
+                      AND NOT EXISTS (
+                          SELECT 1
+                          FROM staging.transactions s
+                          WHERE s.raw_id = r.raw_id
+                      )
                     ORDER BY r.raw_id
                     FOR UPDATE OF r
                     """,
                     (
                         run_id,
                         source_execution_id,
+                        organization_id,
                     ),
                 )
 
@@ -395,6 +403,7 @@ def map_source_execution(
                             transaction["payment_method"],
                             transaction["status"],
                             run_id,
+                            organization_id,
                             raw_id,
                             source_name,
                             transaction.get("source_transaction_id"),
@@ -414,7 +423,6 @@ def map_source_execution(
                     records_mapped += 1
 
                 # Persist mapping counters and mapping provenance.
-                # retry handling w/o deleting audit history
                 cursor.execute(
                     """
                     UPDATE ops.source_executions
@@ -423,11 +431,11 @@ def map_source_execution(
                             SELECT COUNT(DISTINCT me.raw_id)
                             FROM ops.mapping_errors me
                             WHERE me.source_execution_id = %s
-                                AND NOT EXISTS (
-                                    SELECT 1
-                                    FROM staging.transactions s
-                                    WHERE s.raw_id = me.raw_id
-                                )
+                              AND NOT EXISTS (
+                                  SELECT 1
+                                  FROM staging.transactions s
+                                  WHERE s.raw_id = me.raw_id
+                              )
                         ),
                         mapping_id = COALESCE(mapping_id, %s),
                         mapping_version = COALESCE(mapping_version, %s)
@@ -468,4 +476,3 @@ def map_source_execution(
             f"Mapping and staging failed for {source_name} "
             f"execution {source_execution_id}: {exc}"
         ) from exc
-

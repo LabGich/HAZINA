@@ -1,7 +1,9 @@
+
 # Reuses SourceFileReader and get_database_connection().
 # Preserves every original record in raw_payload
 # Populates generic raw columns only when matching standardized field names exist
-# Associates every raw record with its run_id and source_execution_id
+# Associates every raw record with its run_id, organization_id,
+# and source_execution_id
 # Commits raw records and execution counters together
 # Does not update execution status; orchestration owns status transitions
 
@@ -125,6 +127,7 @@ def ingest_source_file(
             status,
             source_file,
             run_id,
+            organization_id,
             raw_payload,
             source_name,
             source_type,
@@ -135,7 +138,7 @@ def ingest_source_file(
             source_execution_id
         )
         VALUES (
-            %s, %s, %s, %s, %s, %s, %s, %s,
+            %s, %s, %s, %s, %s, %s, %s, %s, %s,
             %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
         )
     """
@@ -146,6 +149,7 @@ def ingest_source_file(
             records_received = %s,
             records_loaded = %s
         WHERE source_execution_id = %s
+          AND run_id = %s
     """
 
     try:
@@ -156,10 +160,13 @@ def ingest_source_file(
                     """
                     SELECT
                         sr.source_name,
-                        se.execution_status
+                        se.execution_status,
+                        pr.organization_id
                     FROM ops.source_executions se
                     JOIN ops.source_registry sr
                         ON sr.source_id = se.source_id
+                    JOIN ops.pipeline_runs pr
+                        ON pr.run_id = se.run_id
                     WHERE se.source_execution_id = %s
                       AND se.run_id = %s
                     FOR UPDATE OF se
@@ -175,7 +182,11 @@ def ingest_source_file(
                         "the supplied pipeline run."
                     )
 
-                registered_source, execution_status = execution
+                (
+                    registered_source,
+                    execution_status,
+                    organization_id,
+                ) = execution
 
                 if registered_source.upper() != source_name:
                     raise SourceIngestionError(
@@ -216,6 +227,7 @@ def ingest_source_file(
                             _raw_text(record.get("status")),
                             file_name,
                             run_id,
+                            organization_id,
                             raw_payload,
                             source_name,
                             "FILE",
@@ -236,6 +248,7 @@ def ingest_source_file(
                         records_received,
                         records_loaded,
                         source_execution_id,
+                        run_id,
                     ),
                 )
 
@@ -263,4 +276,3 @@ def ingest_source_file(
             f"Raw ingestion failed for {source_name} "
             f"file {file_name}: {exc}"
         ) from exc
-
