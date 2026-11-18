@@ -3,6 +3,7 @@ mapping:
   mapping_version: "1.0"
   source_name: NCBA
   source_type: FILE
+  supported_formats: [JSON]
   description: NCBA Bank statement JSON mapping
   source_timezone: Africa/Nairobi
   date_format: "%Y-%m-%d"

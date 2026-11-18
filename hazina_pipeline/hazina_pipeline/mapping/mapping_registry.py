@@ -328,7 +328,59 @@ class MappingRegistry:
             )
 
         return source
+    # This method deliberately ignores invalid mapping files during discovery
+    def list_mappings(
+        self,
+        source_name: str,
+    ) -> list[dict[str, Any]]:
+        """Return all valid mappings registered for a source."""
 
+        source_name = source_name.strip().upper()
+        source = self.get_source(source_name)
+
+        if source.get("source_type") != "FILE":
+            return []
+
+        mappings = []
+
+        if not self.mappings_dir.is_dir():
+            return mappings
+
+        for mapping_path in sorted(
+            self.mappings_dir.glob("*.yaml")
+        ):
+            try:
+                config = self._load_yaml(mapping_path)
+                metadata = config.get("mapping")
+
+                if not isinstance(metadata, dict):
+                    continue
+
+                mapping_id = metadata.get("mapping_id")
+                mapping_version = metadata.get("mapping_version")
+
+                if (
+                    metadata.get("source_name") != source_name
+                    or not isinstance(mapping_id, str)
+                    or not isinstance(mapping_version, str)
+                ):
+                    continue
+
+                validated_config = self.resolve_mapping(
+                    source_name=source_name,
+                    mapping_id=mapping_id,
+                    mapping_version=mapping_version,
+                )
+
+                mappings.append(validated_config)
+
+            except (MappingRegistryError, MappingConfigurationError):
+                # Invalid or unavailable mappings are not discoverable.
+                continue
+
+        return mappings
+
+    
     def resolve_mapping(
         self,
         source_name: str,

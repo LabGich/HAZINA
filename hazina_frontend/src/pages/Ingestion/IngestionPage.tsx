@@ -17,7 +17,7 @@ import {
   submitPipelineFiles,
 } from '../../services/ingestion'
 
-import type { Source } from '../../types/ingestion'
+import type { Source, Mapping } from '../../types/ingestion'
 import type {
   PipelineSubmissionResponse,
   PipelineUpload,
@@ -31,12 +31,26 @@ interface UploadRow {
   source_name: string
   mapping_id: string
   mapping_version: string
+  mapping_supported_formats: string[]
   mapping_loading: boolean
   mapping_error: string | null
 }
 
+function normalizeFormat(format: string): string {
+  return format.replace('.', '').trim().toUpperCase()
+}
+
 function getFileExtension(fileName: string): string {
   return fileName.split('.').pop()?.toUpperCase() ?? ''
+}
+
+function isFormatSupported(
+  formats: string[],
+  extension: string,
+): boolean {
+  return formats.some(
+    (format) => normalizeFormat(format) === extension,
+  )
 }
 
 function formatFileSize(bytes: number): string {
@@ -128,6 +142,7 @@ function IngestionPage() {
         source_name: '',
         mapping_id: '',
         mapping_version: '',
+        mapping_supported_formats: [],
         mapping_loading: false,
         mapping_error: null,
       })
@@ -147,6 +162,30 @@ function IngestionPage() {
     setPageError(null)
     setSubmission(null)
 
+    const row = uploads.find((upload) => upload.id === rowId)
+
+    if (!row) return
+
+    const extension = getFileExtension(row.file.name)
+
+    const selectedSource = sources.find(
+      (source) => source.source_name === sourceName,
+    )
+
+    if (
+      sourceName &&
+      (!selectedSource ||
+        !isFormatSupported(
+          selectedSource.supported_formats,
+          extension,
+        ))
+    ) {
+      setPageError(
+        `${sourceName} does not support ${extension} files.`,
+      )
+      return
+    }
+
     setUploads((current) =>
       current.map((upload) =>
         upload.id === rowId
@@ -155,6 +194,7 @@ function IngestionPage() {
               source_name: sourceName,
               mapping_id: '',
               mapping_version: '',
+              mapping_supported_formats: [],
               mapping_loading: Boolean(sourceName),
               mapping_error: null,
             }
@@ -167,9 +207,14 @@ function IngestionPage() {
     try {
       const response = await getMappings(sourceName)
 
+      const compatibleMappings = response.mappings.filter(
+        (mapping: Mapping) =>
+          isFormatSupported(mapping.supported_formats, extension),
+      )
+
       const mapping =
-        response.mappings.find((item) => item.is_default) ??
-        response.mappings[0]
+        compatibleMappings.find((item) => item.is_default) ??
+        compatibleMappings[0]
 
       setUploads((current) =>
         current.map((upload) =>
@@ -179,10 +224,12 @@ function IngestionPage() {
                 ...upload,
                 mapping_id: mapping?.mapping_id ?? '',
                 mapping_version: mapping?.mapping_version ?? '',
+                mapping_supported_formats:
+                  mapping?.supported_formats ?? [],
                 mapping_loading: false,
                 mapping_error: mapping
                   ? null
-                  : 'No available mapping was found for this source.',
+                  : `No mapping is available for ${extension} files from ${sourceName}.`,
               }
             : upload,
         ),
@@ -218,6 +265,16 @@ function IngestionPage() {
     }
 
     for (const upload of uploads) {
+      const extension = getFileExtension(upload.file.name)
+
+      const compatibleSources = sources.filter((source) =>
+        isFormatSupported(source.supported_formats, extension),
+      )
+
+      if (compatibleSources.length === 0) {
+        return `No configured source has a valid mapping for ${extension} files (${upload.file.name}).`
+      }
+
       if (!upload.source_name) {
         return `Select a source for ${upload.file.name}.`
       }
@@ -238,15 +295,20 @@ function IngestionPage() {
         (item) => item.source_name === upload.source_name,
       )
 
-      const extension = getFileExtension(upload.file.name)
-
       if (
-        !source?.supported_formats.some(
-          (format) =>
-            format.replace('.', '').toUpperCase() === extension,
-        )
+        !source ||
+        !isFormatSupported(source.supported_formats, extension)
       ) {
         return `${upload.file.name} is not a supported format for ${upload.source_name}.`
+      }
+
+      if (
+        !isFormatSupported(
+          upload.mapping_supported_formats,
+          extension,
+        )
+      ) {
+        return `The selected mapping ${upload.mapping_id} does not support ${extension} files.`
       }
     }
 
@@ -464,6 +526,12 @@ function IngestionPage() {
                   source.source_name === upload.source_name,
               )
 
+              const extension = getFileExtension(upload.file.name)
+
+              const compatibleSources = sources.filter((source) =>
+                isFormatSupported(source.supported_formats, extension),
+              )
+
               return (
                 <div
                   key={upload.id}
@@ -483,7 +551,7 @@ function IngestionPage() {
                         <p className="mt-1 text-xs text-slate-400">
                           {formatFileSize(upload.file.size)}
                           {' · '}
-                          {getFileExtension(upload.file.name)}
+                          {extension}
                         </p>
                       </div>
                     </div>
@@ -522,7 +590,7 @@ function IngestionPage() {
                       >
                         <option value="">Select source</option>
 
-                        {sources.map((source) => (
+                        {compatibleSources.map((source) => (
                           <option
                             key={source.source_name}
                             value={source.source_name}
@@ -532,9 +600,17 @@ function IngestionPage() {
                         ))}
                       </select>
 
-                      {selectedSource && (
+                      {compatibleSources.length === 0 ? (
+                        <p className="mt-2 text-xs text-red-600">
+                          No configured source supports {extension} files.
+                        </p>
+                      ) : selectedSource ? (
                         <p className="mt-2 text-xs text-slate-400">
                           {selectedSource.description}
+                        </p>
+                      ) : (
+                        <p className="mt-2 text-xs text-slate-400">
+                          Choose a source compatible with {extension} files.
                         </p>
                       )}
                     </div>
@@ -566,7 +642,7 @@ function IngestionPage() {
                           </span>
                         ) : (
                           <span className="text-slate-400">
-                            Select a source to load its mapping
+                            Select a source to load its compatible mapping
                           </span>
                         )}
                       </div>

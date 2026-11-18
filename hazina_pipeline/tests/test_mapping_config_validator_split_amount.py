@@ -23,7 +23,10 @@ def _validate(config):
     MappingConfigValidator.validate(
         config,
         source_name="EQUITY",
-        source_config={"source_type": "FILE"},
+        source_config={
+            "source_type": "FILE",
+            "supported_formats": ["CSV"],
+        },
     )
 
 

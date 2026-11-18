@@ -3,6 +3,7 @@ mapping:
   mapping_version: "1.0"
   source_name: EXPLORE_MY_DATA
   source_type: FILE
+  supported_formats: [CSV, JSON, JSONL, XLSX, PARQUET]
   description: Explore My Data 1000-row synthetic bank transactions mapping
   source_timezone: UTC
   date_format: "%Y-%m-%d"

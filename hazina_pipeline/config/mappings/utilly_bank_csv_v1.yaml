@@ -4,6 +4,7 @@ mapping:
   mapping_version: "1.0"
   source_name: UTILLY
   source_type: FILE
+  supported_formats: [CSV]
   description: Utilly fictional bank statement CSV mapping
   source_timezone: America/Chicago
   date_format: "%m/%d/%Y"

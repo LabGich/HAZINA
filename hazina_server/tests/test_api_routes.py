@@ -69,21 +69,48 @@ def test_list_sources_endpoint(monkeypatch):
 
     assert response.status_code == 200
     assert response.json() == expected
-
+    
 
 def test_list_mappings_endpoint(monkeypatch):
     expected = {
         "source_name": "EQUITY",
-        "count": 1,
+        "count": 2,
         "mappings": [
             {
                 "mapping_id": "equity_csv_v1",
                 "mapping_version": "1.0",
                 "description": "Equity CSV mapping",
+                "supported_formats": ["CSV"],
                 "is_default": True,
-            }
+            },
+            {
+                "mapping_id": "equity_json_v1",
+                "mapping_version": "1.0",
+                "description": "Equity JSON mapping",
+                "supported_formats": ["JSON"],
+                "is_default": False,
+            },
         ],
     }
+
+    monkeypatch.setattr(
+        mappings,
+        "MappingService",
+        lambda: type(
+            "FakeService",
+            (),
+            {"list_mappings": lambda self, source_name: expected},
+        )(),
+    )
+
+    response = client.get(
+        "/mappings",
+        params={"source_name": "EQUITY"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == expected
+
 
     monkeypatch.setattr(
         mappings,

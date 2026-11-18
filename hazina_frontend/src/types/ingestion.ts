@@ -21,6 +21,7 @@ export interface Mapping {
   mapping_id: string
   mapping_version: string
   description: string | null
+  supported_formats: string[]
   is_default: boolean
 }
 

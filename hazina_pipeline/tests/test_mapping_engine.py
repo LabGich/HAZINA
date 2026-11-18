@@ -38,6 +38,7 @@ def create_test_mapping():
             "mapping_version": "1.0",
             "source_name": SOURCE_NAME,
             "source_type": "FILE",
+            "supported_formats": ["CSV"],
             "description": "Synthetic mapping for mapping engine tests",
             "source_timezone": "Africa/Nairobi",
             "amount_handling": "positive_with_separate_direction",

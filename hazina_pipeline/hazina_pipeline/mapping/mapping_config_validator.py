@@ -12,6 +12,14 @@ class MappingConfigurationError(ValueError):
 class MappingConfigValidator:
     """Validates mapping configuration structure and consistency."""
 
+    SUPPORTED_FILE_FORMATS = {
+        "CSV",
+        "XLSX",
+        "JSON",
+        "JSONL",
+        "PARQUET",
+    }
+
     CANONICAL_FIELDS = {
         "transaction_id",
         "source_name",
@@ -127,6 +135,17 @@ class MappingConfigValidator:
                 "Mapping description is required."
             )
 
+        if source_type == "FILE":
+            cls._validate_supported_formats(
+                mapping.get("supported_formats"),
+                source_config.get("supported_formats"),
+            )
+
+        elif "supported_formats" in mapping:
+            raise MappingConfigurationError(
+                "supported_formats is only valid for FILE mappings."
+            )
+
         cls._validate_timezone(mapping.get("source_timezone"))
         cls._validate_date_format(mapping.get("date_format"))
 
@@ -190,6 +209,36 @@ class MappingConfigValidator:
             field_mappings,
             amount_fields,
         )
+
+    @classmethod
+    def _validate_supported_formats(
+        cls,
+        mapping_formats: Any,
+        source_formats: Any,
+    ) -> None:
+        if (
+            not isinstance(mapping_formats, list)
+            or not mapping_formats
+            or any(
+                not isinstance(fmt, str)
+                or fmt not in cls.SUPPORTED_FILE_FORMATS
+                for fmt in mapping_formats
+            )
+            or len(mapping_formats) != len(set(mapping_formats))
+        ):
+            raise MappingConfigurationError(
+                "supported_formats must be a non-empty list of unique "
+                "supported file formats."
+            )
+
+        if (
+            not isinstance(source_formats, list)
+            or not set(mapping_formats).issubset(set(source_formats))
+        ):
+            raise MappingConfigurationError(
+                "Mapping supported_formats must be supported by "
+                "the registered source."
+            )
 
     @staticmethod
     def _validate_timezone(source_timezone: Any) -> None:
@@ -433,7 +482,6 @@ class MappingConfigValidator:
 
         mapped_source_fields = set(field_mappings.values())
 
-        # Derived-field inputs are valid source fields too.
         for definition in (derived_fields or {}).values():
             if isinstance(definition, dict):
                 source_field = definition.get("source_field")

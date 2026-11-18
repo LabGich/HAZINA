@@ -3,6 +3,7 @@ mapping:
   mapping_version: "1.0"
   source_name: EQUITY
   source_type: FILE
+  supported_formats: [JSON]
   description: Equity Bank statement JSON mapping
   source_timezone: Africa/Nairobi
   date_format: "%d-%m-%Y"

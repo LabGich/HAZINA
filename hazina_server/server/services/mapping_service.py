@@ -1,3 +1,4 @@
+
 from hazina_pipeline.mapping.mapping_registry import (
     MappingRegistry,
     MappingRegistryError,
@@ -11,7 +12,7 @@ class MappingService:
         self.registry = registry or MappingRegistry()
 
     def list_mappings(self, source_name: str) -> dict:
-        """Return the configured default mapping for a source."""
+        """Return all valid mappings for a file source."""
 
         source_name = source_name.strip().upper()
         source = self.registry.get_source(source_name)
@@ -25,31 +26,35 @@ class MappingService:
 
         default_mapping = source.get("default_mapping") or {}
 
-        mapping_id = default_mapping.get("mapping_id")
-        mapping_version = default_mapping.get("mapping_version")
+        default_mapping_id = default_mapping.get("mapping_id")
+        default_mapping_version = default_mapping.get(
+            "mapping_version"
+        )
+
+        validated_mappings = self.registry.list_mappings(
+            source_name
+        )
 
         mappings = []
 
-        if mapping_id and mapping_version:
-            try:
-                config = self.registry.resolve_mapping(
-                    source_name=source_name,
-                    mapping_id=mapping_id,
-                    mapping_version=mapping_version,
-                )
+        for config in validated_mappings:
+            metadata = config["mapping"]
 
-                metadata = config["mapping"]
+            mapping_id = metadata["mapping_id"]
+            mapping_version = metadata["mapping_version"]
 
-                mappings.append({
-                    "mapping_id": metadata["mapping_id"],
-                    "mapping_version": metadata["mapping_version"],
-                    "description": metadata.get("description"),
-                    "is_default": True,
-                })
-
-            except MappingRegistryError:
-                # An unavailable or invalid mapping must not be advertised.
-                pass
+            mappings.append({
+                "mapping_id": mapping_id,
+                "mapping_version": mapping_version,
+                "description": metadata.get("description"),
+                "supported_formats": metadata.get(
+                    "supported_formats", []
+                ),
+                "is_default": (
+                    mapping_id == default_mapping_id
+                    and mapping_version == default_mapping_version
+                ),
+            })
 
         return {
             "source_name": source_name,

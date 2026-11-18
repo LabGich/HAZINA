@@ -3,6 +3,7 @@ mapping:
   mapping_version: "1.0"
   source_name: EQUITY
   source_type: FILE
+  supported_formats: [CSV]
   description: Equity Bank statement CSV mapping
   source_timezone: Africa/Nairobi
   date_format: "%d-%m-%Y"

@@ -3,6 +3,7 @@ mapping:
   mapping_version: "1.0"
   source_name: COOP
   source_type: FILE
+  supported_formats: [CSV]
   description: Co-operative Bank statement CSV mapping
   source_timezone: Africa/Nairobi
   date_format: "%Y-%m-%d"

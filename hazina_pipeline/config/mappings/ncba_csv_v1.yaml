@@ -2,6 +2,7 @@ mapping:
   mapping_id: ncba_csv_v1
   mapping_version: "1.0"
   source_name: NCBA
+  supported_formats: [CSV]
   source_type: FILE
   description: NCBA Bank statement CSV mapping
   source_timezone: Africa/Nairobi
