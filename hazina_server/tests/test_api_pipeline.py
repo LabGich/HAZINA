@@ -17,6 +17,21 @@ from server.main import app
 
 client = TestClient(app)
 
+@pytest.fixture(autouse=True)
+def authenticated_test_client():
+    original_overrides = app.dependency_overrides.copy()
+
+    app.dependency_overrides[get_current_auth_context] = lambda: {
+        "user_id": 1,
+        "organization_id": 1,
+        "role_code": "ADMIN",
+    }
+
+    yield
+
+    app.dependency_overrides.clear()
+    app.dependency_overrides.update(original_overrides)
+
 
 def test_pipeline_upload_requires_files():
     response = client.post("/pipeline-runs")

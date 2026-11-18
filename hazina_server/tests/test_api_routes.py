@@ -1,3 +1,5 @@
+import pytest
+
 from fastapi.testclient import TestClient
 
 from server.main import app
@@ -9,13 +11,22 @@ from server.services.mapping_service import MappingService
 from server.auth.dependencies import get_current_auth_context
 
 
-app.dependency_overrides[get_current_auth_context] = lambda: {
-    "user_id": 1,
-    "organization_id": 1,
-    "role_code": "ADMIN",
-}
-
 client = TestClient(app)
+
+@pytest.fixture(autouse=True)
+def authenticated_test_client():
+    original_overrides = app.dependency_overrides.copy()
+
+    app.dependency_overrides[get_current_auth_context] = lambda: {
+        "user_id": 1,
+        "organization_id": 1,
+        "role_code": "ADMIN",
+    }
+
+    yield
+
+    app.dependency_overrides.clear()
+    app.dependency_overrides.update(original_overrides)
 
 def test_health_endpoint():
     response = client.get("/health")

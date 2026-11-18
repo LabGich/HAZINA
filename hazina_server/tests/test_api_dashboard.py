@@ -11,9 +11,13 @@ client = TestClient(app)
 
 
 @pytest.fixture(autouse=True)
-def clear_dependency_overrides():
+def preserve_dependency_overrides():
+    original_overrides = app.dependency_overrides.copy()
+
     yield
+
     app.dependency_overrides.clear()
+    app.dependency_overrides.update(original_overrides)
 
 
 def test_dashboard_summary_requires_authentication():
