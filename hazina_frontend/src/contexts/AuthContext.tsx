@@ -38,8 +38,7 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 // Shared across React StrictMode's development effect re-runs.
-// This prevents two simultaneous refresh requests from rotating
-// the same refresh token.
+// This prevents duplicate refresh requests during session restoration.
 let sessionRestorePromise: Promise<AuthUser | null> | null = null
 
 async function restoreSession(): Promise<AuthUser | null> {
@@ -68,6 +67,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    const handleSessionExpired = () => {
+      setUser(null)
+      setIsLoading(false)
+    }
+
+    window.addEventListener(
+      'hazina:session-expired',
+      handleSessionExpired,
+    )
+
     if (!sessionRestorePromise) {
       sessionRestorePromise = restoreSession().catch(() => {
         clearTokens()
@@ -86,6 +95,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     return () => {
       isMounted = false
+
+      window.removeEventListener(
+        'hazina:session-expired',
+        handleSessionExpired,
+      )
     }
   }, [])
 
