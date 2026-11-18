@@ -1,6 +1,3 @@
-# The validator won't change execution status or perform deduplication
-# above -> preserved for later orchestration stages
-
 
 import re
 from decimal import Decimal, InvalidOperation
@@ -71,7 +68,6 @@ def _validate_record(record):
             "error_message": message,
         })
 
-    # Transaction identifier
     if not isinstance(transaction_id, str) or not transaction_id.strip():
         add_error(
             "transaction_id",
@@ -79,7 +75,6 @@ def _validate_record(record):
             "Transaction ID must not be empty.",
         )
 
-    # Transaction date
     if not isinstance(transaction_date, datetime):
         add_error(
             "transaction_date",
@@ -96,7 +91,6 @@ def _validate_record(record):
             "Transaction date must include timezone information.",
         )
 
-    # Transaction type
     if transaction_type not in ALLOWED_TRANSACTION_TYPES:
         add_error(
             "transaction_type",
@@ -104,7 +98,6 @@ def _validate_record(record):
             f"Unsupported transaction type: {transaction_type!r}.",
         )
 
-    # Amount
     try:
         numeric_amount = Decimal(str(amount))
 
@@ -118,7 +111,6 @@ def _validate_record(record):
             "Transaction amount must be a finite positive number.",
         )
 
-    # Currency
     if (
         not isinstance(currency, str)
         or not re.fullmatch(r"[A-Z]{3}", currency.strip())
@@ -129,7 +121,6 @@ def _validate_record(record):
             "Currency must be a three-letter uppercase currency code.",
         )
 
-    # Direction
     if direction not in ALLOWED_DIRECTIONS:
         add_error(
             "direction",
@@ -137,7 +128,6 @@ def _validate_record(record):
             f"Unsupported transaction direction: {direction!r}.",
         )
 
-    # Payment method
     if payment_method not in ALLOWED_PAYMENT_METHODS:
         add_error(
             "payment_method",
@@ -145,7 +135,6 @@ def _validate_record(record):
             f"Unsupported payment method: {payment_method!r}.",
         )
 
-    # Transaction status
     if status not in ALLOWED_STATUSES:
         add_error(
             "status",
@@ -153,7 +142,6 @@ def _validate_record(record):
             f"Unsupported transaction status: {status!r}.",
         )
 
-    # Optional fee amount
     if fee_amount is not None:
         try:
             numeric_fee = Decimal(str(fee_amount))
@@ -168,7 +156,6 @@ def _validate_record(record):
                 "Fee amount must be a finite, non-negative number.",
             )
 
-    # Optional account balance
     if account_balance is not None:
         try:
             numeric_balance = Decimal(str(account_balance))
@@ -199,13 +186,18 @@ def validate_source_execution(run_id, source_execution_id):
         with connection.cursor() as cursor:
 
             # Confirm and lock the source execution.
+            # Organization ownership comes from the parent pipeline run.
             cursor.execute(
                 """
-                SELECT execution_status
-                FROM ops.source_executions
-                WHERE run_id = %s
-                  AND source_execution_id = %s
-                FOR UPDATE
+                SELECT
+                    se.execution_status,
+                    pr.organization_id
+                FROM ops.source_executions se
+                JOIN ops.pipeline_runs pr
+                    ON pr.run_id = se.run_id
+                WHERE se.run_id = %s
+                  AND se.source_execution_id = %s
+                FOR UPDATE OF se
                 """,
                 (run_id, source_execution_id),
             )
@@ -217,12 +209,15 @@ def validate_source_execution(run_id, source_execution_id):
                     "Source execution does not belong to the supplied run."
                 )
 
-            if execution[0] != "RUNNING":
+            execution_status, organization_id = execution
+
+            if execution_status != "RUNNING":
                 raise ValueError(
                     "Source execution must be RUNNING before validation."
                 )
 
-            # Select only records awaiting validation.
+            # Select only pending staging records owned by this run's
+            # organization. IS NOT DISTINCT FROM preserves legacy NULL runs.
             cursor.execute(
                 """
                 SELECT
@@ -241,11 +236,12 @@ def validate_source_execution(run_id, source_execution_id):
                 FROM staging.transactions
                 WHERE run_id = %s
                   AND source_execution_id = %s
+                  AND organization_id IS NOT DISTINCT FROM %s
                   AND validation_status = 'PENDING'
                 ORDER BY staging_id
                 FOR UPDATE
                 """,
-                (run_id, source_execution_id),
+                (run_id, source_execution_id, organization_id),
             )
 
             records = cursor.fetchall()
@@ -267,9 +263,17 @@ def validate_source_execution(run_id, source_execution_id):
                         UPDATE staging.transactions
                         SET validation_status = 'INVALID'
                         WHERE staging_id = %s
+                          AND run_id = %s
+                          AND source_execution_id = %s
+                          AND organization_id IS NOT DISTINCT FROM %s
                           AND validation_status = 'PENDING'
                         """,
-                        (staging_id,),
+                        (
+                            staging_id,
+                            run_id,
+                            source_execution_id,
+                            organization_id,
+                        ),
                     )
 
                     for error in errors:
@@ -308,9 +312,17 @@ def validate_source_execution(run_id, source_execution_id):
                         UPDATE staging.transactions
                         SET validation_status = 'VALID'
                         WHERE staging_id = %s
+                          AND run_id = %s
+                          AND source_execution_id = %s
+                          AND organization_id IS NOT DISTINCT FROM %s
                           AND validation_status = 'PENDING'
                         """,
-                        (staging_id,),
+                        (
+                            staging_id,
+                            run_id,
+                            source_execution_id,
+                            organization_id,
+                        ),
                     )
 
                     records_valid += 1
@@ -318,6 +330,7 @@ def validate_source_execution(run_id, source_execution_id):
             # Recalculate rejected records:
             # 1. Mapping failures that never reached staging.
             # 2. Staged records that failed validation.
+            # All staging checks remain scoped to the execution's organization.
             cursor.execute(
                 """
                 UPDATE ops.source_executions
@@ -331,12 +344,17 @@ def validate_source_execution(run_id, source_execution_id):
                           SELECT 1
                           FROM staging.transactions st
                           WHERE st.raw_id = me.raw_id
+                            AND st.run_id = %s
+                            AND st.source_execution_id = %s
+                            AND st.organization_id
+                                IS NOT DISTINCT FROM %s
                       )
                 ) + (
                     SELECT COUNT(DISTINCT st.raw_id)
                     FROM staging.transactions st
                     WHERE st.run_id = %s
                       AND st.source_execution_id = %s
+                      AND st.organization_id IS NOT DISTINCT FROM %s
                       AND st.validation_status = 'INVALID'
                 )
                 WHERE run_id = %s
@@ -347,6 +365,10 @@ def validate_source_execution(run_id, source_execution_id):
                     source_execution_id,
                     run_id,
                     source_execution_id,
+                    organization_id,
+                    run_id,
+                    source_execution_id,
+                    organization_id,
                     run_id,
                     source_execution_id,
                 ),
@@ -360,4 +382,3 @@ def validate_source_execution(run_id, source_execution_id):
                 "records_invalid": records_invalid,
                 "errors_recorded": errors_recorded,
             }
-
