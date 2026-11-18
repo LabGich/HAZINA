@@ -1,6 +1,3 @@
-# every newly promoted core transaction gets one INSERT audit record
-# duplicates and transactions already in core do not generate newe transaction audit records
-
 
 import json
 from collections import defaultdict
@@ -63,7 +60,7 @@ def _record_values(record):
     }
 
 
-def _insert_core_transaction(cursor, record):
+def _insert_core_transaction(cursor, record, organization_id):
     cursor.execute(
         """
         INSERT INTO core.transactions (
@@ -79,11 +76,12 @@ def _insert_core_transaction(cursor, record):
             description,
             counterparty,
             fee_amount,
-            account_balance
+            account_balance,
+            organization_id
         )
         VALUES (
             %s, %s, %s, %s, %s, %s, %s,
-            %s, %s, %s, %s, %s, %s
+            %s, %s, %s, %s, %s, %s, %s
         )
         """,
         (
@@ -100,11 +98,17 @@ def _insert_core_transaction(cursor, record):
             record["counterparty"],
             record["fee_amount"],
             record["account_balance"],
+            organization_id,
         ),
     )
 
 
-def _insert_source_identity(cursor, source_id, record):
+def _insert_source_identity(
+    cursor,
+    source_id,
+    record,
+    organization_id,
+):
     cursor.execute(
         """
         INSERT INTO ops.source_transaction_identity (
@@ -112,9 +116,10 @@ def _insert_source_identity(cursor, source_id, record):
             source_account_id,
             source_transaction_id,
             transaction_id,
-            metadata
+            metadata,
+            organization_id
         )
-        VALUES (%s, %s, %s, %s, %s::jsonb)
+        VALUES (%s, %s, %s, %s, %s::jsonb, %s)
         """,
         (
             source_id,
@@ -131,6 +136,7 @@ def _insert_source_identity(cursor, source_id, record):
                     "mapping_version": record["mapping_version"],
                 })
             ),
+            organization_id,
         ),
     )
 
@@ -139,9 +145,9 @@ def _insert_transaction_audit(
     cursor,
     source_id,
     record,
+    organization_id,
 ):
     new_values = _record_values(record)
-
     changed_fields = list(new_values.keys())
 
     metadata = {
@@ -164,7 +170,8 @@ def _insert_transaction_audit(
             mapping_id,
             mapping_version,
             changed_by,
-            metadata
+            metadata,
+            organization_id
         )
         VALUES (
             %s, %s, %s, %s, %s,
@@ -174,7 +181,8 @@ def _insert_transaction_audit(
             %s::jsonb,
             %s, %s,
             'V2_PIPELINE',
-            %s::jsonb
+            %s::jsonb,
+            %s
         )
         """,
         (
@@ -188,6 +196,7 @@ def _insert_transaction_audit(
             record["mapping_id"],
             record["mapping_version"],
             json.dumps(metadata),
+            organization_id,
         ),
     )
 
@@ -197,6 +206,7 @@ def _get_existing_source_identity(
     source_id,
     source_account_id,
     source_transaction_id,
+    organization_id,
 ):
     cursor.execute(
         """
@@ -213,9 +223,12 @@ def _get_existing_source_identity(
         FROM ops.source_transaction_identity identity
         JOIN core.transactions core
           ON core.transaction_id = identity.transaction_id
+         AND core.organization_id
+             IS NOT DISTINCT FROM identity.organization_id
         WHERE identity.source_id = %s
           AND identity.source_account_id IS NOT DISTINCT FROM %s
           AND identity.source_transaction_id = %s
+          AND identity.organization_id IS NOT DISTINCT FROM %s
           AND identity.is_active = TRUE
         FOR UPDATE OF identity
         """,
@@ -223,13 +236,18 @@ def _get_existing_source_identity(
             source_id,
             source_account_id,
             source_transaction_id,
+            organization_id,
         ),
     )
 
     return cursor.fetchone()
 
 
-def _get_existing_core_transaction(cursor, transaction_id):
+def _get_existing_core_transaction(
+    cursor,
+    transaction_id,
+    organization_id,
+):
     cursor.execute(
         """
         SELECT
@@ -243,9 +261,10 @@ def _get_existing_core_transaction(cursor, transaction_id):
             status
         FROM core.transactions
         WHERE transaction_id = %s
+          AND organization_id IS NOT DISTINCT FROM %s
         FOR UPDATE
         """,
-        (transaction_id,),
+        (transaction_id, organization_id),
     )
 
     return cursor.fetchone()
@@ -266,16 +285,20 @@ def _deduplicate_source_execution(run_id, source_execution_id):
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
-            # Confirm and lock the source execution.
+            # Retrieve ownership from the parent run and lock
+            # the source execution being processed.
             cursor.execute(
                 """
                 SELECT
-                    execution_status,
-                    source_id
-                FROM ops.source_executions
-                WHERE run_id = %s
-                  AND source_execution_id = %s
-                FOR UPDATE
+                    se.execution_status,
+                    se.source_id,
+                    pr.organization_id
+                FROM ops.source_executions se
+                JOIN ops.pipeline_runs pr
+                  ON pr.run_id = se.run_id
+                WHERE se.run_id = %s
+                  AND se.source_execution_id = %s
+                FOR UPDATE OF se
                 """,
                 (run_id, source_execution_id),
             )
@@ -287,14 +310,16 @@ def _deduplicate_source_execution(run_id, source_execution_id):
                     "Source execution does not belong to the supplied run."
                 )
 
-            execution_status, source_id = execution
+            execution_status, source_id, organization_id = execution
 
             if execution_status != "RUNNING":
                 raise ValueError(
                     "Source execution must be RUNNING before deduplication."
                 )
 
-            # Select only validated records.
+            # Select only validated records belonging to this run's
+            # organization. IS NOT DISTINCT FROM also supports
+            # historical runs whose organization_id is NULL.
             cursor.execute(
                 """
                 SELECT
@@ -324,10 +349,11 @@ def _deduplicate_source_execution(run_id, source_execution_id):
                 WHERE run_id = %s
                   AND source_execution_id = %s
                   AND validation_status = 'VALID'
+                  AND organization_id IS NOT DISTINCT FROM %s
                 ORDER BY raw_id
                 FOR UPDATE
                 """,
-                (run_id, source_execution_id),
+                (run_id, source_execution_id, organization_id),
             )
 
             rows = cursor.fetchall()
@@ -428,7 +454,8 @@ def _deduplicate_source_execution(run_id, source_execution_id):
                             keeper["raw_id"],
                         )
 
-                # Check whether the provider identity already exists.
+                # Check whether the provider identity already exists
+                # within this organization.
                 provider_id = keeper["source_transaction_id"]
 
                 if provider_id is not None:
@@ -437,14 +464,13 @@ def _deduplicate_source_execution(run_id, source_execution_id):
                         source_id,
                         keeper["source_account_id"],
                         provider_id,
+                        organization_id,
                     )
 
                     if existing_identity is not None:
                         existing_signature = existing_identity[1:]
 
                         if existing_signature != keeper_signature:
-                            # The provider identity already points to
-                            # a different canonical transaction.
                             for record in group:
                                 classifications[record["staging_id"]] = (
                                     "CONFLICTING_DUPLICATE",
@@ -469,12 +495,13 @@ def _deduplicate_source_execution(run_id, source_execution_id):
                         records_already_in_core += 1
                         continue
 
-                # Also check the Hazina transaction ID. This makes
-                # promotion safe to repeat for records without
-                # provider-issued transaction IDs.
+                # Check the Hazina transaction ID within this
+                # organization. This supports safe repeat promotion
+                # for records without provider-issued transaction IDs.
                 existing_core = _get_existing_core_transaction(
                     cursor,
                     keeper["transaction_id"],
+                    organization_id,
                 )
 
                 if existing_core is not None:
@@ -494,7 +521,11 @@ def _deduplicate_source_execution(run_id, source_execution_id):
                     continue
 
                 # Promote the new transaction.
-                _insert_core_transaction(cursor, keeper)
+                _insert_core_transaction(
+                    cursor,
+                    keeper,
+                    organization_id,
+                )
 
                 # Register provider identity only when available.
                 if provider_id is not None:
@@ -502,13 +533,15 @@ def _deduplicate_source_execution(run_id, source_execution_id):
                         cursor,
                         source_id,
                         keeper,
+                        organization_id,
                     )
 
-                # Every newly promoted transaction receives an audit row.
+                # Every newly promoted transaction receives one audit row.
                 _insert_transaction_audit(
                     cursor,
                     source_id,
                     keeper,
+                    organization_id,
                 )
 
                 classifications[keeper["staging_id"]] = (
@@ -586,4 +619,3 @@ def deduplicate_source_execution(run_id, source_execution_id):
         run_id,
         source_execution_id,
     )
-
