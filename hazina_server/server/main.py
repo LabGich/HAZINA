@@ -2,8 +2,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from server.routers import health, database, sources, mappings
-from server.routers import pipeline, auth, admin
+from server.routers import (
+    health,
+    database,
+    sources,
+    mappings,
+    pipeline,
+    auth,
+    admin,
+    dashboard,
+)
 
 
 app = FastAPI(
@@ -30,3 +38,4 @@ app.include_router(mappings.router)
 app.include_router(pipeline.router)
 app.include_router(auth.router)
 app.include_router(admin.router)
+app.include_router(dashboard.router)
