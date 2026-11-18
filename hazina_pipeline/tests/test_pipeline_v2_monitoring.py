@@ -4,6 +4,9 @@ from types import SimpleNamespace
 import pytest
 
 from hazina_pipeline.monitoring.pipeline_status import get_pipeline_v2_runs
+from hazina_pipeline.monitoring.pipeline_status import (
+    get_pipeline_v2_dashboard_summary,
+)
 
 
 def test_get_pipeline_v2_runs_returns_paginated_results():
@@ -117,3 +120,86 @@ def test_get_pipeline_v2_runs_filters_by_organization():
 
     assert "WHERE organization_id = %s" in list_sql
     assert execute_calls[1].args[1] == (512, 10, 0)
+
+
+def test_get_pipeline_v2_dashboard_summary_returns_metrics():
+    connection = MagicMock()
+    cursor = connection.cursor.return_value.__enter__.return_value
+
+    cursor.fetchone.return_value = (12, 850, 9, 2)
+    cursor.description = [
+        SimpleNamespace(name=name)
+        for name in (
+            "total_runs",
+            "records_processed",
+            "successful_runs",
+            "pending_executions",
+        )
+    ]
+
+    with patch(
+        "hazina_pipeline.monitoring.pipeline_status.get_database_connection"
+    ) as mock_connection:
+        mock_connection.return_value.__enter__.return_value = connection
+
+        result = get_pipeline_v2_dashboard_summary(
+            organization_id=512,
+        )
+
+    assert result == {
+        "total_runs": 12,
+        "records_processed": 850,
+        "successful_runs": 9,
+        "pending_executions": 2,
+    }
+
+    cursor.execute.assert_called_once()
+
+    sql = " ".join(cursor.execute.call_args.args[0].split())
+
+    assert "FROM ops.pipeline_runs" in sql
+    assert "WHERE organization_id = %s" in sql
+    assert cursor.execute.call_args.args[1] == (512,)
+
+
+def test_get_pipeline_v2_dashboard_summary_returns_zero_metrics():
+    connection = MagicMock()
+    cursor = connection.cursor.return_value.__enter__.return_value
+
+    cursor.fetchone.return_value = (0, 0, 0, 0)
+    cursor.description = [
+        SimpleNamespace(name=name)
+        for name in (
+            "total_runs",
+            "records_processed",
+            "successful_runs",
+            "pending_executions",
+        )
+    ]
+
+    with patch(
+        "hazina_pipeline.monitoring.pipeline_status.get_database_connection"
+    ) as mock_connection:
+        mock_connection.return_value.__enter__.return_value = connection
+
+        result = get_pipeline_v2_dashboard_summary(
+            organization_id=512,
+        )
+
+    assert result == {
+        "total_runs": 0,
+        "records_processed": 0,
+        "successful_runs": 0,
+        "pending_executions": 0,
+    }
+
+
+@pytest.mark.parametrize(
+    "organization_id",
+    [0, -1, True, "512", None],
+)
+def test_get_pipeline_v2_dashboard_summary_rejects_invalid_organization_id(
+    organization_id,
+):
+    with pytest.raises(ValueError, match="positive integer"):
+        get_pipeline_v2_dashboard_summary(organization_id)

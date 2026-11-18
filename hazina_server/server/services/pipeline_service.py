@@ -14,6 +14,9 @@ from hazina_pipeline.mapping.mapping_registry import MappingRegistry
 from hazina_pipeline.run_pipeline_v2 import run_pipeline_v2
 from hazina_pipeline.monitoring import pipeline_status
 from hazina_pipeline.monitoring.pipeline_status import get_pipeline_v2_runs, get_pipeline_v2_report_data
+from hazina_pipeline.monitoring.pipeline_status import (
+    get_pipeline_v2_dashboard_summary,
+)
 
 REPORT_DIRECTORY = (
     Path(pipeline_status.__file__).resolve().parents[2]/"reports"
@@ -142,6 +145,14 @@ class PipelineService:
             offset=offset,
             organization_id=organization_id,
         )
+
+        @staticmethod
+        def get_dashboard_summary(organization_id):
+            """Return dashboard metrics for one organization."""
+
+            return get_pipeline_v2_dashboard_summary(
+                organization_id=organization_id,
+            )
 
     @staticmethod
     def get_run_details(run_id, organization_id=None):

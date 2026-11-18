@@ -173,3 +173,33 @@ def test_get_run_report_path_passes_organization_id(tmp_path):
         10,
         organization_id=512,
     )
+
+    def test_get_dashboard_summary_returns_metrics():
+        expected = {
+            "total_runs": 12,
+            "records_processed": 850,
+            "successful_runs": 9,
+            "pending_executions": 2,
+        }
+
+        with patch(
+            "server.services.pipeline_service.get_pipeline_v2_dashboard_summary",
+            return_value=expected,
+        ) as mock_summary:
+            result = PipelineService.get_dashboard_summary(
+                organization_id=512,
+            )
+
+        assert result == expected
+        mock_summary.assert_called_once_with(organization_id=512)
+
+
+    def test_get_dashboard_summary_propagates_database_errors():
+        with patch(
+            "server.services.pipeline_service.get_pipeline_v2_dashboard_summary",
+            side_effect=RuntimeError("Database unavailable"),
+        ):
+            with pytest.raises(RuntimeError, match="Database unavailable"):
+                PipelineService.get_dashboard_summary(
+                    organization_id=512,
+                )

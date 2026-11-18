@@ -1011,3 +1011,42 @@ def get_pipeline_v2_runs(limit=20, offset=0, organization_id=None):
         "limit": limit,
         "offset": offset,
     }
+
+
+def get_pipeline_v2_dashboard_summary(organization_id):
+    """Return aggregate V2 pipeline metrics for one organization."""
+
+    if (
+        isinstance(organization_id, bool)
+        or not isinstance(organization_id, int)
+        or organization_id <= 0
+    ):
+        raise ValueError("organization_id must be a positive integer.")
+
+    with get_database_connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT
+                    COUNT(*) AS total_runs,
+                    COALESCE(SUM(records_loaded), 0) AS records_processed,
+                    COUNT(*) FILTER (
+                        WHERE run_status = 'SUCCESS'
+                    ) AS successful_runs,
+                    COUNT(*) FILTER (
+                        WHERE run_status = 'RUNNING'
+                    ) AS pending_executions
+                FROM ops.pipeline_runs
+                WHERE organization_id = %s
+                """,
+                (organization_id,),
+            )
+
+            result = cursor.fetchone()
+
+            columns = [
+                description.name
+                for description in cursor.description
+            ]
+
+            return dict(zip(columns, result))
