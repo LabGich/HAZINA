@@ -135,16 +135,30 @@ class PipelineService:
             for item in uploads:
                 await item["file"].close()
 
-    def list_runs(limit=20, offset=0, organization_id=None):
+    
+    @staticmethod
+    def list_runs(
+        limit=20,
+        offset=0,
+        organization_id=None,
+        status=None,
+    ):
         """Return a paginated list of V2 pipeline runs."""
+
         if organization_id is None:
-            return get_pipeline_v2_runs(limit=limit, offset=offset)
+            return get_pipeline_v2_runs(
+                limit=limit,
+                offset=offset,
+                status=status,
+            )
 
         return get_pipeline_v2_runs(
             limit=limit,
             offset=offset,
             organization_id=organization_id,
+            status=status,
         )
+
 
     @staticmethod
     def get_dashboard_summary(organization_id):

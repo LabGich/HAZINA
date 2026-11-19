@@ -7,12 +7,27 @@ import {
   ChevronRight,
   RefreshCw,
 } from 'lucide-react'
-import { getPipelineRuns } from '../../services/pipeline'
+
+import {
+  getPipelineRuns,
+  type PipelineRunStatus,
+} from '../../services/pipeline'
 import type { PipelineRunSummary } from '../../types/pipeline'
 
 const PAGE_SIZE = 10
 
 const numberFormatter = new Intl.NumberFormat()
+
+const STATUS_OPTIONS: {
+  value: PipelineRunStatus
+  label: string
+}[] = [
+  { value: 'SUCCESS', label: 'Success' },
+  { value: 'PARTIAL_SUCCESS', label: 'Partially successful' },
+  { value: 'FAILED', label: 'Failed' },
+  { value: 'RUNNING', label: 'Running' },
+  { value: 'CANCELLED', label: 'Cancelled' },
+]
 
 function formatDate(value: string | null): string {
   if (!value) return '—'
@@ -45,6 +60,8 @@ function PipelineRunsPage() {
   const [runs, setRuns] = useState<PipelineRunSummary[]>([])
   const [total, setTotal] = useState(0)
   const [offset, setOffset] = useState(0)
+  const [statusFilter, setStatusFilter] =
+    useState<PipelineRunStatus | 'ALL'>('ALL')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -53,7 +70,12 @@ function PipelineRunsPage() {
     setError(null)
 
     try {
-      const response = await getPipelineRuns(PAGE_SIZE, offset)
+      const response = await getPipelineRuns(
+        PAGE_SIZE,
+        offset,
+        statusFilter === 'ALL' ? undefined : statusFilter,
+      )
+
       setRuns(response.items)
       setTotal(response.total)
     } catch {
@@ -61,11 +83,18 @@ function PipelineRunsPage() {
     } finally {
       setLoading(false)
     }
-  }, [offset])
+  }, [offset, statusFilter])
 
   useEffect(() => {
     void loadRuns()
   }, [loadRuns])
+
+  function handleStatusChange(
+    event: React.ChangeEvent<HTMLSelectElement>,
+  ) {
+    setStatusFilter(event.target.value as PipelineRunStatus | 'ALL')
+    setOffset(0)
+  }
 
   const currentPage = Math.floor(offset / PAGE_SIZE) + 1
   const totalPages = Math.ceil(total / PAGE_SIZE)
@@ -95,9 +124,13 @@ function PipelineRunsPage() {
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-slate-500">Total pipeline runs</p>
+          <p className="text-sm text-slate-500">
+            {statusFilter === 'ALL'
+              ? 'Total pipeline runs'
+              : `${STATUS_OPTIONS.find((option) => option.value === statusFilter)?.label} runs`}
+          </p>
           <p className="mt-2 text-2xl font-bold text-slate-900">
-            {loading && total === 0 ? '...' : numberFormatter.format(total)}
+            {loading ? '...' : numberFormatter.format(total)}
           </p>
         </div>
 
@@ -110,11 +143,37 @@ function PipelineRunsPage() {
       </div>
 
       <section className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-100 px-6 py-5">
-          <h2 className="font-bold text-slate-900">All pipeline runs</h2>
-          <p className="mt-1 text-xs text-slate-400">
-            Processing history for your organization
-          </p>
+        <div className="flex flex-col justify-between gap-4 border-b border-slate-100 px-6 py-5 sm:flex-row sm:items-center">
+          <div>
+            <h2 className="font-bold text-slate-900">Pipeline runs</h2>
+            <p className="mt-1 text-xs text-slate-400">
+              Processing history for your organization
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-1.5 sm:min-w-52">
+            <label
+              htmlFor="pipeline-status-filter"
+              className="text-xs font-semibold text-slate-600"
+            >
+              Filter by status
+            </label>
+
+            <select
+              id="pipeline-status-filter"
+              value={statusFilter}
+              onChange={handleStatusChange}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+            >
+              <option value="ALL">All statuses</option>
+
+              {STATUS_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {error ? (
@@ -142,12 +201,15 @@ function PipelineRunsPage() {
             </div>
 
             <h3 className="text-sm font-semibold text-slate-700">
-              No pipeline runs yet
+              {statusFilter === 'ALL'
+                ? 'No pipeline runs yet'
+                : 'No matching pipeline runs'}
             </h3>
 
             <p className="mt-2 max-w-sm text-xs leading-5 text-slate-400">
-              Once you upload financial data and submit it for processing,
-              your pipeline runs will appear here.
+              {statusFilter === 'ALL'
+                ? 'Once you upload financial data and submit it for processing, your pipeline runs will appear here.'
+                : 'There are no pipeline runs with this status. Try selecting another status.'}
             </p>
           </div>
         ) : (

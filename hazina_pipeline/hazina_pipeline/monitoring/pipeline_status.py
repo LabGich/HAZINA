@@ -923,78 +923,110 @@ def save_pipeline_v2_run_report(run_id, reports_directory=None, organization_id=
 
     return report_path
 
-def get_pipeline_v2_runs(limit=20, offset=0, organization_id=None):
+
+def get_pipeline_v2_runs(
+    limit=20,
+    offset=0,
+    organization_id=None,
+    status=None,
+):
     """
     Retrieve a paginated list of V2 pipeline runs,
-    ordered from newest to oldest.
+    optionally filtered by organization and run status.
     """
 
-    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 100:
-        raise ValueError("limit must be an integer between 1 and 100.")
+    if (
+        isinstance(limit, bool)
+        or not isinstance(limit, int)
+        or not 1 <= limit <= 100
+    ):
+        raise ValueError(
+            "limit must be an integer between 1 and 100."
+        )
 
-    if isinstance(offset, bool) or not isinstance(offset, int) or offset < 0:
-        raise ValueError("offset must be a non-negative integer.")
+    if (
+        isinstance(offset, bool)
+        or not isinstance(offset, int)
+        or offset < 0
+    ):
+        raise ValueError(
+            "offset must be a non-negative integer."
+        )
+
+    allowed_statuses = {
+        "SUCCESS",
+        "PARTIAL_SUCCESS",
+        "FAILED",
+        "RUNNING",
+        "CANCELLED",
+    }
+
+    if status is not None:
+        if not isinstance(status, str):
+            raise ValueError("status must be a valid run status.")
+
+        status = status.strip().upper()
+
+        if status not in allowed_statuses:
+            raise ValueError(
+                f"Invalid status. Allowed statuses: "
+                f"{', '.join(sorted(allowed_statuses))}."
+            )
+
+    conditions = []
+    filter_params = []
+
+    if organization_id is not None:
+        conditions.append("organization_id = %s")
+        filter_params.append(organization_id)
+
+    if status is not None:
+        conditions.append("run_status = %s")
+        filter_params.append(status)
+
+    where_clause = (
+        f"WHERE {' AND '.join(conditions)}"
+        if conditions
+        else ""
+    )
+
+    filter_params = tuple(filter_params)
 
     with get_database_connection() as connection:
         with connection.cursor() as cursor:
 
-            if organization_id is None:
-                cursor.execute("""
-                    SELECT COUNT(*)
-                    FROM ops.pipeline_runs
-                """)
-            else:
-                cursor.execute("""
-                    SELECT COUNT(*)
-                    FROM ops.pipeline_runs
-                    WHERE organization_id = %s
-                """, (organization_id,))
+            cursor.execute(
+                f"""
+                SELECT COUNT(*)
+                FROM ops.pipeline_runs
+                {where_clause}
+                """,
+                filter_params,
+            )
 
             total = cursor.fetchone()[0]
 
-            if organization_id is None:
-                cursor.execute(
-                    """
-                    SELECT
-                        run_id,
-                        source_file,
-                        started_at,
-                        completed_at,
-                        run_status,
-                        records_received,
-                        records_loaded,
-                        records_rejected,
-                        records_promoted,
-                        run_type,
-                        triggered_by
-                    FROM ops.pipeline_runs
-                    ORDER BY run_id DESC
-                    LIMIT %s OFFSET %s
-                    """,
-                    (limit, offset),
-                )
-            else:
-                cursor.execute(
-                    """
-                    SELECT
-                        run_id,
-                        source_file,
-                        started_at,
-                        completed_at,
-                        run_status,
-                        records_received,
-                        records_loaded,
-                        records_rejected,
-                        records_promoted,
-                        run_type,
-                        triggered_by
-                    FROM ops.pipeline_runs
-                    WHERE organization_id = %s
-                    ORDER BY run_id DESC
-                    LIMIT %s OFFSET %s
-                    """,
-                    (organization_id, limit, offset),
-                )
+            cursor.execute(
+                f"""
+                SELECT
+                    run_id,
+                    source_file,
+                    started_at,
+                    completed_at,
+                    run_status,
+                    records_received,
+                    records_loaded,
+                    records_rejected,
+                    records_promoted,
+                    run_type,
+                    triggered_by
+                FROM ops.pipeline_runs
+                {where_clause}
+                ORDER BY run_id DESC
+                LIMIT %s OFFSET %s
+                """,
+                filter_params + (limit, offset),
+            )
 
             columns = [
                 item.name for item in cursor.description
@@ -1011,6 +1043,7 @@ def get_pipeline_v2_runs(limit=20, offset=0, organization_id=None):
         "limit": limit,
         "offset": offset,
     }
+
 
 
 def get_pipeline_v2_dashboard_summary(organization_id):

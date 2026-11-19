@@ -69,7 +69,7 @@ def test_list_sources_endpoint(monkeypatch):
 
     assert response.status_code == 200
     assert response.json() == expected
-    
+
 
 def test_list_mappings_endpoint(monkeypatch):
     expected = {
@@ -172,7 +172,60 @@ def test_list_pipeline_runs():
         limit=20,
         offset=0,
         organization_id=1,
+        status=None,
     )
+
+
+
+@pytest.mark.parametrize(
+    "status",
+    [
+        "SUCCESS",
+        "PARTIAL_SUCCESS",
+        "FAILED",
+        "RUNNING",
+        "CANCELLED",
+    ],
+)
+def test_list_pipeline_runs_accepts_status_filter(status):
+    from unittest.mock import patch
+
+    mock_result = {
+        "items": [],
+        "total": 0,
+        "limit": 20,
+        "offset": 0,
+    }
+
+    with patch(
+        "server.routers.pipeline.PipelineService.list_runs",
+        return_value=mock_result,
+    ) as mock_list:
+        response = client.get(
+            "/pipeline-runs",
+            params={"status": status},
+        )
+
+    assert response.status_code == 200
+    mock_list.assert_called_once_with(
+        limit=20,
+        offset=0,
+        organization_id=1,
+        status=status,
+    )
+
+
+@pytest.mark.parametrize(
+    "status",
+    ["UNKNOWN", "PENDING", "success", "FAILED_INVALID"],
+)
+def test_list_pipeline_runs_rejects_invalid_status(status):
+    response = client.get(
+        "/pipeline-runs",
+        params={"status": status},
+    )
+
+    assert response.status_code == 422
 
 
 def test_list_pipeline_runs_validates_pagination():
