@@ -66,6 +66,7 @@ def ingest_source_file(
     source_name: str,
     file_path: str | Path,
     source_file_reader: SourceFileReader | None = None,
+    original_file_name: str | None = None,
 ) -> dict[str, Any]:
     """
     Read and persist one source file for a V2 source execution.
@@ -113,7 +114,11 @@ def ingest_source_file(
     records_loaded = len(records)
 
     metadata = result.get("metadata", {})
-    file_name = result["file_name"]
+    file_name = (
+        original_file_name
+        if original_file_name
+        else result["file_name"]
+    )
 
     insert_sql = """
         INSERT INTO raw.transactions (

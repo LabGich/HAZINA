@@ -333,3 +333,44 @@ def test_ingest_rejects_empty_source_file():
             "test_statement.csv",
             reader,
         )
+
+
+def test_ingest_preserves_original_uploaded_filename():
+    reader = mock_reader([{"transaction_id": "TX001"}])
+    reader.read.return_value["file_name"] = "a83f91c2.csv"
+
+    connection_context, connection, cursor = (
+        mock_database_connection()
+    )
+    mock_execution(cursor)
+
+    with patch(
+        "hazina_pipeline.ingestion.ingest_source_file.get_database_connection",
+        return_value=connection_context,
+    ):
+        result = ingest_source_file(
+            run_id=RUN_ID,
+            source_execution_id=SOURCE_EXECUTION_ID,
+            source_name=SOURCE_NAME,
+            file_path="a83f91c2.csv",
+            source_file_reader=reader,
+            original_file_name="equity_statement_november.csv",
+        )
+
+    assert result["file_name"] == "equity_statement_november.csv"
+
+    insert_calls = [
+        call
+        for call in cursor.execute.call_args_list
+        if "INSERT INTO raw.transactions" in call.args[0]
+    ]
+
+    assert len(insert_calls) == 1
+
+    parameters = insert_calls[0].args[1]
+
+    assert parameters[8] == "equity_statement_november.csv"
+
+    source_metadata = parameters[17].obj
+
+    assert source_metadata["file_name"] == "equity_statement_november.csv"

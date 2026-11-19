@@ -74,11 +74,26 @@ def run_pipeline_v2(files, organization_id=None):
 
         try:
             # 1. Read the source file and persist raw records.
+            # New submissions can pass the original filename.
+            #E xisting callers without file_name continue working
+            # We only pass original_file_name when one is supplied
+            # All other pipeline stages remain unchanged
+            original_file_name = file_config.get("file_name")
+
+            ingestion_arguments = {
+                "run_id": run_id,
+                "source_execution_id": source_execution_id,
+                "source_name": source_name,
+                "file_path": file_path,
+            }
+
+            if original_file_name:
+                ingestion_arguments["original_file_name"] = (
+                    original_file_name
+                )
+
             stage_results["ingestion"] = ingest_source_file(
-                run_id=run_id,
-                source_execution_id=source_execution_id,
-                source_name=source_name,
-                file_path=file_path,
+                **ingestion_arguments
             )
 
             # 2. Map raw records into canonical staging records.
@@ -191,4 +206,3 @@ def run_pipeline_v2(files, organization_id=None):
         "report_path": report_path,
         "report_error": report_error
     }
-

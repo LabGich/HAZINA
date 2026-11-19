@@ -142,11 +142,25 @@ def create_pipeline_run(files, source_registry=None, organization_id=None):
                 f"Invalid mapping for source {source_name}: {exc}"
             ) from exc
 
+        provided_file_name = file_info.get("file_name")
+
+        if provided_file_name is None:
+            file_name = path.name
+        elif (
+            not isinstance(provided_file_name, str)
+            or not provided_file_name.strip()
+        ):
+            raise ValueError(
+                "file_name must be a non-empty string when provided."
+            )
+        else:
+            file_name = Path(provided_file_name).name
+        
         prepared_files.append(
             {
                 "source_name": source_name,
                 "file_path": str(path),
-                "file_name": path.name,
+                "file_name": file_name,
                 "file_format": file_format,
                 "mapping_id": mapping_id,
                 "mapping_version": mapping_version,

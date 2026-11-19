@@ -1,21 +1,20 @@
-import pytest
 
-from pathlib import Path
-from fastapi.testclient import TestClient
 import asyncio
 from io import BytesIO
+from pathlib import Path
 
+import pytest
+from fastapi.testclient import TestClient
 from starlette.datastructures import UploadFile
 
+from server.auth.dependencies import get_current_auth_context
+from server.main import app
 from server.services import pipeline_service
 from server.services.pipeline_service import PipelineService
-from server.auth.dependencies import get_current_auth_context
-
-from server.main import app
-
 
 
 client = TestClient(app)
+
 
 @pytest.fixture(autouse=True)
 def authenticated_test_client():
@@ -95,19 +94,18 @@ def test_pipeline_service_saves_upload_and_calls_orchestrator(
 
     captured = {}
 
-def fake_run_pipeline_v2(files, organization_id=None):
-    captured["files"] = files
-    captured["organization_id"] = organization_id
+    def fake_run_pipeline_v2(files, organization_id=None):
+        captured["files"] = files
+        captured["organization_id"] = organization_id
 
-    return {
-        "run_id": 123,
-        "run_status": "SUCCESS",
-        "pipeline": {"run_id": 123},
-        "source_executions": [],
-        "report_path": None,
-        "report_error": None,
-    }
-
+        return {
+            "run_id": 123,
+            "run_status": "SUCCESS",
+            "pipeline": {"run_id": 123},
+            "source_executions": [],
+            "report_path": None,
+            "report_error": None,
+        }
 
     monkeypatch.setattr(
         pipeline_service,
@@ -117,7 +115,10 @@ def fake_run_pipeline_v2(files, organization_id=None):
 
     upload = UploadFile(
         filename="statement.csv",
-        file=BytesIO(b"Date,Description,Amount\n2026-01-01,Salary,50000\n"),
+        file=BytesIO(
+            b"Date,Description,Amount\n"
+            b"2026-01-01,Salary,50000\n"
+        ),
     )
 
     service = PipelineService(
@@ -146,6 +147,10 @@ def fake_run_pipeline_v2(files, organization_id=None):
     assert file_config["mapping_id"] == "equity_csv_v1"
     assert file_config["mapping_version"] == "1.0"
 
+    # The original filename must be preserved.
+    assert file_config["file_name"] == "statement.csv"
+
+    # The physical filename remains server-generated.
     saved_file = Path(file_config["file_path"])
 
     assert saved_file.exists()
@@ -153,8 +158,10 @@ def fake_run_pipeline_v2(files, organization_id=None):
     assert saved_file.name != "statement.csv"
 
     assert saved_file.read_bytes() == (
-        b"Date,Description,Amount\n2026-01-01,Salary,50000\n"
+        b"Date,Description,Amount\n"
+        b"2026-01-01,Salary,50000\n"
     )
+
 
 def test_pipeline_service_rejects_oversized_upload(
     tmp_path,

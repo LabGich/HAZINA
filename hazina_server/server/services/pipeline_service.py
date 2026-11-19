@@ -115,6 +115,7 @@ class PipelineService:
                 file_configs.append({
                     "source_name": source_name,
                     "file_path": str(destination),
+                    "file_name": original_name,
                     "mapping_id": mapping_id,
                     "mapping_version": mapping_version,
                 })
