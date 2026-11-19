@@ -53,6 +53,15 @@ function isFormatSupported(
   )
 }
 
+function getCompatibleMappings(
+  mappings: Mapping[],
+  extension: string,
+): Mapping[] {
+  return mappings.filter((mapping) =>
+    isFormatSupported(mapping.supported_formats, extension),
+  )
+}
+
 function formatFileSize(bytes: number): string {
   if (bytes < 1024 * 1024) {
     return `${(bytes / 1024).toFixed(1)} KB`
@@ -60,7 +69,6 @@ function formatFileSize(bytes: number): string {
 
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
 }
-
 
 function getSubmissionError(error: unknown): string {
   if (
@@ -118,11 +126,13 @@ function getSubmissionError(error: unknown): string {
   return 'Unable to submit the files. Please try again.'
 }
 
-
 function IngestionPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [sources, setSources] = useState<Source[]>([])
+  const [mappingCatalog, setMappingCatalog] = useState<
+    Record<string, Mapping[]>
+  >({})
   const [sourcesLoading, setSourcesLoading] = useState(true)
   const [sourcesError, setSourcesError] = useState<string | null>(null)
 
@@ -140,14 +150,33 @@ function IngestionPage() {
     try {
       const response = await getSources()
 
-      setSources(
-        response.sources.filter(
-          (source) => source.source_type === 'FILE',
+      const fileSources = response.sources.filter(
+        (source) => source.source_type === 'FILE',
+      )
+
+      const mappingsBySource: Record<string, Mapping[]> = {}
+
+      await Promise.all(
+        fileSources.map(async (source) => {
+          const mappingResponse = await getMappings(source.source_name)
+          mappingsBySource[source.source_name] =
+            mappingResponse.mappings
+        }),
+      )
+
+      const configuredSources = fileSources.filter((source) =>
+        (mappingsBySource[source.source_name] ?? []).some(
+          (mapping) => mapping.supported_formats.length > 0,
         ),
       )
+
+      setMappingCatalog(mappingsBySource)
+      setSources(configuredSources)
     } catch {
+      setSources([])
+      setMappingCatalog({})
       setSourcesError(
-        'Unable to load available sources. Please try again.',
+        'Unable to load available sources and mappings. Please try again.',
       )
     } finally {
       setSourcesLoading(false)
@@ -195,7 +224,7 @@ function IngestionPage() {
     }
   }
 
-  const handleSourceChange = async (
+  const handleSourceChange = (
     rowId: string,
     sourceName: string,
   ) => {
@@ -208,20 +237,18 @@ function IngestionPage() {
 
     const extension = getFileExtension(row.file.name)
 
-    const selectedSource = sources.find(
-      (source) => source.source_name === sourceName,
+    const compatibleMappings = getCompatibleMappings(
+      mappingCatalog[sourceName] ?? [],
+      extension,
     )
 
-    if (
-      sourceName &&
-      (!selectedSource ||
-        !isFormatSupported(
-          selectedSource.supported_formats,
-          extension,
-        ))
-    ) {
+    const mapping =
+      compatibleMappings.find((item) => item.is_default) ??
+      compatibleMappings[0]
+
+    if (sourceName && !mapping) {
       setPageError(
-        `${sourceName} does not support ${extension} files.`,
+        `${sourceName} does not have a configured mapping for ${extension} files.`,
       )
       return
     }
@@ -232,62 +259,20 @@ function IngestionPage() {
           ? {
               ...upload,
               source_name: sourceName,
-              mapping_id: '',
-              mapping_version: '',
-              mapping_supported_formats: [],
-              mapping_loading: Boolean(sourceName),
-              mapping_error: null,
+              mapping_id: mapping?.mapping_id ?? '',
+              mapping_version: mapping?.mapping_version ?? '',
+              mapping_supported_formats:
+                mapping?.supported_formats ?? [],
+              mapping_loading: false,
+              mapping_error: mapping
+                ? null
+                : sourceName
+                  ? `No mapping is available for ${extension} files from ${sourceName}.`
+                  : null,
             }
           : upload,
       ),
     )
-
-    if (!sourceName) return
-
-    try {
-      const response = await getMappings(sourceName)
-
-      const compatibleMappings = response.mappings.filter(
-        (mapping: Mapping) =>
-          isFormatSupported(mapping.supported_formats, extension),
-      )
-
-      const mapping =
-        compatibleMappings.find((item) => item.is_default) ??
-        compatibleMappings[0]
-
-      setUploads((current) =>
-        current.map((upload) =>
-          upload.id === rowId &&
-          upload.source_name === sourceName
-            ? {
-                ...upload,
-                mapping_id: mapping?.mapping_id ?? '',
-                mapping_version: mapping?.mapping_version ?? '',
-                mapping_supported_formats:
-                  mapping?.supported_formats ?? [],
-                mapping_loading: false,
-                mapping_error: mapping
-                  ? null
-                  : `No mapping is available for ${extension} files from ${sourceName}.`,
-              }
-            : upload,
-        ),
-      )
-    } catch {
-      setUploads((current) =>
-        current.map((upload) =>
-          upload.id === rowId &&
-          upload.source_name === sourceName
-            ? {
-                ...upload,
-                mapping_loading: false,
-                mapping_error: 'Unable to load the source mapping.',
-              }
-            : upload,
-        ),
-      )
-    }
   }
 
   const handleRemoveFile = (rowId: string) => {
@@ -308,7 +293,10 @@ function IngestionPage() {
       const extension = getFileExtension(upload.file.name)
 
       const compatibleSources = sources.filter((source) =>
-        isFormatSupported(source.supported_formats, extension),
+        getCompatibleMappings(
+          mappingCatalog[source.source_name] ?? [],
+          extension,
+        ).length > 0,
       )
 
       if (compatibleSources.length === 0) {
@@ -337,9 +325,12 @@ function IngestionPage() {
 
       if (
         !source ||
-        !isFormatSupported(source.supported_formats, extension)
+        getCompatibleMappings(
+          mappingCatalog[upload.source_name] ?? [],
+          extension,
+        ).length === 0
       ) {
-        return `${upload.file.name} is not a supported format for ${upload.source_name}.`
+        return `${upload.file.name} is not supported by a configured mapping for ${upload.source_name}.`
       }
 
       if (
@@ -385,7 +376,13 @@ function IngestionPage() {
   }
 
   const supportedFormats = Array.from(
-    new Set(sources.flatMap((source) => source.supported_formats)),
+    new Set(
+      sources.flatMap((source) =>
+        (mappingCatalog[source.source_name] ?? []).flatMap(
+          (mapping) => mapping.supported_formats,
+        ),
+      ),
+    ),
   ).join(', ')
 
   return (
@@ -528,11 +525,11 @@ function IngestionPage() {
         {sourcesLoading ? (
           <div className="flex min-h-64 items-center justify-center gap-3 text-sm text-slate-400">
             <RefreshCw size={17} className="animate-spin" />
-            Loading available sources...
+            Loading available sources and mappings...
           </div>
         ) : sourcesError ? (
           <div className="flex min-h-64 items-center justify-center text-sm text-slate-400">
-            Source information is unavailable.
+            Source and mapping information is unavailable.
           </div>
         ) : uploads.length === 0 ? (
           <div className="flex min-h-72 flex-col items-center justify-center px-6 text-center">
@@ -569,7 +566,10 @@ function IngestionPage() {
               const extension = getFileExtension(upload.file.name)
 
               const compatibleSources = sources.filter((source) =>
-                isFormatSupported(source.supported_formats, extension),
+                getCompatibleMappings(
+                  mappingCatalog[source.source_name] ?? [],
+                  extension,
+                ).length > 0,
               )
 
               return (
@@ -621,7 +621,7 @@ function IngestionPage() {
                         value={upload.source_name}
                         disabled={submitting}
                         onChange={(event) =>
-                          void handleSourceChange(
+                          handleSourceChange(
                             upload.id,
                             event.target.value,
                           )
@@ -642,7 +642,7 @@ function IngestionPage() {
 
                       {compatibleSources.length === 0 ? (
                         <p className="mt-2 text-xs text-red-600">
-                          No configured source supports {extension} files.
+                          No configured mapping supports {extension} files.
                         </p>
                       ) : selectedSource ? (
                         <p className="mt-2 text-xs text-slate-400">
@@ -650,7 +650,7 @@ function IngestionPage() {
                         </p>
                       ) : (
                         <p className="mt-2 text-xs text-slate-400">
-                          Choose a source compatible with {extension} files.
+                          Choose a source with a configured mapping for {extension} files.
                         </p>
                       )}
                     </div>
@@ -691,8 +691,16 @@ function IngestionPage() {
 
                   {selectedSource && (
                     <p className="mt-3 text-xs text-slate-400">
-                      Supported formats:{' '}
-                      {selectedSource.supported_formats.join(', ')}
+                      Mapping-supported formats:{' '}
+                      {(
+                        mappingCatalog[selectedSource.source_name] ?? []
+                      )
+                        .flatMap((mapping) => mapping.supported_formats)
+                        .filter(
+                          (format, formatIndex, formats) =>
+                            formats.indexOf(format) === formatIndex,
+                        )
+                        .join(', ')}
                     </p>
                   )}
 
