@@ -46,9 +46,15 @@ def test_dashboard_summary_returns_organization_metrics(
 
     expected = {
         "total_runs": 12,
-        "records_processed": 850,
         "successful_runs": 9,
-        "pending_executions": 2,
+        "partially_successful_runs": 1,
+        "failed_runs": 1,
+        "cancelled_runs": 0,
+        "pending_executions": 1,
+        "records_received": 1000,
+        "records_processed": 850,
+        "records_rejected": 100,
+        "records_promoted": 750,
     }
 
     captured = {}
@@ -90,9 +96,15 @@ def test_dashboard_summary_uses_authenticated_organization(
 
         return {
             "total_runs": 0,
-            "records_processed": 0,
             "successful_runs": 0,
+            "partially_successful_runs": 0,
+            "failed_runs": 0,
+            "cancelled_runs": 0,
             "pending_executions": 0,
+            "records_received": 0,
+            "records_processed": 0,
+            "records_rejected": 0,
+            "records_promoted": 0,
         }
 
     monkeypatch.setattr(

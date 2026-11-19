@@ -1029,13 +1029,39 @@ def get_pipeline_v2_dashboard_summary(organization_id):
                 """
                 SELECT
                     COUNT(*) AS total_runs,
-                    COALESCE(SUM(records_loaded), 0) AS records_processed,
+
                     COUNT(*) FILTER (
                         WHERE run_status = 'SUCCESS'
                     ) AS successful_runs,
+
+                    COUNT(*) FILTER (
+                        WHERE run_status = 'PARTIAL_SUCCESS'
+                    ) AS partially_successful_runs,
+
+                    COUNT(*) FILTER (
+                        WHERE run_status = 'FAILED'
+                    ) AS failed_runs,
+
+                    COUNT(*) FILTER (
+                        WHERE run_status = 'CANCELLED'
+                    ) AS cancelled_runs,
+
                     COUNT(*) FILTER (
                         WHERE run_status = 'RUNNING'
-                    ) AS pending_executions
+                    ) AS pending_executions,
+
+                    COALESCE(SUM(records_received), 0)
+                        AS records_received,
+
+                    COALESCE(SUM(records_loaded), 0)
+                        AS records_processed,
+
+                    COALESCE(SUM(records_rejected), 0)
+                        AS records_rejected,
+
+                    COALESCE(SUM(records_promoted), 0)
+                        AS records_promoted
+
                 FROM ops.pipeline_runs
                 WHERE organization_id = %s
                 """,
