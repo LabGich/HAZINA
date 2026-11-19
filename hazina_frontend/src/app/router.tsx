@@ -6,13 +6,13 @@ import AuthLayout from '../layouts/AuthLayout/AuthLayout'
 
 import DashboardPage from '../pages/Dashboard/DashboardPage'
 import LoginPage from '../pages/Login/LoginPage'
-import FeaturePlaceholderPage from '../pages/FeaturePlaceholderPage'
 import NotFoundPage from '../pages/NotFound/NotFoundPage'
 import PipelineRunsPage from '../pages/PipelineRuns/PipelineRunsPage'
 import PipelineRunDetailsPage from '../pages/PipelineRuns/PipelineRunDetailsPage'
 import IngestionPage from '../pages/Ingestion/IngestionPage'
 import MappingsPage from '../pages/Mappings/MappingsPage'
 import UserManagementPage from '../pages/UserManagement/UserManagementPage'
+import SettingsPage from '../pages/Settings/SettingsPage'
 
 import ProtectedRoute from '../components/auth/ProtectedRoute'
 import PublicRoute from '../components/auth/PublicRoute'
@@ -65,7 +65,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'settings',
-            element: <FeaturePlaceholderPage title="Settings" />,
+            element: <SettingsPage />,
           },
         ],
       },
