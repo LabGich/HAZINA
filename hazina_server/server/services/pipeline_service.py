@@ -143,21 +143,16 @@ class PipelineService:
         offset=0,
         organization_id=None,
         status=None,
+        source_name=None,
     ):
         """Return a paginated list of V2 pipeline runs."""
-
-        if organization_id is None:
-            return get_pipeline_v2_runs(
-                limit=limit,
-                offset=offset,
-                status=status,
-            )
 
         return get_pipeline_v2_runs(
             limit=limit,
             offset=offset,
             organization_id=organization_id,
             status=status,
+            source_name=source_name,
         )
 
 

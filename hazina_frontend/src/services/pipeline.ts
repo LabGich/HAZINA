@@ -12,15 +12,29 @@ export type PipelineRunStatus =
   | 'RUNNING'
   | 'CANCELLED'
 
+export type PipelineSourceName =
+  | 'EQUITY'
+  | 'KCB'
+  | 'COOP'
+  | 'NCBA'
+  | 'EXPLORE_MY_DATA'
+  | 'UTILLY'
+
 export async function getPipelineRuns(
   limit = 5,
   offset = 0,
   status?: PipelineRunStatus,
+  sourceName?: PipelineSourceName,
 ): Promise<PipelineRunListResponse> {
   const response = await api.get<PipelineRunListResponse>(
     '/pipeline-runs',
     {
-      params: { limit, offset, status },
+      params: {
+        limit,
+        offset,
+        status,
+        source_name: sourceName,
+      },
     },
   )
 

@@ -211,3 +211,97 @@ def test_pipeline_service_rejects_oversized_upload(
 
     assert not pipeline_called
     assert list(upload_directory.iterdir()) == []
+
+
+def test_pipeline_service_list_runs_passes_source_filter(monkeypatch):
+    captured = {}
+
+    def fake_get_pipeline_v2_runs(**kwargs):
+        captured.update(kwargs)
+
+        return {
+            "items": [],
+            "total": 0,
+            "limit": kwargs["limit"],
+            "offset": kwargs["offset"],
+        }
+
+    monkeypatch.setattr(
+        pipeline_service,
+        "get_pipeline_v2_runs",
+        fake_get_pipeline_v2_runs,
+    )
+
+    result = PipelineService.list_runs(
+        limit=10,
+        offset=5,
+        organization_id=512,
+        status="SUCCESS",
+        source_name="EQUITY",
+    )
+
+    assert captured == {
+        "limit": 10,
+        "offset": 5,
+        "organization_id": 512,
+        "status": "SUCCESS",
+        "source_name": "EQUITY",
+    }
+
+    assert result["total"] == 0
+
+
+def test_list_pipeline_runs_accepts_source_filter(monkeypatch):
+    captured = {}
+
+    def fake_list_runs(**kwargs):
+        captured.update(kwargs)
+
+        return {
+            "items": [],
+            "total": 0,
+            "limit": kwargs["limit"],
+            "offset": kwargs["offset"],
+        }
+
+    monkeypatch.setattr(
+        PipelineService,
+        "list_runs",
+        staticmethod(fake_list_runs),
+    )
+
+    response = client.get(
+        "/pipeline-runs",
+        params={
+            "limit": 10,
+            "offset": 5,
+            "status": "SUCCESS",
+            "source_name": "EQUITY",
+        },
+    )
+
+    assert response.status_code == 200
+
+    assert captured == {
+        "limit": 10,
+        "offset": 5,
+        "organization_id": 1,
+        "status": "SUCCESS",
+        "source_name": "EQUITY",
+    }
+
+
+@pytest.mark.parametrize(
+    "source_name",
+    [
+        "",
+        " " * 101,
+    ],
+)
+def test_list_pipeline_runs_rejects_invalid_source_filter(source_name):
+    response = client.get(
+        "/pipeline-runs",
+        params={"source_name": source_name},
+    )
+
+    assert response.status_code == 422

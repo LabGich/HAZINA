@@ -173,6 +173,7 @@ def test_list_pipeline_runs():
         offset=0,
         organization_id=1,
         status=None,
+        source_name=None,
     )
 
 
@@ -212,6 +213,7 @@ def test_list_pipeline_runs_accepts_status_filter(status):
         offset=0,
         organization_id=1,
         status=status,
+        source_name=None,
     )
 
 

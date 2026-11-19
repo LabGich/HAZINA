@@ -97,6 +97,7 @@ async def submit_pipeline_files(
 
 
 
+
 @router.get(
     "/pipeline-runs",
     response_model=PipelineRunListResponse,
@@ -108,6 +109,11 @@ def list_pipeline_runs(
         default=None,
         pattern="^(SUCCESS|PARTIAL_SUCCESS|FAILED|RUNNING|CANCELLED)$",
     ),
+    source_name: str | None = Query(
+        default=None,
+        min_length=1,
+        max_length=100,
+    ),
     auth_context: dict = Depends(
         require_roles("ADMIN", "OPERATOR", "VIEWER")
     ),
@@ -117,6 +123,7 @@ def list_pipeline_runs(
         offset=offset,
         organization_id=auth_context["organization_id"],
         status=status,
+        source_name=source_name,
     )
 
 

@@ -924,15 +924,18 @@ def save_pipeline_v2_run_report(run_id, reports_directory=None, organization_id=
     return report_path
 
 
+
 def get_pipeline_v2_runs(
     limit=20,
     offset=0,
     organization_id=None,
     status=None,
+    source_name=None,
 ):
     """
     Retrieve a paginated list of V2 pipeline runs,
-    optionally filtered by organization and run status.
+    optionally filtered by organization, run status,
+    and source name.
     """
 
     if (
@@ -973,6 +976,15 @@ def get_pipeline_v2_runs(
                 f"{', '.join(sorted(allowed_statuses))}."
             )
 
+    if source_name is not None:
+        if not isinstance(source_name, str):
+            raise ValueError("source_name must be a non-empty string.")
+
+        source_name = source_name.strip().upper()
+
+        if not source_name:
+            raise ValueError("source_name must be a non-empty string.")
+
     conditions = []
     filter_params = []
 
@@ -983,6 +995,21 @@ def get_pipeline_v2_runs(
     if status is not None:
         conditions.append("run_status = %s")
         filter_params.append(status)
+
+    if source_name is not None:
+        conditions.append(
+            """
+            EXISTS (
+                SELECT 1
+                FROM ops.source_executions e
+                JOIN ops.source_registry s
+                    ON s.source_id = e.source_id
+                WHERE e.run_id = ops.pipeline_runs.run_id
+                  AND s.source_name = %s
+            )
+            """
+        )
+        filter_params.append(source_name)
 
     where_clause = (
         f"WHERE {' AND '.join(conditions)}"
@@ -1043,7 +1070,6 @@ def get_pipeline_v2_runs(
         "limit": limit,
         "offset": offset,
     }
-
 
 
 def get_pipeline_v2_dashboard_summary(organization_id):

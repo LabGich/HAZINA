@@ -320,3 +320,129 @@ def test_get_pipeline_v2_runs_filters_by_organization_and_status():
 def test_get_pipeline_v2_runs_rejects_invalid_status(status):
     with pytest.raises(ValueError, match="status|Invalid status"):
         get_pipeline_v2_runs(status=status)
+
+
+def test_get_pipeline_v2_runs_filters_by_source_name():
+    connection = MagicMock()
+    cursor = connection.cursor.return_value.__enter__.return_value
+
+    cursor.fetchone.return_value = (2,)
+    cursor.description = [
+        SimpleNamespace(name=name)
+        for name in (
+            "run_id",
+            "source_file",
+            "started_at",
+            "completed_at",
+            "run_status",
+            "records_received",
+            "records_loaded",
+            "records_rejected",
+            "records_promoted",
+            "run_type",
+            "triggered_by",
+        )
+    ]
+    cursor.fetchall.return_value = []
+
+    with patch(
+        "hazina_pipeline.monitoring.pipeline_status.get_database_connection"
+    ) as mock_connection:
+        mock_connection.return_value.__enter__.return_value = connection
+
+        result = get_pipeline_v2_runs(
+            limit=10,
+            offset=5,
+            source_name="equity",
+        )
+
+    assert result["total"] == 2
+
+    execute_calls = cursor.execute.call_args_list
+    assert len(execute_calls) == 2
+
+    for call in execute_calls:
+        sql = " ".join(call.args[0].split())
+
+        assert "EXISTS (" in sql
+        assert "ops.source_executions" in sql
+        assert "ops.source_registry" in sql
+        assert "s.source_name = %s" in sql
+
+    assert execute_calls[0].args[1] == ("EQUITY",)
+    assert execute_calls[1].args[1] == ("EQUITY", 10, 5)
+
+
+def test_get_pipeline_v2_runs_filters_by_organization_status_and_source():
+    connection = MagicMock()
+    cursor = connection.cursor.return_value.__enter__.return_value
+
+    cursor.fetchone.return_value = (1,)
+    cursor.description = [
+        SimpleNamespace(name=name)
+        for name in (
+            "run_id",
+            "source_file",
+            "started_at",
+            "completed_at",
+            "run_status",
+            "records_received",
+            "records_loaded",
+            "records_rejected",
+            "records_promoted",
+            "run_type",
+            "triggered_by",
+        )
+    ]
+    cursor.fetchall.return_value = []
+
+    with patch(
+        "hazina_pipeline.monitoring.pipeline_status.get_database_connection"
+    ) as mock_connection:
+        mock_connection.return_value.__enter__.return_value = connection
+
+        result = get_pipeline_v2_runs(
+            limit=10,
+            offset=5,
+            organization_id=512,
+            status="SUCCESS",
+            source_name=" equity ",
+        )
+
+    assert result["total"] == 1
+
+    execute_calls = cursor.execute.call_args_list
+
+    assert execute_calls[0].args[1] == (
+        512,
+        "SUCCESS",
+        "EQUITY",
+    )
+    assert execute_calls[1].args[1] == (
+        512,
+        "SUCCESS",
+        "EQUITY",
+        10,
+        5,
+    )
+
+    for call in execute_calls:
+        sql = " ".join(call.args[0].split())
+
+        assert "organization_id = %s" in sql
+        assert "run_status = %s" in sql
+        assert "EXISTS (" in sql
+
+
+@pytest.mark.parametrize(
+    "source_name",
+    [
+        "",
+        "   ",
+        123,
+        True,
+    ],
+)
+def test_get_pipeline_v2_runs_rejects_invalid_source_name(source_name):
+    with pytest.raises(ValueError, match="source_name"):
+        get_pipeline_v2_runs(source_name=source_name)
