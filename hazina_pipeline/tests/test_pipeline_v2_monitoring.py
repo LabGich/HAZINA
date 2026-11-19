@@ -19,6 +19,7 @@ def test_get_pipeline_v2_runs_returns_paginated_results():
         for name in (
             "run_id",
             "source_file",
+            "source_files",
             "started_at",
             "completed_at",
             "run_status",
@@ -32,8 +33,14 @@ def test_get_pipeline_v2_runs_returns_paginated_results():
     ]
 
     cursor.fetchall.return_value = [
-        (3, "file3.csv", None, None, "SUCCESS", 10, 10, 0, 10, "FILE", "API"),
-        (2, "file2.csv", None, None, "FAILED", 5, 0, 5, 0, "FILE", "API"),
+        (
+            3, "file3.csv", ["file3.csv"],
+            None, None, "SUCCESS", 10, 10, 0, 10, "FILE", "API",
+        ),
+        (
+            2, "file2.csv", ["file2.csv"],
+            None, None, "FAILED", 5, 0, 5, 0, "FILE", "API",
+        ),
     ]
 
     with patch(
@@ -49,6 +56,15 @@ def test_get_pipeline_v2_runs_returns_paginated_results():
     assert len(result["items"]) == 2
     assert result["items"][0]["run_id"] == 3
     assert result["items"][1]["run_id"] == 2
+    assert result["items"][0]["source_files"] == ["file3.csv"]
+    assert result["items"][1]["source_files"] == ["file2.csv"]
+
+    list_sql = " ".join(
+        cursor.execute.call_args_list[1].args[0].split()
+    )
+
+    assert "ARRAY_AGG" in list_sql
+    assert "metadata->>'file_name'" in list_sql
 
 
 @pytest.mark.parametrize(
@@ -79,6 +95,7 @@ def test_get_pipeline_v2_runs_filters_by_organization():
         for name in (
             "run_id",
             "source_file",
+            "source_files",
             "started_at",
             "completed_at",
             "run_status",
@@ -91,7 +108,10 @@ def test_get_pipeline_v2_runs_filters_by_organization():
         )
     ]
     cursor.fetchall.return_value = [
-        (3, "file3.csv", None, None, "SUCCESS", 10, 10, 0, 10, "FILE", "API"),
+        (
+            3, "file3.csv", ["file3.csv"],
+            None, None, "SUCCESS", 10, 10, 0, 10, "FILE", "API",
+        ),
     ]
 
     with patch(
@@ -225,6 +245,7 @@ def test_get_pipeline_v2_runs_filters_by_status(status):
         for name in (
             "run_id",
             "source_file",
+            "source_files",
             "started_at",
             "completed_at",
             "run_status",
@@ -269,6 +290,7 @@ def test_get_pipeline_v2_runs_filters_by_organization_and_status():
         for name in (
             "run_id",
             "source_file",
+            "source_files",
             "started_at",
             "completed_at",
             "run_status",
@@ -332,6 +354,7 @@ def test_get_pipeline_v2_runs_filters_by_source_name():
         for name in (
             "run_id",
             "source_file",
+            "source_files",
             "started_at",
             "completed_at",
             "run_status",
@@ -383,6 +406,7 @@ def test_get_pipeline_v2_runs_filters_by_organization_status_and_source():
         for name in (
             "run_id",
             "source_file",
+            "source_files",
             "started_at",
             "completed_at",
             "run_status",

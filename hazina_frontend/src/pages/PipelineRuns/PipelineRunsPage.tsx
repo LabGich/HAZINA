@@ -303,8 +303,21 @@ function PipelineRunsPage() {
                         </Link>
                       </td>
 
-                      <td className="max-w-56 truncate px-4 py-4 font-medium text-slate-700">
-                        {run.source_file || '—'}
+                      <td className="max-w-64 px-4 py-4 font-medium text-slate-700">
+                        <div className="space-y-1">
+                          {run.source_files?.length ? (
+                            run.source_files.map((fileName, index) => (
+                              <div
+                                key={`${fileName}-${index}`}
+                                className="break-all"
+                              >
+                                {fileName}
+                              </div>
+                            ))
+                          ) : (
+                            run.source_file || '—'
+                          )}
+                        </div>
                       </td>
 
                       <td className="px-4 py-4">

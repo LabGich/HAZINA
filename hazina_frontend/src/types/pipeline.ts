@@ -1,6 +1,7 @@
 export interface PipelineRunSummary {
   run_id: number
   source_file: string | null
+  source_files: string[]
   started_at: string | null
   completed_at: string | null
   run_status: string

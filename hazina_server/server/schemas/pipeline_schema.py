@@ -31,6 +31,7 @@ class PipelineRunResponse(BaseModel):
 class PipelineRunSummary(BaseModel):
     run_id: int
     source_file: str | None = None
+    source_files: list[str] = Field(default_factory=list)
     started_at: datetime | None = None
     completed_at: datetime | None = None
     run_status: str

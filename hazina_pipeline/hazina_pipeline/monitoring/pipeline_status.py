@@ -925,6 +925,7 @@ def save_pipeline_v2_run_report(run_id, reports_directory=None, organization_id=
 
 
 
+
 def get_pipeline_v2_runs(
     limit=20,
     offset=0,
@@ -1038,6 +1039,21 @@ def get_pipeline_v2_runs(
                 SELECT
                     run_id,
                     source_file,
+                    COALESCE(
+                        (
+                            SELECT ARRAY_AGG(
+                                e.metadata->>'file_name'
+                                ORDER BY e.source_execution_id
+                            )
+                            FROM ops.source_executions e
+                            WHERE e.run_id = ops.pipeline_runs.run_id
+                              AND NULLIF(
+                                  e.metadata->>'file_name',
+                                  ''
+                              ) IS NOT NULL
+                        ),
+                        ARRAY[]::text[]
+                    ) AS source_files,
                     started_at,
                     completed_at,
                     run_status,
@@ -1070,6 +1086,7 @@ def get_pipeline_v2_runs(
         "limit": limit,
         "offset": offset,
     }
+
 
 
 def get_pipeline_v2_dashboard_summary(organization_id):

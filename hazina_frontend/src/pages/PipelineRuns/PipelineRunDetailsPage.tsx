@@ -384,9 +384,18 @@ function PipelineRunDetailsPage() {
                     <h3 className="font-semibold text-slate-900">
                       {execution.source_name}
                     </h3>
+
                     <p className="mt-1 text-xs text-slate-400">
                       Execution #{execution.source_execution_id} · Source ID {execution.source_id}
                     </p>
+
+                    {typeof execution.metadata?.file_name === 'string' &&
+                      execution.metadata.file_name && (
+                        <p className="mt-2 flex items-center gap-2 break-all text-sm font-medium text-slate-700">
+                          <FileText size={14} className="shrink-0 text-slate-400" />
+                          {execution.metadata.file_name}
+                        </p>
+                      )}
                   </div>
 
                   <span
