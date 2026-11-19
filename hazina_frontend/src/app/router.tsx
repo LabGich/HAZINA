@@ -12,6 +12,7 @@ import PipelineRunsPage from '../pages/PipelineRuns/PipelineRunsPage'
 import PipelineRunDetailsPage from '../pages/PipelineRuns/PipelineRunDetailsPage'
 import IngestionPage from '../pages/Ingestion/IngestionPage'
 import MappingsPage from '../pages/Mappings/MappingsPage'
+import UserManagementPage from '../pages/UserManagement/UserManagementPage'
 
 import ProtectedRoute from '../components/auth/ProtectedRoute'
 import PublicRoute from '../components/auth/PublicRoute'
@@ -60,7 +61,7 @@ const router = createBrowserRouter([
           },
           {
             path: 'users',
-            element: <FeaturePlaceholderPage title="User management" />,
+            element: <UserManagementPage />,
           },
           {
             path: 'settings',

@@ -61,6 +61,7 @@ function formatFileSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(2)} MB`
 }
 
+
 function getSubmissionError(error: unknown): string {
   if (
     typeof error === 'object' &&
@@ -68,16 +69,55 @@ function getSubmissionError(error: unknown): string {
     'response' in error
   ) {
     const response = error.response as {
-      data?: { detail?: string }
+      data?: { detail?: unknown }
     }
 
-    if (response.data?.detail) {
-      return response.data.detail
+    const detail = response.data?.detail
+
+    if (typeof detail === 'string') {
+      return detail
+    }
+
+    if (Array.isArray(detail)) {
+      return detail
+        .map((item) => {
+          if (typeof item === 'string') {
+            return item
+          }
+
+          if (typeof item === 'object' && item !== null) {
+            const validationError = item as {
+              loc?: unknown[]
+              msg?: unknown
+            }
+
+            const location = Array.isArray(validationError.loc)
+              ? validationError.loc.join(' → ')
+              : ''
+
+            const message =
+              typeof validationError.msg === 'string'
+                ? validationError.msg
+                : 'Invalid input'
+
+            return location
+              ? `${location}: ${message}`
+              : message
+          }
+
+          return String(item)
+        })
+        .join('; ')
+    }
+
+    if (detail && typeof detail === 'object') {
+      return JSON.stringify(detail)
     }
   }
 
   return 'Unable to submit the files. Please try again.'
 }
+
 
 function IngestionPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
