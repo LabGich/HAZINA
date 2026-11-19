@@ -3,17 +3,25 @@ import { useCallback, useEffect, useState } from 'react'
 import {
   AlertCircle,
   CheckCircle2,
+  Plus,
   RefreshCw,
   Shield,
   User,
   Users,
-  XCircle,
+  X,
 } from 'lucide-react'
 
 import { useAuth } from '../../contexts/AuthContext'
-import { getOrganizationUsers } from '../../services/admin'
+import {
+  createOrganizationUser,
+  getOrganizationUsers,
+  updateOrganizationUser,
+} from '../../services/admin'
 
 import type { AdminUser } from '../../types/admin'
+import type { UserRole } from '../../types/auth'
+
+const roles: UserRole[] = ['ADMIN', 'OPERATOR', 'VIEWER']
 
 function formatDate(value: string): string {
   return new Date(value).toLocaleDateString(undefined, {
@@ -23,12 +31,69 @@ function formatDate(value: string): string {
   })
 }
 
+function getApiError(error: unknown): string {
+  const response = (
+    error as {
+      response?: {
+        data?: {
+          detail?: unknown
+        }
+      }
+    }
+  )?.response?.data
+
+  const detail = response?.detail
+
+  if (typeof detail === 'string') {
+    return detail
+  }
+
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => {
+        if (typeof item === 'string') return item
+
+        if (item && typeof item === 'object') {
+          const entry = item as {
+            loc?: unknown[]
+            msg?: string
+          }
+
+          const location = entry.loc?.join(' → ')
+
+          return location
+            ? `${location}: ${entry.msg ?? 'Invalid value'}`
+            : entry.msg ?? 'Invalid value'
+        }
+
+        return String(item)
+      })
+      .join('; ')
+  }
+
+  return 'The request could not be completed. Please try again.'
+}
+
 function UserManagementPage() {
   const { user: currentUser, isLoading: authLoading } = useAuth()
 
   const [users, setUsers] = useState<AdminUser[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  const [showCreateForm, setShowCreateForm] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
+
+  const [updatingUserId, setUpdatingUserId] = useState<number | null>(null)
+  const [roleDrafts, setRoleDrafts] = useState<Record<number, UserRole>>({})
+  const [updateError, setUpdateError] = useState<string | null>(null)
+
+  const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [roleCode, setRoleCode] = useState<UserRole>('VIEWER')
 
   const loadUsers = useCallback(async () => {
     setLoading(true)
@@ -51,6 +116,89 @@ function UserManagementPage() {
       setLoading(false)
     }
   }, [authLoading, currentUser, loadUsers])
+
+  function resetCreateForm() {
+    setFullName('')
+    setEmail('')
+    setPassword('')
+    setRoleCode('VIEWER')
+    setCreateError(null)
+  }
+
+  async function handleCreateUser(
+    event: React.FormEvent<HTMLFormElement>,
+  ) {
+    event.preventDefault()
+
+    setCreateError(null)
+    setSuccessMessage(null)
+    setUpdateError(null)
+
+    if (fullName.trim().length === 0) {
+      setCreateError('Full name is required.')
+      return
+    }
+
+    if (password.length < 12) {
+      setCreateError('Password must contain at least 12 characters.')
+      return
+    }
+
+    setCreating(true)
+
+    try {
+      await createOrganizationUser({
+        full_name: fullName.trim(),
+        email: email.trim(),
+        password,
+        role_code: roleCode,
+      })
+
+      resetCreateForm()
+      setShowCreateForm(false)
+      setSuccessMessage('User created successfully.')
+
+      await loadUsers()
+    } catch (requestError) {
+      setCreateError(getApiError(requestError))
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  async function handleUpdateUser(
+    userId: number,
+    payload: { role_code?: UserRole; is_active?: boolean },
+  ) {
+    setUpdatingUserId(userId)
+    setUpdateError(null)
+    setSuccessMessage(null)
+    setCreateError(null)
+
+    try {
+      await updateOrganizationUser(userId, payload)
+
+      setSuccessMessage(
+        payload.role_code
+          ? 'User role updated successfully.'
+          : payload.is_active
+            ? 'User membership activated successfully.'
+            : 'User membership deactivated successfully.',
+      )
+
+      setRoleDrafts((previous) => {
+        const updated = { ...previous }
+        delete updated[userId]
+        return updated
+      })
+
+      await loadUsers()
+    } catch (requestError) {
+      setUpdateError(getApiError(requestError))
+    } finally {
+      setUpdatingUserId(null)
+    }
+  }
 
   if (authLoading) {
     return (
@@ -100,19 +248,55 @@ function UserManagementPage() {
           </h1>
         </div>
 
-        <button
-          type="button"
-          onClick={() => void loadUsers()}
-          disabled={loading}
-          className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <RefreshCw
-            size={16}
-            className={loading ? 'animate-spin' : ''}
-          />
-          Refresh
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => void loadUsers()}
+            disabled={loading || updatingUserId !== null || creating}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <RefreshCw
+              size={16}
+              className={loading ? 'animate-spin' : ''}
+            />
+            Refresh
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setSuccessMessage(null)
+              setCreateError(null)
+              setUpdateError(null)
+              setShowCreateForm(true)
+            }}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-teal-700"
+          >
+            <Plus size={17} />
+            Add user
+          </button>
+        </div>
       </div>
+
+      {successMessage && (
+        <div
+          role="status"
+          className="mb-6 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+        >
+          <CheckCircle2 size={18} />
+          {successMessage}
+        </div>
+      )}
+
+      {updateError && (
+        <div
+          role="alert"
+          className="mb-6 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+        >
+          <AlertCircle size={18} />
+          {updateError}
+        </div>
+      )}
 
       {error && (
         <div
@@ -132,6 +316,162 @@ function UserManagementPage() {
             Try again
           </button>
         </div>
+      )}
+
+      {showCreateForm && (
+        <section className="mb-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="font-bold text-slate-900">
+                Create organization user
+              </h2>
+
+              <p className="mt-1 text-xs text-slate-500">
+                Add a new user to your organization.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowCreateForm(false)
+                resetCreateForm()
+              }}
+              disabled={creating}
+              aria-label="Close form"
+              className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 disabled:opacity-50"
+            >
+              <X size={19} />
+            </button>
+          </div>
+
+          {createError && (
+            <div
+              role="alert"
+              className="mb-5 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+            >
+              <AlertCircle size={17} className="mt-0.5 shrink-0" />
+              <span>{createError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleCreateUser}>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="user-full-name"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Full name
+                </label>
+
+                <input
+                  id="user-full-name"
+                  type="text"
+                  required
+                  maxLength={150}
+                  value={fullName}
+                  onChange={(event) => setFullName(event.target.value)}
+                  placeholder="Enter full name"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="user-email"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Email address
+                </label>
+
+                <input
+                  id="user-email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="user@example.com"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="user-password"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Initial password
+                </label>
+
+                <input
+                  id="user-password"
+                  type="password"
+                  required
+                  minLength={12}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="At least 12 characters"
+                  autoComplete="new-password"
+                  className="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                />
+
+                <p className="mt-1.5 text-xs text-slate-400">
+                  Minimum 12 characters.
+                </p>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="user-role"
+                  className="mb-2 block text-sm font-medium text-slate-700"
+                >
+                  Organization role
+                </label>
+
+                <select
+                  id="user-role"
+                  value={roleCode}
+                  onChange={(event) =>
+                    setRoleCode(event.target.value as UserRole)
+                  }
+                  className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-100"
+                >
+                  {roles.map((role) => (
+                    <option key={role} value={role}>
+                      {role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowCreateForm(false)
+                  resetCreateForm()
+                }}
+                disabled={creating}
+                className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                disabled={creating}
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {creating && (
+                  <RefreshCw size={16} className="animate-spin" />
+                )}
+                {creating ? 'Creating user...' : 'Create user'}
+              </button>
+            </div>
+          </form>
+        </section>
       )}
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
@@ -170,8 +510,7 @@ function UserManagementPage() {
       </div>
 
       {!loading && !error && (
-        <div className="mb-4 flex items-center gap-2 text-xs text-slate-500">
-          <XCircle size={14} />
+        <div className="mb-4 text-xs text-slate-500">
           {inactiveUsers} inactive {inactiveUsers === 1 ? 'membership' : 'memberships'}
         </div>
       )}
@@ -210,7 +549,7 @@ function UserManagementPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[850px] text-left text-sm">
+            <table className="w-full min-w-[1050px] text-left text-sm">
               <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                 <tr>
                   <th className="px-6 py-3 font-semibold">User</th>
@@ -219,6 +558,7 @@ function UserManagementPage() {
                   <th className="px-6 py-3 font-semibold">Membership</th>
                   <th className="px-6 py-3 font-semibold">Email</th>
                   <th className="px-6 py-3 font-semibold">Joined</th>
+                  <th className="px-6 py-3 font-semibold">Actions</th>
                 </tr>
               </thead>
 
@@ -227,8 +567,10 @@ function UserManagementPage() {
                   const isCurrentUser =
                     item.user_id === currentUser.user_id
 
-                  const accountActive = item.user_is_active
-                  const membershipActive = item.membership_is_active
+                  const isUpdating = updatingUserId === item.user_id
+                  const selectedRole =
+                    roleDrafts[item.user_id] ?? item.role_code
+                  const roleChanged = selectedRole !== item.role_code
 
                   return (
                     <tr
@@ -268,24 +610,24 @@ function UserManagementPage() {
                       <td className="px-6 py-4">
                         <span
                           className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                            accountActive
+                            item.user_is_active
                               ? 'bg-emerald-50 text-emerald-700'
                               : 'bg-red-50 text-red-700'
                           }`}
                         >
-                          {accountActive ? 'Active' : 'Inactive'}
+                          {item.user_is_active ? 'Active' : 'Inactive'}
                         </span>
                       </td>
 
                       <td className="px-6 py-4">
                         <span
                           className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                            membershipActive
+                            item.membership_is_active
                               ? 'bg-emerald-50 text-emerald-700'
                               : 'bg-red-50 text-red-700'
                           }`}
                         >
-                          {membershipActive ? 'Active' : 'Inactive'}
+                          {item.membership_is_active ? 'Active' : 'Inactive'}
                         </span>
                       </td>
 
@@ -309,6 +651,84 @@ function UserManagementPage() {
 
                       <td className="px-6 py-4 text-xs text-slate-500">
                         {formatDate(item.membership_created_at)}
+                      </td>
+
+                      <td className="px-6 py-4">
+                        <div className="flex min-w-48 flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            <select
+                              aria-label={`Role for ${item.full_name}`}
+                              value={selectedRole}
+                              disabled={
+                                isCurrentUser ||
+                                isUpdating ||
+                                updatingUserId !== null
+                              }
+                              onChange={(event) =>
+                                setRoleDrafts((previous) => ({
+                                  ...previous,
+                                  [item.user_id]: event.target.value as UserRole,
+                                }))
+                              }
+                              className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs outline-none focus:border-teal-500 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+                            >
+                              {roles.map((role) => (
+                                <option key={role} value={role}>
+                                  {role}
+                                </option>
+                              ))}
+                            </select>
+
+                            <button
+                              type="button"
+                              disabled={
+                                !roleChanged ||
+                                isUpdating ||
+                                updatingUserId !== null ||
+                                isCurrentUser
+                              }
+                              onClick={() =>
+                                void handleUpdateUser(item.user_id, {
+                                  role_code: selectedRole,
+                                })
+                              }
+                              className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-700 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+                            >
+                              {isUpdating ? 'Saving...' : 'Save'}
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            disabled={
+                              isCurrentUser ||
+                              isUpdating ||
+                              updatingUserId !== null
+                            }
+                            onClick={() =>
+                              void handleUpdateUser(item.user_id, {
+                                is_active: !item.membership_is_active,
+                              })
+                            }
+                            className={`rounded-lg border px-3 py-1.5 text-xs font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                              item.membership_is_active
+                                ? 'border-red-200 text-red-700 hover:bg-red-50'
+                                : 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
+                            }`}
+                          >
+                            {isUpdating
+                              ? 'Updating...'
+                              : item.membership_is_active
+                                ? 'Deactivate membership'
+                                : 'Activate membership'}
+                          </button>
+
+                          {isCurrentUser && (
+                            <span className="text-[10px] text-slate-400">
+                              Your own access cannot be changed here.
+                            </span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   )
