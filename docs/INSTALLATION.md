@@ -103,6 +103,8 @@ python -m pip install -r .\hazina_server\requirements-dev.txt
 
 Both packages use the repository's root virtual environment.
 
+The editable installations also allow the migration manager to locate the SQL migration directory in the repository checkout.
+
 ## 5. Configure environment variables
 
 Hazina uses a shared root-level `.env` file for database, authentication, and PDF configuration.
@@ -207,19 +209,42 @@ Return to the repository root:
 cd ..
 ```
 
-## 7. Database preparation
+## 7. Prepare the database
 
-Before using the application, PostgreSQL must be running and the configured database must exist.
+Before using the application:
 
-The database schema and application tables must also be initialized using the SQL migrations in:
+1. Ensure PostgreSQL is running.
+2. Create the application database and database role.
+3. Configure the database connection in the root `.env`.
+4. Initialize the database schema using the migration manager.
+
+Hazina's SQL migration files are located in:
 
 ```text
 hazina_pipeline/sql/
 ```
 
-Migration execution and database initialization are covered separately in the database setup guide.
+The database setup guide explains database creation, permissions, fresh installations, existing database adoption, and subsequent migrations.
 
-The application requires the database schema to be initialized before normal authentication and pipeline operations can work.
+**Read [DATABASE.md](DATABASE.md) and complete the applicable database setup procedure before starting the backend.**
+
+For a fresh database, the migration command is run from the repository root:
+
+```powershell
+python -m hazina_pipeline.database.migrations
+```
+
+This discovers and applies pending migrations in version order.
+
+For an existing database whose schema has already been created using all the corresponding SQL migrations, the baseline procedure is:
+
+```powershell
+python -m hazina_pipeline.database.migrations --baseline-existing
+```
+
+This records the existing migration versions and checksums in the migration history table. It does not execute the SQL files. Only use it after independently confirming that the existing database has the complete expected schema.
+
+Do not use the baseline command to initialize an empty database.
 
 ## 8. Start the backend
 
@@ -278,7 +303,7 @@ http://localhost:5173
 
 The application presents the login page. Sign in using an administrator account provisioned for the organization.
 
-Administrator account provisioning and database bootstrap procedures are covered in the database and administration documentation.
+Administrator account provisioning and organization management are covered in the administration documentation.
 
 ## 11. Build the frontend for production
 
@@ -331,6 +356,7 @@ Check that:
 - The database username and password are correct.
 - The root `.env` contains all required database variables.
 - The database migrations have been applied.
+- The application database role has the required permissions.
 
 ### JWT configuration errors
 
@@ -356,6 +382,14 @@ Confirm that:
 - The root virtual environment is activated, or its Python executable is being used.
 - Both Python packages have been installed.
 - The backend is started from the `hazina_server` directory.
+
+### Migration manager reports checksum or filename mismatches
+
+The migration manager records a checksum for each applied migration and checks it on subsequent runs.
+
+Do not modify an already-applied migration to resolve a mismatch. Investigate the migration history and database state, and introduce a new numbered migration for schema changes.
+
+Refer to [DATABASE.md](DATABASE.md) for migration-management guidance.
 
 ---
 
