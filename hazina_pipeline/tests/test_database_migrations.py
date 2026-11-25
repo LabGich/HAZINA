@@ -4,10 +4,12 @@ from pathlib import Path
 import pytest
 
 from hazina_pipeline.database.migrations.manager import (
+    BASELINE_REQUIRED_TABLES,
     MigrationError,
     calculate_checksum,
     discover_migrations,
     remove_transaction_wrappers,
+    validate_baseline_schema,
 )
 
 
@@ -184,3 +186,26 @@ SELECT 'COMMIT;';
     assert "-- BEGIN;" in cleaned
     assert "SELECT 'BEGIN;';" in cleaned
     assert "SELECT 'COMMIT;';" in cleaned
+
+
+def test_validate_baseline_schema_accepts_complete_schema():
+    validate_baseline_schema(set(BASELINE_REQUIRED_TABLES))
+
+
+def test_validate_baseline_schema_rejects_missing_tables():
+    existing_tables = set(BASELINE_REQUIRED_TABLES)
+    existing_tables.remove(("core", "transactions"))
+
+    with pytest.raises(
+        MigrationError,
+        match="core.transactions",
+    ):
+        validate_baseline_schema(existing_tables)
+
+
+def test_validate_baseline_schema_rejects_empty_database():
+    with pytest.raises(
+        MigrationError,
+        match="does not contain all required Hazina tables",
+    ):
+        validate_baseline_schema(set())

@@ -11,13 +11,8 @@ from typing import Callable
 from hazina_pipeline.database.connection import get_database_connection
 
 
-# manager.py:
-# hazina_pipeline/hazina_pipeline/database/migrations/manager.py
-# SQL files:
-# hazina_pipeline/sql/
 DEFAULT_MIGRATIONS_DIR = Path(__file__).resolve().parents[3] / "sql"
 
-# A fixed, application-specific PostgreSQL advisory lock.
 MIGRATION_LOCK_ID = 724_202_611
 
 FOUNDATIONAL_SCHEMAS = (
@@ -28,15 +23,32 @@ FOUNDATIONAL_SCHEMAS = (
     "analytics",
 )
 
-LEGACY_TABLES = (
-    "raw.transactions",
-    "staging.transactions",
-    "core.transactions",
-    "ops.pipeline_runs",
-    "auth.users",
-)
+# These tables must already exist before an existing database can
+# be adopted into migration management.
+BASELINE_REQUIRED_TABLES = {
+    ("auth", "organization_memberships"),
+    ("auth", "organizations"),
+    ("auth", "refresh_tokens"),
+    ("auth", "roles"),
+    ("auth", "users"),
+    ("core", "transactions"),
+    ("ops", "ingestion_checkpoints"),
+    ("ops", "mapping_errors"),
+    ("ops", "pipeline_errors"),
+    ("ops", "pipeline_runs"),
+    ("ops", "source_executions"),
+    ("ops", "source_registry"),
+    ("ops", "source_transaction_identity"),
+    ("ops", "transaction_audit"),
+    ("ops", "validation_errors"),
+    ("raw", "transactions"),
+    ("staging", "transactions"),
+}
 
-MIGRATION_FILENAME_PATTERN = re.compile(r"^(\d+)_.*\.sql$", re.IGNORECASE)
+MIGRATION_FILENAME_PATTERN = re.compile(
+    r"^(\d+)_.*\.sql$",
+    re.IGNORECASE,
+)
 
 TRANSACTION_BOUNDARY_PATTERN = re.compile(
     r"(?im)^\s*(?:BEGIN|COMMIT)\s*;\s*(?:--[^\n]*)?$"
@@ -74,8 +86,8 @@ def remove_transaction_wrappers(sql: str) -> str:
     """
     Remove standalone BEGIN and COMMIT statements.
 
-    The migration manager owns the transaction surrounding each migration,
-    so existing SQL files do not need to be modified.
+    The migration manager owns the transaction surrounding each
+    migration, so existing SQL files do not need to be modified.
     """
     return TRANSACTION_BOUNDARY_PATTERN.sub("", sql)
 
@@ -137,13 +149,31 @@ def discover_migrations(
     return migrations
 
 
+def validate_baseline_schema(
+    existing_tables: set[tuple[str, str]],
+) -> None:
+    """Ensure the existing database has the expected Hazina tables."""
+    missing_tables = sorted(
+        BASELINE_REQUIRED_TABLES - existing_tables
+    )
+
+    if missing_tables:
+        formatted = ", ".join(
+            f"{schema}.{table}"
+            for schema, table in missing_tables
+        )
+        raise MigrationError(
+            "The database does not contain all required Hazina tables. "
+            "Baseline adoption has been stopped. Missing: "
+            f"{formatted}"
+        )
+
+
 def _prepare_database(connection) -> None:
     """
-    Create foundational schemas and the migration history table.
+    Prepare a fresh database for normal migrations.
 
-    Existing databases without migration history are deliberately rejected
-    when application tables are already present. They need a separately
-    verified baseline before automatic migrations can safely manage them.
+    Existing application tables without migration history are rejected.
     """
     with connection.transaction():
         with connection.cursor() as cursor:
@@ -161,7 +191,13 @@ def _prepare_database(connection) -> None:
         if not history_exists:
             existing_tables = []
 
-            for table_name in LEGACY_TABLES:
+            for table_name in (
+                "raw.transactions",
+                "staging.transactions",
+                "core.transactions",
+                "ops.pipeline_runs",
+                "auth.users",
+            ):
                 cursor.execute(
                     "SELECT to_regclass(%s)",
                     (table_name,),
@@ -174,8 +210,9 @@ def _prepare_database(connection) -> None:
                     "This database already contains Hazina application "
                     "tables but has no migration history. Automatic "
                     "migration has stopped to protect existing data. "
-                    "A verified baseline is required before proceeding. "
-                    f"Detected tables: {', '.join(existing_tables)}"
+                    "Use the explicit baseline adoption process after "
+                    "verifying the existing schema. Detected tables: "
+                    f"{', '.join(existing_tables)}"
                 )
 
     with connection.transaction():
@@ -186,7 +223,8 @@ def _prepare_database(connection) -> None:
                     version INTEGER PRIMARY KEY,
                     filename TEXT NOT NULL UNIQUE,
                     checksum CHAR(64) NOT NULL,
-                    applied_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    applied_at TIMESTAMPTZ NOT NULL
+                        DEFAULT CURRENT_TIMESTAMP,
                     execution_time_ms INTEGER NOT NULL
                         CHECK (execution_time_ms >= 0)
                 )
@@ -214,6 +252,130 @@ def _get_applied_migrations(connection) -> dict[int, dict[str, str]]:
     }
 
 
+def _acquire_migration_lock(connection) -> None:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT pg_advisory_lock(%s)",
+            (MIGRATION_LOCK_ID,),
+        )
+
+
+def _release_migration_lock(connection) -> None:
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT pg_advisory_unlock(%s)",
+            (MIGRATION_LOCK_ID,),
+        )
+
+
+def baseline_existing_database(
+    connection_factory: Callable = get_database_connection,
+    migrations_dir: Path = DEFAULT_MIGRATIONS_DIR,
+) -> tuple[str, ...]:
+    """
+    Adopt an existing Hazina database without executing migration SQL.
+
+    This operation:
+    - Requires all expected existing Hazina tables.
+    - Refuses to run if migration history already exists.
+    - Records the current migration filenames and checksums.
+    - Does not modify existing application tables or financial data.
+
+    The caller must independently confirm that all migrations represented
+    by this baseline were previously executed successfully and in order.
+    """
+    migrations = discover_migrations(migrations_dir)
+    connection = connection_factory()
+    lock_acquired = False
+
+    try:
+        connection.autocommit = True
+
+        _acquire_migration_lock(connection)
+        lock_acquired = True
+
+        with connection.cursor() as cursor:
+            cursor.execute(
+                """
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM information_schema.tables
+                    WHERE table_schema = 'ops'
+                      AND table_name = 'schema_migrations'
+                      AND table_type = 'BASE TABLE'
+                )
+                """
+            )
+            if cursor.fetchone()[0]:
+                raise MigrationError(
+                    "Migration history already exists. "
+                    "Baseline adoption is only permitted for a database "
+                    "that has not yet been registered."
+                )
+
+            cursor.execute(
+                """
+                SELECT table_schema, table_name
+                FROM information_schema.tables
+                WHERE table_schema IN (
+                    'raw', 'staging', 'core', 'ops', 'auth'
+                )
+                  AND table_type = 'BASE TABLE'
+                """
+            )
+            existing_tables = {
+                (row[0], row[1])
+                for row in cursor.fetchall()
+            }
+
+        validate_baseline_schema(existing_tables)
+
+        with connection.transaction():
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    CREATE TABLE ops.schema_migrations (
+                        version INTEGER PRIMARY KEY,
+                        filename TEXT NOT NULL UNIQUE,
+                        checksum CHAR(64) NOT NULL,
+                        applied_at TIMESTAMPTZ NOT NULL
+                            DEFAULT CURRENT_TIMESTAMP,
+                        execution_time_ms INTEGER NOT NULL
+                            CHECK (execution_time_ms >= 0)
+                    )
+                    """
+                )
+
+                for migration in migrations:
+                    cursor.execute(
+                        """
+                        INSERT INTO ops.schema_migrations (
+                            version,
+                            filename,
+                            checksum,
+                            execution_time_ms
+                        )
+                        VALUES (%s, %s, %s, 0)
+                        """,
+                        (
+                            migration.version,
+                            migration.filename,
+                            migration.checksum,
+                        ),
+                    )
+
+        return tuple(
+            migration.filename for migration in migrations
+        )
+
+    finally:
+        try:
+            if lock_acquired:
+                _release_migration_lock(connection)
+        finally:
+            connection.close()
+
+
 def run_migrations(
     connection_factory: Callable = get_database_connection,
     migrations_dir: Path = DEFAULT_MIGRATIONS_DIR,
@@ -232,16 +394,10 @@ def run_migrations(
     lock_acquired = False
 
     try:
-        # Advisory locks and explicit transaction contexts work together
-        # cleanly when the connection is in autocommit mode.
         connection.autocommit = True
 
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT pg_advisory_lock(%s)",
-                (MIGRATION_LOCK_ID,),
-            )
-            lock_acquired = True
+        _acquire_migration_lock(connection)
+        lock_acquired = True
 
         _prepare_database(connection)
         applied_history = _get_applied_migrations(connection)
@@ -250,9 +406,7 @@ def run_migrations(
             migration.version for migration in migrations
         }
 
-        unknown_versions = (
-            set(applied_history) - available_versions
-        )
+        unknown_versions = set(applied_history) - available_versions
         if unknown_versions:
             raise MigrationError(
                 "The database contains migration history entries that "
@@ -325,16 +479,10 @@ def run_migrations(
             applied_names.append(migration.filename)
 
     finally:
-        if lock_acquired:
-            try:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT pg_advisory_unlock(%s)",
-                        (MIGRATION_LOCK_ID,),
-                    )
-            finally:
-                connection.close()
-        else:
+        try:
+            if lock_acquired:
+                _release_migration_lock(connection)
+        finally:
             connection.close()
 
     return MigrationSummary(
