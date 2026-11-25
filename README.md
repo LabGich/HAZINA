@@ -1,269 +1,293 @@
 # Hazina
-# AI Powered Financial Transactions Pipeline
+# AI powered Financial Transactions Pipeline
 
-An AI powered configurable, multi-source financial data engineering pipeline built to ingest, preserve, map, validate, deduplicate, and analyze financial transaction data.
+**Hazina** is a multi-tenant financial data platform built around a configurable financial transaction ingestion and analytics pipeline.
 
-Hazina V2 provides a shared file-based ingestion framework for financial data from multiple providers. It uses source-specific configuration and mapping rules while reusing common processing, validation, deduplication, persistence, monitoring, and reporting components.
+Hazina V2 provides a shared, file-based processing framework for financial data from multiple providers. It combines source-specific mappings with common ingestion, validation, deduplication, persistence, monitoring and reporting components.
+
+The application consists of three components:
+
+- **Pipeline:** Python-based financial transaction processing.
+- **API server:** FastAPI backend providing authentication, organization isolation and application services.
+- **Frontend:** React and TypeScript web application.
+
+V2 focuses on file-based ingestion. API integrations and other deferred capabilities are documented in the V3 roadmap.
 
 ---
 
-## 1. Project Overview
+## 1. Project objectives
 
-Hazina is a financial data engineering project designed to process transaction data from different financial providers through a consistent, auditable pipeline.
+Hazina is designed to:
 
-V2 moves beyond the original single-source CSV implementation by introducing a configurable, multi-source architecture.
-
-The pipeline supports:
-
-- Multiple financial statement sources.
-- Multiple files within a single pipeline run.
-- Source-specific mapping configurations.
-- Shared file readers for different file formats.
-- Preservation of original source records.
-- Canonical transaction standardization.
-- Mapping and validation error tracking.
-- Source-aware transaction deduplication.
-- Controlled promotion into the core database.
-- Independent file execution and failure isolation.
-- Pipeline monitoring and operational reporting.
-- Password-protected PDF reports.
-
-The architecture is designed so that adding a new file-based source primarily involves registering the source and defining its mapping configuration rather than building a separate ingestion pipeline.
-
-**V2 focuses on file-based ingestion. API-based ingestion is deferred to V3.**
-
-## 2. Project Objectives
-
-- Build a reusable multi-source financial data ingestion framework.
-- Support different financial statement formats.
-- Preserve original records for traceability and auditing.
+- Ingest financial statements from multiple providers.
+- Process multiple files in one pipeline run.
+- Preserve original source records.
 - Map provider-specific fields into a canonical transaction model.
 - Validate transactions against technical and business rules.
 - Record mapping and validation errors.
-- Identify provider-ID-based duplicates and conflicting transactions.
-- Prevent conflicting transactions from entering core storage.
-- Promote eligible transactions safely.
-- Support multiple files in a single pipeline run.
-- Isolate file-level failures without unnecessarily interrupting other files.
-- Track pipeline execution and per-file processing metrics.
-- Generate detailed operational reports.
-- Keep the architecture extensible without unnecessary complexity.
+- Identify provider-ID-based duplicate and conflicting transactions.
+- Promote eligible transactions into trusted core storage.
+- Isolate individual file failures.
+- Track pipeline and source execution metrics.
+- Generate operational PDF reports.
+- Provide authenticated, organization-scoped access to financial data.
 
-## 3. Technology Stack
+## 2. Technology stack
 
-| Technology | Purpose |
+| Component | Technologies |
 |---|---|
-| Python 3.14 | Pipeline development |
-| PostgreSQL 18 | Financial data warehouse |
-| SQL | Database schemas, migrations and analytics |
-| pandas | Data manipulation and file processing |
-| Psycopg 3 | PostgreSQL connectivity |
-| SQLAlchemy | Database tooling |
-| python-dotenv | Environment configuration |
-| PyYAML | Source and mapping configuration |
-| openpyxl | Excel file reading |
-| pyarrow | Parquet file processing |
-| charset-normalizer | Character encoding detection |
-| ReportLab | PDF report generation and encryption |
-| pypdf | PDF inspection and verification |
-| pytest | Automated testing |
-| Git and GitHub | Version control |
+| Pipeline | Python 3.11+, pandas, Psycopg 3, PyYAML |
+| Database | PostgreSQL |
+| API | FastAPI, Pydantic, Uvicorn |
+| Authentication | JWT, PyJWT, Argon2 password hashing |
+| Frontend | React 19, TypeScript, Vite |
+| UI and charts | Tailwind CSS, Lucide, Recharts |
+| File processing | pandas, openpyxl, PyArrow |
+| PDF reports | ReportLab |
+| Testing | pytest, HTTPX, TypeScript compiler |
+| Version control | Git and GitHub |
 
-## 4. V2 Architecture
+The exact dependency versions are maintained in the component-specific dependency files.
 
-V2 uses a shared processing architecture.
+## 3. Repository structure
 
-Each financial provider has its own source registration and mapping configuration. All providers use the same underlying ingestion, mapping, validation, deduplication, persistence, orchestration, and reporting framework.
-
-### Processing architecture
+Hazina is maintained as a monorepo.
 
 ```text
-                  SOURCE CONFIGURATION
-                          |
-                          v
-                   SOURCE REGISTRY
-                          |
-                          v
-              PIPELINE RUN ORCHESTRATOR
-                          |
-               One parent pipeline run
-                          |
-             +------------+------------+
-             |            |            |
-             v            v            v
-          File 1       File 2       File 3
-          Child        Child        Child
-        Execution    Execution    Execution
-             |            |            |
-             v            v            v
-        File Reader  File Reader  File Reader
-             |            |            |
-             v            v            v
-         RAW STORAGE  RAW STORAGE  RAW STORAGE
-             |            |            |
-             v            v            v
-        SOURCE-SPECIFIC MAPPING
-             |            |            |
-             v            v            v
-          STAGING      STAGING      STAGING
-             |            |            |
-             v            v            v
-         VALIDATION   VALIDATION   VALIDATION
-             |            |            |
-             v            v            v
-        DEDUPLICATION AND CORE PROMOTION
-             |            |            |
-             +------------+------------+
-                          |
-                          v
-                 EXECUTION FINALIZATION
-                          |
-                          v
-                 PARENT RUN FINALIZATION
-                          |
-                          v
-                 ANALYTICS AND REPORTING
-                          |
-                          v
-                    PDF REPORT
+hazina_fin_trans_pipeline/
+│
+├── hazina_pipeline/
+│   ├── config/
+│   │   ├── sources/
+│   │   └── mappings/
+│   ├── data/
+│   ├── logs/
+│   ├── reports/
+│   ├── sql/
+│   ├── tests/
+│   ├── hazina_pipeline/
+│   │   ├── database/
+│   │   ├── deduplication/
+│   │   ├── ingestion/
+│   │   ├── mapping/
+│   │   ├── monitoring/
+│   │   ├── orchestration/
+│   │   └── validation/
+│   ├── pyproject.toml
+│   ├── requirements.txt
+│   └── requirements-dev.txt
+│
+├── hazina_server/
+│   ├── data/
+│   ├── server/
+│   │   ├── auth/
+│   │   ├── commands/
+│   │   ├── routers/
+│   │   ├── schemas/
+│   │   └── services/
+│   ├── tests/
+│   ├── pyproject.toml
+│   ├── requirements.txt
+│   └── requirements-dev.txt
+│
+├── hazina_frontend/
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.ts
+│
+├── .env
+├── .env.example
+├── .gitignore
+└── README.md
 ```
 
-Each submitted file receives an independent source execution.
+Generated files, uploaded data, local environments and secrets should not be committed.
 
-A single parent pipeline run can contain multiple files, including multiple files belonging to the same source.
+## 4. System architecture
 
-### Shared processing components
+Hazina uses a shared processing architecture. Each provider has a source registration and mapping configuration, while common components perform the processing.
 
-The following components are shared across supported sources:
+```text
+                  WEB FRONTEND
+                       |
+                       v
+                  FASTAPI SERVER
+                       |
+             Authentication and
+             organization isolation
+                       |
+                       v
+               PIPELINE SERVICE
+                       |
+                       v
+             V2 PIPELINE ORCHESTRATOR
+                       |
+             One parent pipeline run
+                       |
+          +------------+------------+
+          |            |            |
+          v            v            v
+        File 1       File 2       File 3
+          |            |            |
+          v            v            v
+      Ingestion     Ingestion     Ingestion
+          |            |            |
+          +------------+------------+
+                       |
+                       v
+                 RAW STORAGE
+                       |
+                       v
+              SOURCE-SPECIFIC MAPPING
+                       |
+                       v
+                   STAGING
+                       |
+                       v
+                  VALIDATION
+                       |
+                       v
+              DEDUPLICATION
+                       |
+                       v
+               CORE PROMOTION
+                       |
+                       v
+             EXECUTION FINALIZATION
+                       |
+                       v
+               PARENT FINALIZATION
+                       |
+                       v
+               MONITORING AND
+                  REPORTING
+```
 
-- File readers.
-- Source file reader and adapter registry.
-- Mapping engine.
-- Mapping configuration validator.
-- Canonical transaction model.
-- Validation engine.
-- Deduplication engine.
-- Database persistence.
-- Pipeline orchestration.
-- Monitoring and reporting.
+Each submitted file receives an independent child source execution. Multiple files, including multiple files from the same source, can belong to one parent pipeline run.
 
-Source-specific behavior is primarily defined through configuration and mapping rules.
+An individual file failure does not automatically prevent its sibling files from being processed.
 
-Adapters are introduced only when a source has genuinely different file-reading requirements.
+## 5. Pipeline processing lifecycle
 
-## 5. Pipeline Processing Lifecycle
+The V2 pipeline follows this lifecycle:
 
-The V2 orchestrator is implemented in:
+1. Resolve the explicitly supplied source and mapping configuration.
+2. Create a parent pipeline run.
+3. Create child source executions for submitted files.
+4. Start each source execution.
+5. Read the submitted file.
+6. Preserve original records in raw storage.
+7. Map records into the canonical transaction model.
+8. Record mapping errors.
+9. Validate mapped transactions.
+10. Record validation errors.
+11. Deduplicate eligible transactions.
+12. Promote eligible transactions into core storage.
+13. Update execution metrics.
+14. Finalize each child execution.
+15. Finalize the parent run after all child executions reach terminal states.
+16. Generate the PDF report.
 
-`src/run_pipeline_v2.py`
+Report generation takes place after pipeline finalization. A reporting failure does not change the outcome of an already finalized pipeline run.
 
-The main entry point is:
+### Execution levels
 
-`run_pipeline_v2(files)`
+**Parent pipeline run**
 
-The orchestrator performs the following operations:
+One parent run represents one submission containing one or more files.
 
-1. Synchronize configured sources with the database source registry.
-2. Create one parent pipeline run and its child source executions.
-3. Start each source execution.
-4. Read the submitted file.
-5. Preserve original records in raw storage.
-6. Map source records into canonical transactions.
-7. Record mapping errors.
-8. Validate staged transactions.
-9. Record validation errors.
-10. Deduplicate eligible transactions.
-11. Promote eligible transactions into core storage.
-12. Update source execution metrics.
-13. Finalize each source execution.
-14. Continue processing sibling files after an individual file failure.
-15. Finalize the parent pipeline run after all child executions reach terminal states.
-16. Generate the PDF report after parent finalization.
+Stored in:
 
-### Execution boundaries
+`ops.pipeline_runs`
 
-Each source execution is processed independently.
+**Child source execution**
 
-A failure in one file should not roll back completed work belonging to successful sibling files.
+Each submitted file receives its own execution record.
 
-Processing stages use transactional boundaries so that failed work can be recorded without unnecessarily affecting other executions.
+Stored in:
 
-Failure handling records fatal errors separately through `fail_source_execution()`.
+`ops.source_executions`
 
-Report generation occurs after pipeline finalization. A reporting failure does not change the outcome of an already completed pipeline run.
+This structure supports independent processing, metrics, error tracking and failure isolation.
 
-## 6. Database Architecture
+## 6. Database architecture
 
-The PostgreSQL database is named:
+The application uses the PostgreSQL database:
 
 `hazina_warehouse`
 
-It uses five logical schemas.
+The database has five principal schemas:
 
 | Schema | Responsibility |
 |---|---|
 | `raw` | Original provider records and ingestion metadata |
-| `staging` | Canonical mapped transactions and validation state |
+| `staging` | Mapped canonical transactions and validation state |
 | `core` | Trusted promoted financial transactions |
 | `analytics` | Analytical summaries and reporting views |
 | `ops` | Pipeline execution, source configuration, errors and operational tracking |
+| `auth` | Organizations, users, roles, memberships and refresh tokens |
 
-### Operational database objects
+The operational schema includes objects for:
 
-The operational schema includes:
+- Pipeline runs.
+- Source registry.
+- Source executions.
+- Pipeline errors.
+- Mapping errors.
+- Validation errors.
+- Source transaction identity.
+- Ingestion checkpoints.
+- Transaction audit history.
 
-- `ops.pipeline_runs`
-- `ops.source_registry`
-- `ops.source_executions`
-- `ops.pipeline_errors`
-- `ops.mapping_errors`
-- `ops.validation_errors`
-- `ops.source_transaction_identity`
-- `ops.ingestion_checkpoints`
-- `ops.transaction_audit`
-
-### Transaction storage
-
-The principal transaction storage layers are:
-
-- `raw.transactions`
-- `staging.transactions`
-- `core.transactions`
-
-Raw and staging records are associated with their source execution where applicable.
-
-This allows records to be traced back to the file and pipeline execution that processed them.
+The authentication schema manages organizations, users, roles and organization memberships.
 
 ### Database migrations
 
-Database migration scripts are maintained directly under:
+SQL migrations are maintained in:
 
-`sql/`
+`hazina_pipeline/sql/`
 
-The implemented database migration history extends through migration 25.
+The migration history currently extends through migration **29**.
 
-Historical migrations should be preserved. Schema changes should be introduced through new migrations rather than editing migrations that have already been applied.
+The migration sequence includes:
 
-## 7. Canonical Transaction Model
+- Initial database tables and analytics structures.
+- Raw, staging and core transaction extensions.
+- Source registry and source execution tracking.
+- Deduplication and transaction identity.
+- Mapping and validation error tracking.
+- Ingestion checkpoints and transaction auditing.
+- Performance indexes.
+- Authentication schema.
+- Refresh token management.
+- Organization-level pipeline and financial data isolation.
 
-Different financial providers use different field names and transaction representations.
+Migration files must be applied in their intended numerical order.
 
-V2 maps these provider-specific records into a shared canonical transaction model.
+**Important:** Do not edit migrations that have already been applied to an existing database. Introduce subsequent schema changes through new migration files.
 
-### Canonical fields
+The project does not document an automatic migration runner as part of the V2 workflow. Database migration application should therefore be performed deliberately and verified against the target database.
+
+## 7. Canonical transaction model
+
+Different providers use different field names and transaction representations. Hazina maps these into a shared canonical transaction model.
+
+Principal transaction fields include:
 
 | Field | Description |
 |---|---|
-| `transaction_id` | Hazina-generated transaction identifier |
-| `source_name` | Financial provider or source name |
+| `transaction_id` | Hazina transaction identifier |
+| `source_name` | Financial provider or source |
 | `source_transaction_id` | Provider transaction identifier, when available |
 | `source_account_id` | Source account identifier |
 | `customer_id` | Optional customer identifier |
 | `transaction_date` | Transaction timestamp |
 | `transaction_type` | Standardized transaction classification |
-| `amount` | Positive transaction amount |
-| `currency` | ISO 4217 currency code |
-| `direction` | DEBIT, CREDIT or UNKNOWN |
+| `amount` | Transaction amount |
+| `currency` | Currency code |
+| `direction` | Debit, credit or unknown |
 | `payment_method` | Standardized payment channel |
 | `status` | Standardized transaction status |
 | `description` | Transaction description |
@@ -271,241 +295,113 @@ V2 maps these provider-specific records into a shared canonical transaction mode
 | `fee_amount` | Transaction fee, when available |
 | `account_balance` | Account balance, when available |
 
-Provider transaction identifiers are kept separate from Hazina-generated transaction identifiers.
+Provider identifiers remain distinct from Hazina-generated identifiers.
 
-Optional source information is preserved where available.
+Original provider data is preserved in raw storage for traceability.
 
-### Supported transaction types
+### Standardization principles
 
-- `PAYMENT`
-- `DEPOSIT`
-- `WITHDRAWAL`
-- `TRANSFER`
-- `REFUND`
-- `FEE`
-- `REVERSAL`
-
-### Supported statuses
-
-- `INITIATED`
-- `PENDING`
-- `COMPLETED`
-- `FAILED`
-- `REVERSED`
-
-### Transaction directions
-
-- `DEBIT`
-- `CREDIT`
-- `UNKNOWN`
-
-### Payment methods
-
-- `MPESA`
-- `BANK_TRANSFER`
-- `CARD`
-- `CASH`
-- `DIGITAL_WALLET`
-- `USSD`
-- `AGENT`
-- `OTHER`
-- `UNKNOWN`
-
-### Standardization rules
-
-- Transaction amounts use positive numeric values, with direction represented separately.
+- Amounts are represented as positive values, with direction stored separately.
 - Currency values use ISO 4217 codes.
-- Transaction timestamps are normalized to UTC.
-- Naive timestamps are rejected unless a source timezone is configured.
-- Provider identifiers remain distinct from Hazina identifiers.
-- Original provider records are preserved in raw storage.
+- Transaction timestamps are normalized according to the pipeline's configured timestamp rules.
+- Provider identifiers remain separate from Hazina identifiers.
+- Original source information is preserved where available.
 
-## 8. Supported Sources and File Formats
+## 8. Supported sources and mappings
 
-V2 supports multiple registered financial sources.
+V2 supports the following configured file-based sources.
 
-### File-based sources
-
-| Source | Supported formats | Default mapping |
+| Source | Supported formats | Mapping configurations |
 |---|---|---|
-| EQUITY | CSV, JSON | `equity_csv_v1` |
-| KCB | CSV, JSON | `kcb_csv_v1` |
-| COOP | CSV, JSON | `coop_csv_v1` |
-| NCBA | CSV, JSON | `ncba_csv_v1` |
+| EQUITY | CSV, JSON | `equity_csv_v1`, `equity_json_v1` |
+| KCB | CSV, JSON | `kcb_csv_v1`, `kcb_json_v1` |
+| COOP | CSV, JSON | `coop_csv_v1`, `coop_json_v1` |
+| NCBA | CSV, JSON | `ncba_csv_v1`, `ncba_json_v1` |
 | EXPLORE_MY_DATA | CSV, XLSX, JSON, JSONL, Parquet | `explore_my_data_v1` |
-| UTILLY | CSV, XLSX | `utilly_bank_csv_v1` |
-| MPESA | CSV, XLSX, JSON | `mpesa_csv_v1` |
+| UTILLY | CSV, XLSX | `utilly_bank_csv_v1`, `utilly_bank_xlsx_v1` |
 
-For Utilly XLSX statements, the caller must explicitly select:
+The mapping must match the submitted file format.
 
-`utilly_bank_xlsx_v1`
+For example, Utilly CSV statements use `utilly_bank_csv_v1`, while Utilly XLSX statements use `utilly_bank_xlsx_v1`.
 
-The default Utilly mapping is for CSV files.
+### MPESA status
 
-The MPESA file source registration is retained for future statement-file support. Its mapping is not yet implemented, and no sample statement mapping has been completed.
+The MPESA source registration is retained, but its file mapping is incomplete. It is not currently an enabled, usable source in the V2 frontend workflow.
 
-### Shared file readers
+A representative statement sample and validated mapping are required before enabling it.
 
-The shared file reader implementation is:
+### File readers
 
-`src/ingestion/source_readers.py`
+The shared reader framework supports:
 
-Supported readers:
+- CSV.
+- XLSX.
+- JSON.
+- JSON Lines.
+- Parquet.
 
-| Reader | File format |
-|---|---|
-| CSVReader | CSV |
-| XLSXReader | Excel XLSX |
-| JSONReader | JSON |
-| JSONLReader | JSON Lines |
-| ParquetReader | Parquet |
+Source-specific adapters can handle genuinely different file-reading requirements without duplicating the common processing framework.
 
-The format registry resolves supported file extensions to their corresponding readers.
+### Source selection
 
-### Source-specific file adapters
+Automatic source detection is not implemented.
 
-Some providers require additional handling before their records can enter the shared mapping framework.
+The caller must explicitly provide:
 
-The Utilly adapter supports:
+- `source_name`
+- `file_path`
+- `mapping_id`
+- `mapping_version`
 
-- CSV and XLSX statements.
-- Statement preamble metadata.
-- Configurable header row handling.
-- Account and statement-period extraction.
-- Filtering of beginning-balance and totals rows.
+The source and mapping must correspond to registered configurations.
 
-The adapter is registered through:
+## 9. Source and mapping configuration
 
-`src/ingestion/adapters/registry.py`
+Source configuration and mapping files are maintained under:
 
-Source-specific adapters are not intended to replace the shared processing framework.
-
-## 9. Source and Mapping Configuration
-
-Source configuration is maintained under:
-
-`config/sources/sources.yaml`
-
-Mapping configurations are maintained under:
-
-`config/mappings/`
-
-Each source has its own registration and mapping configuration.
-
-### Mapping inventory
-
-| Source | Mapping configurations |
-|---|---|
-| EQUITY | `equity_csv_v1`, `equity_json_v1` |
-| KCB | `kcb_csv_v1`, `kcb_json_v1` |
-| COOP | `coop_csv_v1`, `coop_json_v1` |
-| NCBA | `ncba_csv_v1`, `ncba_json_v1` |
-| EXPLORE_MY_DATA | `explore_my_data_v1` |
-| UTILLY | `utilly_bank_csv_v1`, `utilly_bank_xlsx_v1` |
-
-API source mapping configurations are retained for future development, but API ingestion is outside the V2 implementation scope.
-
-### Mapping configuration responsibilities
+- `hazina_pipeline/config/sources/`
+- `hazina_pipeline/config/mappings/`
 
 Mapping configurations define:
 
 - Mapping identifier and version.
-- Source fields.
+- Source field names.
 - Canonical destination fields.
-- Date formats and timezone settings.
-- Amount handling.
-- Debit and credit handling.
+- Date formats and timezone handling.
+- Amount and debit/credit handling.
 - Default values.
-- Required source fields.
-- Field transformations.
+- Required fields.
+- Transformations.
 - Derived transaction types.
 
-### Mapping behavior
+The mapping engine supports direct field mapping, split debit and credit amounts, signed amount handling, defaults and field transformations.
 
-The shared mapping engine supports:
-
-- Direct field mapping.
-- Split debit and credit amounts.
-- Signed amount handling.
-- Positive amounts with separate direction.
-- Default values.
-- Field transformations.
-- Derived transaction types.
-
-Default values apply only when the mapped value is missing or blank. Actual source values take precedence.
+Actual source values take precedence over configured defaults.
 
 ### Adding a new file-based source
 
-The intended source onboarding process is:
+The general onboarding process is:
 
-1. Register the source in `config/sources/sources.yaml`.
-2. Define its supported file formats.
-3. Create a source-specific mapping configuration.
-4. Configure the source's field names and transformations.
+1. Register the source.
+2. Define supported file formats.
+3. Create its mapping configuration.
+4. Configure source fields and transformations.
 5. Validate the mapping configuration.
-6. Add representative source samples.
-7. Test the source through the shared pipeline.
-8. Verify raw preservation, mapping, validation, deduplication and promotion.
+6. Obtain representative source samples.
+7. Test ingestion and mapping.
+8. Verify validation, deduplication and core promotion.
 
-A new source should reuse the shared readers and processing components wherever possible.
+New sources should reuse the shared readers and processing components wherever possible.
 
-Automatic source detection is not implemented. The caller explicitly supplies the source and mapping.
-
-## 10. Raw Ingestion and Mapping
-
-### Raw ingestion
-
-Implemented in:
-
-`src/ingestion/ingest_source_file.py`
-
-The ingestion component:
-
-- Reads the submitted file through the shared reader framework.
-- Preserves original source records.
-- Stores ingestion metadata.
-- Associates records with their source execution.
-- Tracks records received and loaded.
-- Handles values such as dates, datetimes and decimals for JSON-safe persistence.
-
-Raw storage provides traceability between provider records and downstream canonical transactions.
-
-### Mapping
-
-Implemented in:
-
-`src/mapping/map_source_execution.py`
-
-The mapping component:
-
-- Retrieves raw records for the source execution.
-- Resolves the supplied mapping configuration.
-- Applies source-to-canonical transformations.
-- Creates canonical staging records.
-- Records mapping failures.
-- Tracks mapped records.
-
-Mapping errors are stored in:
-
-`ops.mapping_errors`
-
-The mapping framework includes configuration validation to detect invalid or incomplete mappings before processing.
-
-## 11. Validation
-
-Implemented in:
-
-`src/validation/validate_source_execution.py`
+## 10. Validation
 
 Mapped staging transactions are validated before deduplication and promotion.
 
-The validation process checks canonical transaction requirements and applicable business rules.
-
-These include:
+Validation covers applicable requirements such as:
 
 - Required canonical fields.
 - Valid transaction timestamps.
-- Positive and valid transaction amounts.
+- Valid transaction amounts.
 - Supported transaction types.
 - Valid currencies.
 - Supported payment methods.
@@ -513,7 +409,7 @@ These include:
 - Valid transaction direction.
 - Required source information.
 
-Staging transactions use validation states:
+Staging records use validation states:
 
 - `PENDING`
 - `VALID`
@@ -525,15 +421,11 @@ Validation failures are recorded in:
 
 Invalid transactions are excluded from core promotion.
 
-## 12. Deduplication and Core Promotion
+## 11. Deduplication and core promotion
 
-Implemented in:
+V2 implements source-aware provider transaction identity.
 
-`src/deduplication/deduplicate_source_execution.py`
-
-V2 uses source-aware provider transaction identity for deduplication.
-
-The identity is based on:
+The identity uses:
 
 - Source.
 - Provider transaction identifier.
@@ -544,72 +436,38 @@ The identity is based on:
 | Classification | Handling |
 |---|---|
 | UNIQUE | Eligible for core promotion |
-| EXACT_DUPLICATE | Redundant identical transaction; retain one representative |
-| CONFLICTING_DUPLICATE | Conflicting records sharing an identity; exclude the entire conflicting group |
-
-### Existing core transactions
+| EXACT_DUPLICATE | Redundant identical transaction |
+| CONFLICTING_DUPLICATE | Conflicting records sharing an identity; excluded from promotion |
 
 The pipeline also checks whether an eligible transaction is already represented in core storage.
 
-- An identical existing transaction is counted as already in core.
-- A transaction with the same identity but different canonical details is treated as a conflict.
-- Existing core transactions are not overwritten by conflicting incoming records.
+- Identical existing transactions are counted as already in core.
+- Conflicting transactions are not allowed to overwrite existing core records.
+- Newly promoted transactions are recorded in transaction audit history.
 
-### Core promotion
-
-Only eligible, unique, non-conflicting transactions are promoted.
-
-Newly promoted transactions are recorded in the transaction audit history.
-
-### Important deduplication limitation
-
-V2 currently implements provider-ID-based identity deduplication.
+### Known limitation
 
 Content-based transaction fingerprinting has not yet been implemented.
 
-For sources that do not supply provider transaction identifiers, such as the current Equity and NCBA sample mappings, repeated submission of the same statement can result in transactions being promoted again.
+For sources without provider transaction identifiers, such as the current Equity and NCBA sample mappings, repeated submission of the same statement can result in transactions being promoted again.
 
-Therefore, repeated submissions from sources without provider IDs should not yet be treated as safely deduplicated.
+Repeated uploads from these sources should therefore not be assumed to be safely deduplicated.
 
-Content-based fingerprinting is a known enhancement for future implementation.
+This enhancement is deferred to V3.
 
-## 13. Orchestration and Execution Statuses
+## 12. Execution statuses and metrics
 
-V2 uses two execution levels.
-
-### Parent pipeline run
-
-One parent pipeline run represents one submission of one or more files.
-
-Tracked in:
-
-`ops.pipeline_runs`
-
-### Child source execution
-
-Each submitted file receives its own source execution.
-
-Tracked in:
-
-`ops.source_executions`
-
-Multiple files from the same source can belong to the same parent pipeline run.
-
-The child execution tracks source-specific processing, errors, metrics and status.
-
-### Child execution statuses
+### Source execution statuses
 
 | Status | Meaning |
 |---|---|
-| PENDING | Execution created but not started |
-| RUNNING | File processing is in progress |
-| SUCCESS | Processing completed without record-level errors |
-| PARTIAL_SUCCESS | Processing completed with rejected or skipped records |
+| PENDING | Created but not started |
+| RUNNING | Processing in progress |
+| SUCCESS | Completed without record-level errors |
+| PARTIAL_SUCCESS | Completed with rejected or skipped records |
 | FAILED | Fatal failure prevented completion |
-| SKIPPED | Execution deliberately skipped |
-| CANCELLED | Execution cancelled |
-
-A completed execution with all records rejected can still be `PARTIAL_SUCCESS`, because processing completed but records were not successfully processed.
+| SKIPPED | Deliberately skipped |
+| CANCELLED | Cancelled |
 
 ### Parent pipeline statuses
 
@@ -622,78 +480,33 @@ A completed execution with all records rejected can still be `PARTIAL_SUCCESS`, 
 | FAILED | No child execution completed successfully |
 | CANCELLED | Overall pipeline run was cancelled |
 
-### Failure isolation
+### Metrics
 
-A fatal failure in one file does not automatically prevent the remaining files from being processed.
-
-The failed execution is recorded independently.
-
-Successful sibling executions retain their completed work.
-
-The parent run is finalized after all child executions have reached terminal states.
-
-If failure recording itself fails, the orchestrator raises an error and does not finalize the parent run in an uncertain state.
-
-## 14. Pipeline Metrics
-
-V2 tracks metrics at the source execution level and aggregates them at the parent pipeline level.
+Hazina tracks metrics at child execution level and aggregates them at parent run level.
 
 | Metric | Meaning |
 |---|---|
 | `records_received` | Records returned by the file reader |
 | `records_loaded` | Raw records successfully persisted |
-| `records_mapped` | Records successfully mapped |
+| `records_mapped` | Successfully mapped records |
 | `records_rejected` | Mapping and validation failures |
 | `records_skipped` | Deliberately excluded records |
-| `records_duplicated` | Redundant exact duplicates and all records in conflicting groups |
-| `records_unique_eligible` | Unique, non-conflicting validated records eligible for core |
+| `records_duplicated` | Duplicate and conflicting records |
+| `records_unique_eligible` | Valid unique records eligible for core |
 | `records_promoted` | Newly inserted core transactions |
-| `records_already_in_core` | Identical eligible transactions already represented in core |
+| `records_already_in_core` | Identical transactions already in core |
 | `records_updated` | Existing records actually updated, where applicable |
 
-Child metrics are maintained independently.
+## 13. Monitoring and PDF reporting
 
-Parent metrics aggregate the corresponding child execution results.
+Hazina provides operational reporting at parent run and source execution levels.
 
-## 15. Monitoring and Reporting
+Reports include:
 
-V2 reporting is implemented in:
-
-`src/monitoring/pipeline_status.py`
-
-The V2 reporting functions include:
-
-- `get_pipeline_v2_report_data`
-- `print_pipeline_v2_run_report`
-- `save_pipeline_v2_run_report`
-
-### Console reporting
-
-Console reporting provides a summary of pipeline execution, child execution outcomes, processing metrics and errors.
-
-### PDF reporting
-
-A PDF report is generated after the parent pipeline run is finalized.
-
-Reports are stored in the root-level:
-
-`reports/`
-
-Example:
-
-```text
-reports/
-├── pipeline_run_277_report.pdf
-├── pipeline_run_278_report.pdf
-└── pipeline_run_<run_id>_report.pdf
-```
-
-V2 reports contain:
-
-- Parent pipeline run details.
+- Parent run details.
 - Overall pipeline status.
 - Aggregate processing metrics.
-- Per-file source execution details.
+- Per-file execution details.
 - Source and mapping information.
 - Execution timestamps.
 - Child execution statuses.
@@ -703,44 +516,112 @@ V2 reports contain:
 - Deduplication results.
 - Core promotion metrics.
 
-Report generation failure is recorded separately and does not change the already finalized pipeline outcome.
+PDF reports are generated after parent pipeline finalization.
+
+Report generation failure does not change an already finalized pipeline outcome.
 
 ### PDF security
 
 V2 PDF reports require an open password.
 
-The PDF security implementation is maintained in:
-
-`src/monitoring/pdf_security.py`
-
-Configuration is supplied through environment variables:
+The pipeline configuration uses:
 
 ```dotenv
-HAZINA_PDF_USER_PASSWORD=
-HAZINA_PDF_OWNER_PASSWORD=
+HAZINA_PDF_USER_PASSWORD=your_report_open_password
+HAZINA_PDF_OWNER_PASSWORD=your_report_owner_password
 ```
 
-The user password opens the V2 report.
+The user password opens the report. The owner password controls configured PDF permissions.
 
-The owner password controls the configured PDF permissions.
+Use strong, distinct passwords. Never commit these values to version control or expose them in logs or source code.
 
-The passwords must be strong, distinct values and must never be committed to version control or shared in source code.
+PDF permission restrictions are advisory and should not be treated as absolute document security.
 
-The configured PDF permissions:
+## 14. API server
 
-- Allow printing.
-- Restrict document modification.
-- Restrict copying.
-- Restrict annotations.
+The backend is implemented using FastAPI.
 
-These PDF permission restrictions are advisory and should not be treated as absolute document security or DRM.
+It provides the application services used by the frontend, including:
 
-## 16. Installation and Configuration
+- Authentication.
+- Session refresh and logout.
+- User and organization management.
+- Source and mapping information.
+- Pipeline submission.
+- Pipeline run listing and filtering.
+- Pipeline run details.
+- PDF report access.
+- Dashboard summary information.
+- Health checks.
+
+### Authentication
+
+Hazina uses JWT-based authentication.
+
+The authentication system supports:
+
+- Login.
+- Access tokens.
+- Refresh tokens.
+- Refresh token rotation.
+- Logout and token revocation.
+- Current-user information.
+- Password hashing using Argon2.
+
+Access and refresh token lifetimes are configured by the backend. The current defaults are 15 minutes for access tokens and 7 days for refresh tokens.
+
+### Roles and permissions
+
+Hazina uses three application roles.
+
+| Role | Capabilities |
+|---|---|
+| ADMIN | Organization administration, user management and full application access |
+| OPERATOR | Submit files and view pipeline information |
+| VIEWER | Read-only access to permitted application information |
+
+Administrative operations are restricted to authorized administrators.
+
+### Organization isolation
+
+Hazina supports multiple organizations.
+
+Pipeline runs and financial data are scoped to the authenticated user's organization. Users should not be able to access another organization's protected records through API requests.
+
+Organization-level isolation is enforced in the backend and database design.
+
+## 15. Frontend application
+
+The frontend is implemented using React, TypeScript and Vite.
+
+The main application pages include:
+
+| Page | Purpose |
+|---|---|
+| Dashboard | Operational summary and recent pipeline activity |
+| Ingestion | Submit one or more financial statement files |
+| Pipeline Runs | Browse, filter and paginate pipeline runs |
+| Pipeline Run Details | Inspect individual source executions and processing results |
+| Mappings | View available source mappings |
+| User Management | Administer organization users |
+| Settings | View application and account settings |
+| Login | Authenticate users |
+
+The frontend communicates with the FastAPI backend through the configured API base URL.
+
+The frontend environment variable is:
+
+```dotenv
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+## 16. Installation and configuration
 
 ### Prerequisites
 
-- Python 3.14 or a compatible Python environment.
-- PostgreSQL 18 or a compatible PostgreSQL installation.
+- Python 3.11 or later.
+- PostgreSQL.
+- Node.js and npm compatible with the installed Vite version.
 - Git.
 - PowerShell or another terminal.
 
@@ -748,341 +629,317 @@ These PDF permission restrictions are advisory and should not be treated as abso
 
 ```powershell
 git clone <repository-url>
-
 cd hazina_fin_trans_pipeline
 ```
 
-### Create a virtual environment
+### Create and activate the Python environment
+
+From the repository root:
 
 ```powershell
 python -m venv .venv
-```
-
-### Activate the virtual environment
-
-```powershell
 .venv\Scripts\Activate.ps1
 ```
 
-### Install dependencies
+### Install pipeline dependencies
 
 ```powershell
-pip install -r requirements.txt
+python -m pip install --upgrade pip
+python -m pip install -e .\hazina_pipeline
+```
+
+For pipeline development and testing:
+
+```powershell
+python -m pip install -r .\hazina_pipeline\requirements-dev.txt
+```
+
+### Install server dependencies
+
+```powershell
+python -m pip install -e .\hazina_server
+```
+
+For server development and testing:
+
+```powershell
+python -m pip install -r .\hazina_server\requirements-dev.txt
 ```
 
 ### Configure environment variables
 
-Create a `.env` file in the project root using `.env.example` as a template.
+Create a root-level `.env` file using the pipeline environment template as a starting point.
 
-Configure the database connection:
+The pipeline template is:
+
+`hazina_pipeline/.env.example`
+
+Configure the PostgreSQL connection:
 
 ```dotenv
-DB_HOST=
-DB_PORT=
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
+APP_NAME=Hazina
+APP_ENV=development
+APP_DEBUG=true
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=hazina_warehouse
+DB_USER=your_database_user
+DB_PASSWORD=your_database_password
 ```
 
 Configure PDF report security:
 
 ```dotenv
-HAZINA_PDF_USER_PASSWORD=
-HAZINA_PDF_OWNER_PASSWORD=
+HAZINA_PDF_USER_PASSWORD=your_report_open_password
+HAZINA_PDF_OWNER_PASSWORD=your_report_owner_password
 ```
 
-Do not commit `.env` or expose database credentials and PDF passwords.
+The frontend has its own environment file:
 
-### Database setup
+`hazina_frontend/.env`
+
+Use `hazina_frontend/.env.example` as its template.
+
+```dotenv
+VITE_API_BASE_URL=http://localhost:8000
+```
+
+Additional authentication and production secrets must be configured according to the backend's actual settings. Never commit secrets or share them in source control.
+
+## 17. Database setup
 
 Create the PostgreSQL database:
 
-`hazina_warehouse`
+```sql
+CREATE DATABASE hazina_warehouse;
+```
 
-Configure the application database role and permissions.
+Create or configure the application database role and grant the permissions required by the migrations and application.
 
-Execute the SQL migration scripts under:
+Apply the SQL migration files from:
 
-`sql/`
+`hazina_pipeline/sql/`
 
-in their intended order.
+Apply them in numerical order, from the earliest migration through migration 29.
 
-The centralized database connection module is:
+After applying the migrations:
 
-`src/database/connection.py`
+1. Verify the expected schemas and tables.
+2. Verify the application database role has the necessary permissions.
+3. Confirm the backend can connect to the database.
+4. Complete the initial organization and administrator setup using the application's supported administrative/bootstrap workflow.
 
-## 17. Running the V2 Pipeline
+Do not use production credentials in development or commit database passwords.
 
-The V2 orchestrator is:
+## 18. Running the application
 
-`src/run_pipeline_v2.py`
+Hazina has three independently managed components.
 
-The main function is:
+### Pipeline
+
+The pipeline package contains the V2 processing implementation and can be exercised through its application services and tests.
+
+The caller must supply the source, file path, mapping identifier and mapping version. Automatic source detection is not implemented.
+
+A file configuration follows this general structure:
 
 ```python
-run_pipeline_v2(files)
+file_config = {
+    "source_name": "EQUITY",
+    "file_path": "path/to/equity_statement.csv",
+    "mapping_id": "equity_csv_v1",
+    "mapping_version": "1",
+}
 ```
 
-The function accepts a non-empty list or tuple of file configurations.
+A pipeline run can contain multiple file configurations.
 
-Each file configuration must identify the file path, source and mapping to be used.
+### API server
 
-The source and mapping are supplied by the caller; the pipeline does not automatically detect them.
+Run the FastAPI application using the server package's configured ASGI entry point.
 
-### Example invocation
+The API should be available at:
 
-The following illustrates the intended invocation pattern. Replace the sample paths and mapping identifiers with the files available in your environment.
+`http://localhost:8000`
 
-```python
-from src.run_pipeline_v2 import run_pipeline_v2
+FastAPI interactive API documentation is normally available at:
 
-files = [
-    {
-        "file_path": "data/sample/source_samples/equity.csv",
-        "source_name": "EQUITY",
-        "mapping_id": "equity_csv_v1",
-    },
-    {
-        "file_path": "data/sample/source_samples/kcb.csv",
-        "source_name": "KCB",
-        "mapping_id": "kcb_csv_v1",
-    },
-]
+`http://localhost:8000/docs`
 
-result = run_pipeline_v2(files)
+Use the actual ASGI module configured in the server package when starting Uvicorn.
 
-print("Run ID:", result["run_id"])
-print("Run status:", result["run_status"])
-print("Report:", result["report_path"])
-print("Report error:", result["report_error"])
-```
+### Frontend
 
-The example demonstrates the function interface. File paths must exist, and source and mapping identifiers must match the registered configurations.
-
-For an XLSX Utilly statement, use:
-
-`utilly_bank_xlsx_v1`
-
-For a CSV Utilly statement, use:
-
-`utilly_bank_csv_v1`
-
-### Returned results
-
-The orchestrator returns:
-
-| Field | Description |
-|---|---|
-| `run_id` | Parent pipeline run identifier |
-| `run_status` | Final parent execution status |
-| `pipeline` | Parent finalization result |
-| `source_executions` | Individual child execution results |
-| `report_path` | Generated PDF report path, if successful |
-| `report_error` | Reporting error, if report generation fails |
-
-Each child result includes its execution identifier, source, file path, execution status, stage results and error information.
-
-## 18. Automated Testing
-
-Run the complete automated test suite from the project root:
+Open a separate PowerShell terminal:
 
 ```powershell
-python -m pytest
+cd hazina_frontend
+npm ci
+npm run dev
 ```
 
-For verbose output:
+Vite displays the local development URL, normally:
+
+`http://localhost:5173`
+
+Ensure the frontend API base URL points to the running backend.
+
+### Production build
+
+From `hazina_frontend`:
 
 ```powershell
-python -m pytest -v
+npm run build
 ```
 
-The V2 test coverage includes:
+This runs the TypeScript build and creates the production frontend assets in `dist/`.
 
-- Source configuration validation.
-- Source registry synchronization.
-- Mapping configuration validation.
-- Shared CSV reading.
-- XLSX reading.
-- JSON reading.
-- JSONL reading.
-- Parquet reading.
-- Source-specific adapters.
-- Raw record preservation.
-- Canonical mapping.
-- Mapping error handling.
-- Transaction validation.
-- Validation error persistence.
-- Deduplication.
-- Conflicting transaction handling.
-- Core promotion.
-- Existing core transaction protection.
-- Parent pipeline orchestration.
-- Child source execution lifecycle.
-- Multiple files in one pipeline run.
-- Multiple files from the same source.
-- Failure isolation between sibling executions.
-- Parent and child status finalization.
-- Operational metrics.
-- Console reporting.
-- PDF report generation.
-- PDF password protection and permissions.
-- Legacy V1 regression coverage.
+## 19. Automated testing
 
-The completed V2 integration and regression test suite previously passed **182 tests**. Rerun the suite against the current checkout when performing a new release verification.
+Run tests using the repository's Python virtual environment.
 
-## 19. Project Structure
+### Pipeline tests
 
-The main project layout is:
+From the repository root:
 
-```text
-hazina_fin_trans_pipeline/
-│
-├── config/
-│   ├── sources/
-│   │   └── sources.yaml
-│   └── mappings/
-│
-├── data/
-│   └── sample/
-│       ├── hazina_transactions.csv
-│       └── source_samples/
-│
-├── reports/
-│
-├── logs/
-│
-├── sql/
-│
-├── src/
-│   ├── database/
-│   │   └── connection.py
-│   │
-│   ├── ingestion/
-│   │   ├── adapters/
-│   │   ├── ingest_source_file.py
-│   │   ├── source_file_reader.py
-│   │   └── source_readers.py
-│   │
-│   ├── mapping/
-│   │   ├── mapping_engine.py
-│   │   ├── mapping_config_validator.py
-│   │   ├── mapping_registry.py
-│   │   ├── map_source_execution.py
-│   │   ├── source_registry.py
-│   │   └── transformations.py
-│   │
-│   ├── validation/
-│   │   ├── validate_transactions.py
-│   │   └── validate_source_execution.py
-│   │
-│   ├── deduplication/
-│   │   ├── deduplicate_transactions.py
-│   │   └── deduplicate_source_execution.py
-│   │
-│   ├── orchestration/
-│   │   ├── create_pipeline_run.py
-│   │   ├── start_source_execution.py
-│   │   ├── fail_source_execution.py
-│   │   ├── finalize_source_execution.py
-│   │   └── finalize_pipeline_run.py
-│   │
-│   ├── monitoring/
-│   │   ├── pipeline_status.py
-│   │   └── pdf_security.py
-│   │
-│   ├── cleaning/
-│   ├── transformations/
-│   │
-│   ├── run_pipeline.py
-│   └── run_pipeline_v2.py
-│
-├── tests/
-│
-├── .env
-├── .env.example
-├── .gitignore
-├── requirements.txt
-└── README.md
+```powershell
+python -m pytest .\hazina_pipeline\tests
 ```
 
-The original V1 modules remain available for backward compatibility. The V2 modules provide the multi-source file-based processing lifecycle.
+### Server tests
 
-## 20. Known Limitations
+```powershell
+python -m pytest .\hazina_server\tests
+```
 
-The following are known limitations or deferred enhancements, not completed V2 functionality.
+### Frontend type checking
+
+From `hazina_frontend`:
+
+```powershell
+npx tsc --noEmit
+```
+
+### Frontend production build
+
+```powershell
+npm run build
+```
+
+### Frontend linting
+
+```powershell
+npm run lint
+```
+
+The automated tests cover pipeline configuration, file reading, mapping, validation, deduplication, promotion, orchestration, failure isolation, reporting, authentication, authorization, organization isolation and API behavior.
+
+Test counts can change as the project evolves. Run the tests against the current checkout before declaring a release verified.
+
+## 20. Security and operational considerations
+
+Before deploying Hazina beyond a local development environment:
+
+- Use strong database credentials.
+- Store secrets outside source control.
+- Configure secure JWT signing secrets.
+- Use HTTPS.
+- Restrict database network access.
+- Apply least-privilege database permissions.
+- Protect uploaded financial files and generated reports.
+- Review file upload size and extension restrictions.
+- Configure production CORS origins.
+- Establish secure backup and restore procedures.
+- Review logging to avoid exposing sensitive financial data.
+- Verify organization isolation in the deployment environment.
+- Configure a production-grade email service before introducing email-dependent account workflows.
+
+The development configuration is not a production deployment specification.
+
+## 21. Known V2 limitations
+
+The following capabilities are intentionally deferred or incomplete:
 
 ### Content-based deduplication
 
-Provider-ID-based identity deduplication is implemented.
+V2 uses provider transaction identifiers for source-aware deduplication. Content-based fingerprinting for sources without provider IDs is not implemented.
 
-Content-based transaction fingerprinting for sources without provider transaction IDs is not implemented.
+### MPESA file mapping
 
-### MPESA file mappings
-
-The MPESA file source registration is retained, but its mapping configuration is not yet implemented. A representative statement sample is required before creating and validating the mapping.
+The MPESA file source registration exists, but the mapping and representative sample validation are incomplete.
 
 ### API ingestion
 
-API-based ingestion is outside V2 scope.
+V2 does not implement API ingestion clients.
 
-### Advanced operational features
+### Account recovery and email workflows
 
-More advanced retry frameworks, automated recovery, scheduling and expanded observability are potential future improvements, not prerequisites for the current V2 implementation.
+Email verification, password reset and production transactional email are deferred.
 
-## 21. V3 Roadmap
+### Advanced operational capabilities
 
-V3 is intended to extend the shared financial data pipeline to API-based financial sources.
+More advanced retry frameworks, automated recovery, scheduling and expanded observability remain potential future enhancements.
 
-Potential integrations include:
+## 22. V3 roadmap
 
-- Stripe.
-- Plaid.
-- Safaricom Daraja.
+V3 is intended to extend the shared platform without compromising the stability of the V2 file-based pipeline.
+
+Potential work includes:
+
+- Content-based transaction fingerprinting.
+- Complete MPESA statement-file support.
+- MPESA API integration through Safaricom Daraja.
+- Stripe API ingestion.
+- Plaid API ingestion.
 - Additional financial APIs.
-
-Future API ingestion may require:
-
-- API authentication.
-- Pagination.
+- API authentication and pagination.
 - Rate-limit handling.
 - Incremental synchronization.
 - Webhook processing.
 - API-specific error handling.
-- Checkpoint and synchronization management.
+- Email verification.
+- Password reset.
+- Production transactional email.
+- Further operational automation and observability.
+- Organization-specific user-facing run references while retaining globally unique database run IDs.
 
-These capabilities are deferred to V3. V2 remains focused on completing and stabilizing the file-based ingestion framework.
+These are future enhancements, not claims of completed V2 functionality.
 
-## 22. Legacy V1
+## 23. Legacy V1
 
 V1 was the original single-source CSV-to-PostgreSQL implementation.
 
-Its original pipeline modules and reporting functionality remain in the project for backward compatibility and regression testing.
+Its legacy modules remain available for backward compatibility and regression testing.
 
-V2 is the primary multi-source financial data pipeline.
+V2 is the primary multi-source, file-based financial data pipeline.
 
-## 23. Development Philosophy
+## 24. Development principles
 
-Hazina is developed incrementally, with emphasis on correctness, traceability, maintainability and practical financial data engineering principles.
+Hazina is developed incrementally, with emphasis on:
 
-The architecture prioritizes:
-
-- Shared processing components.
+- Correctness.
+- Traceability.
+- Data integrity.
+- Organization isolation.
 - Explicit source configuration.
 - Source-specific mapping.
 - Preservation of original records.
 - Consistent canonical transactions.
 - Reliable database transactions.
 - Independent file execution.
-- Traceable errors and operational metrics.
+- Auditable operational metrics.
 - Automated testing.
-- Simple, maintainable design.
+- Maintainable architecture.
 
-The goal is to build a reusable financial data pipeline that can support additional providers without creating a separate ingestion and processing system for every source.
+The objective is to build a reusable financial data platform that can support additional providers without creating a separate ingestion and processing system for every source.
 
 ---
 
-**Project:** Hazina Financial Transactions Pipeline  
-**Database:** `hazina_warehouse`  
-**Primary technologies:** Python and PostgreSQL  
-**Architecture:** Configurable multi-source financial data pipeline  
-**Current implementation:** V2 — File-based ingestion
+**Project:** Hazina Financial Transactions Pipeline
+
+**Database:** `hazina_warehouse`
+
+**Architecture:** Multi-tenant financial data platform
+
+**Current implementation:** V2 — File-based ingestion and processing
